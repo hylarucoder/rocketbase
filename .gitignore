@@ -24,3 +24,4 @@ pb_data/*
 server
 *.exe
 keys/*
+.env

@@ -15,9 +15,11 @@ import (
 	"github.com/hylarucoder/rocketbase/tools/logger"
 	"github.com/hylarucoder/rocketbase/tools/mailer"
 	"github.com/hylarucoder/rocketbase/tools/migrate"
+	"github.com/hylarucoder/rocketbase/tools/test_utils"
 )
 
 func TestNewBaseApp(t *testing.T) {
+	test_utils.LoadTestEnv()
 	const testDataDir = "./pb_base_app_test_data_dir/"
 	defer os.RemoveAll(testDataDir)
 
@@ -53,6 +55,7 @@ func TestNewBaseApp(t *testing.T) {
 }
 
 func TestBaseAppBootstrap(t *testing.T) {
+	test_utils.LoadTestEnv()
 	const testDataDir = "./pb_base_app_test_data_dir/"
 	defer os.RemoveAll(testDataDir)
 
@@ -137,6 +140,7 @@ func TestBaseAppBootstrap(t *testing.T) {
 }
 
 func TestBaseAppGetters(t *testing.T) {
+	test_utils.LoadTestEnv()
 	const testDataDir = "./pb_base_app_test_data_dir/"
 	defer os.RemoveAll(testDataDir)
 
@@ -201,6 +205,7 @@ func TestBaseAppGetters(t *testing.T) {
 }
 
 func TestBaseAppNewMailClient(t *testing.T) {
+	test_utils.LoadTestEnv()
 	app, cleanup, err := initTestBaseApp()
 	if err != nil {
 		t.Fatal(err)
@@ -221,6 +226,7 @@ func TestBaseAppNewMailClient(t *testing.T) {
 }
 
 func TestBaseAppNewFilesystem(t *testing.T) {
+	test_utils.LoadTestEnv()
 	app, cleanup, err := initTestBaseApp()
 	if err != nil {
 		t.Fatal(err)
@@ -248,6 +254,7 @@ func TestBaseAppNewFilesystem(t *testing.T) {
 }
 
 func TestBaseAppNewBackupsFilesystem(t *testing.T) {
+	test_utils.LoadTestEnv()
 	app, cleanup, err := initTestBaseApp()
 	if err != nil {
 		t.Fatal(err)
@@ -275,6 +282,7 @@ func TestBaseAppNewBackupsFilesystem(t *testing.T) {
 }
 
 func TestBaseAppLoggerWrites(t *testing.T) {
+	test_utils.LoadTestEnv()
 	app, cleanup, err := initTestBaseApp()
 	if err != nil {
 		t.Fatal(err)
@@ -338,6 +346,7 @@ func TestBaseAppLoggerWrites(t *testing.T) {
 }
 
 func TestBaseAppRefreshSettingsLoggerMinLevelEnabled(t *testing.T) {
+	test_utils.LoadTestEnv()
 	app, cleanup, err := initTestBaseApp()
 	if err != nil {
 		t.Fatal(err)
@@ -507,6 +516,7 @@ func TestBaseAppLoggerLevelDevPrint(t *testing.T) {
 
 // note: make sure to call `defer cleanup()` when the app is no longer needed.
 func initTestBaseApp() (app *BaseApp, cleanup func(), err error) {
+	test_utils.LoadTestEnv()
 	testDataDir, err := os.MkdirTemp("", "test_base_app")
 	if err != nil {
 		return nil, nil, err

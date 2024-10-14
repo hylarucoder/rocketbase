@@ -207,15 +207,15 @@ func TestDaoModelQuery(t *testing.T) {
 	}{
 		{
 			&models.Collection{},
-			"SELECT {{_collections}}.* FROM `_collections`",
+			"SELECT {{_collections}}.* FROM \"_collections\"",
 		},
 		{
 			&models.Admin{},
-			"SELECT {{_admins}}.* FROM `_admins`",
+			"SELECT {{_admins}}.* FROM \"_admins\"",
 		},
 		{
 			&models.Log{},
-			"SELECT {{_requests}}.* FROM `_requests`",
+			"SELECT {{_requests}}.* FROM \"_requests\"",
 		},
 	}
 

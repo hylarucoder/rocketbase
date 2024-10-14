@@ -11,6 +11,7 @@ import (
 
 	"github.com/hylarucoder/rocketbase/core"
 	"github.com/hylarucoder/rocketbase/tools/mailer"
+	"github.com/hylarucoder/rocketbase/tools/test_utils"
 )
 
 // TestApp is a wrapper app instance used for testing.
@@ -80,6 +81,9 @@ func (t *TestApp) registerEventCall(name string) error {
 // It is the caller's responsibility to call `app.Cleanup()`
 // when the app is no longer needed.
 func NewTestApp(optTestDataDir ...string) (*TestApp, error) {
+	// Start from the current directory and search for .env.test file
+	test_utils.LoadTestEnv()
+
 	var testDataDir string
 	if len(optTestDataDir) == 0 || optTestDataDir[0] == "" {
 		// fallback to the default test data directory

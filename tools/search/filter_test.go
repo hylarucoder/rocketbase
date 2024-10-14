@@ -3,12 +3,14 @@ package search_test
 import (
 	"context"
 	"database/sql"
+	"os"
 	"regexp"
 	"strings"
 	"testing"
 	"time"
 
 	"github.com/hylarucoder/rocketbase/tools/search"
+	"github.com/hylarucoder/rocketbase/tools/test_utils"
 	"github.com/pocketbase/dbx"
 )
 
@@ -174,11 +176,13 @@ func TestFilterDataBuildExpr(t *testing.T) {
 
 func TestFilterDataBuildExprWithParams(t *testing.T) {
 	// create a dummy db
-	sqlDB, err := sql.Open("sqlite", "file::memory:?cache=shared")
+	dbDSN := os.Getenv("DATABASE")
+	test_utils.LoadTestEnv()
+	sqlDB, err := sql.Open("postgres", dbDSN)
 	if err != nil {
 		t.Fatal(err)
 	}
-	db := dbx.NewFromDB(sqlDB, "sqlite")
+	db := dbx.NewFromDB(sqlDB, "postgres")
 
 	calledQueries := []string{}
 	db.QueryLogFunc = func(ctx context.Context, t time.Duration, sql string, rows *sql.Rows, err error) {

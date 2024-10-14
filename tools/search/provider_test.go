@@ -6,12 +6,14 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"os"
 	"testing"
 	"time"
 
 	"github.com/hylarucoder/rocketbase/tools/list"
+	"github.com/hylarucoder/rocketbase/tools/test_utils"
+	_ "github.com/lib/pq"
 	"github.com/pocketbase/dbx"
-	_ "modernc.org/sqlite"
 )
 
 func TestNewProvider(t *testing.T) {
@@ -567,14 +569,16 @@ type testDB struct {
 
 // NB! Don't forget to call `db.Close()` at the end of the test.
 func createTestDB() (*testDB, error) {
+	test_utils.LoadTestEnv()
 	// using a shared cache to allow multiple connections access to
 	// the same in memory database https://www.sqlite.org/inmemorydb.html
-	sqlDB, err := sql.Open("sqlite", "file::memory:?cache=shared")
+	dbDSN := os.Getenv("DATABASE")
+	sqlDB, err := sql.Open("postgres", dbDSN)
 	if err != nil {
 		return nil, err
 	}
 
-	db := testDB{DB: dbx.NewFromDB(sqlDB, "sqlite")}
+	db := testDB{DB: dbx.NewFromDB(sqlDB, "postgres")}
 	db.CreateTable("test", map[string]string{"id": "int default 0", "test1": "int default 0", "test2": "text default ''", "test3": "text default ''"}).Execute()
 	db.Insert("test", dbx.Params{"id": 1, "test1": 1, "test2": "test2.1"}).Execute()
 	db.Insert("test", dbx.Params{"id": 2, "test1": 2, "test2": "test2.2"}).Execute()

@@ -52,8 +52,8 @@ func TestBaseModelId(t *testing.T) {
 
 	m.RefreshId()
 
-	if len(m.GetId()) != 15 {
-		t.Fatalf("Expected 15 chars id, got %v", m.GetId())
+	if len(m.GetId()) != 19 {
+		t.Fatalf("Expected 19 chars id, got %v", m.GetId())
 	}
 }
 

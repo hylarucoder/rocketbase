@@ -23,6 +23,7 @@ import (
 	"github.com/hylarucoder/rocketbase/tools/filesystem"
 	"github.com/hylarucoder/rocketbase/tools/mailer"
 	"github.com/hylarucoder/rocketbase/tools/security"
+	"github.com/hylarucoder/rocketbase/tools/test_utils"
 	"github.com/pocketbase/dbx"
 	"github.com/spf13/cast"
 )
@@ -520,7 +521,7 @@ func TestDbxBinds(t *testing.T) {
 				b: null,
 				c: [1, 2, 3],
 			}).build(db, {})`,
-			"`a`={:p0} AND `b` IS NULL AND `c` IN ({:p1}, {:p2}, {:p3})",
+			`"a"={:p0} AND "b" IS NULL AND "c" IN ({:p1}, {:p2}, {:p3})`,
 		},
 		{
 			`$dbx.not($dbx.exp("a = 1")).build(db, {})`,
@@ -536,27 +537,27 @@ func TestDbxBinds(t *testing.T) {
 		},
 		{
 			`$dbx.in("a", 1, 2, 3).build(db, {})`,
-			"`a` IN ({:p0}, {:p1}, {:p2})",
+			`"a" IN ({:p0}, {:p1}, {:p2})`,
 		},
 		{
 			`$dbx.notIn("a", 1, 2, 3).build(db, {})`,
-			"`a` NOT IN ({:p0}, {:p1}, {:p2})",
+			`"a" NOT IN ({:p0}, {:p1}, {:p2})`,
 		},
 		{
 			`$dbx.like("a", "test1", "test2").match(true, false).build(db, {})`,
-			"`a` LIKE {:p0} AND `a` LIKE {:p1}",
+			`"a" LIKE {:p0} AND "a" LIKE {:p1}`,
 		},
 		{
 			`$dbx.orLike("a", "test1", "test2").match(false, true).build(db, {})`,
-			"`a` LIKE {:p0} OR `a` LIKE {:p1}",
+			`"a" LIKE {:p0} OR "a" LIKE {:p1}`,
 		},
 		{
 			`$dbx.notLike("a", "test1", "test2").match(true, false).build(db, {})`,
-			"`a` NOT LIKE {:p0} AND `a` NOT LIKE {:p1}",
+			`"a" NOT LIKE {:p0} AND "a" NOT LIKE {:p1}`,
 		},
 		{
 			`$dbx.orNotLike("a", "test1", "test2").match(false, false).build(db, {})`,
-			"`a` NOT LIKE {:p0} OR `a` NOT LIKE {:p1}",
+			`"a" NOT LIKE {:p0} OR "a" NOT LIKE {:p1}`,
 		},
 		{
 			`$dbx.exists($dbx.exp("a = 1")).build(db, {})`,
@@ -568,11 +569,11 @@ func TestDbxBinds(t *testing.T) {
 		},
 		{
 			`$dbx.between("a", 1, 2).build(db, {})`,
-			"`a` BETWEEN {:p0} AND {:p1}",
+			`"a" BETWEEN {:p0} AND {:p1}`,
 		},
 		{
 			`$dbx.notBetween("a", 1, 2).build(db, {})`,
-			"`a` NOT BETWEEN {:p0} AND {:p1}",
+			`"a" NOT BETWEEN {:p0} AND {:p1}`,
 		},
 	}
 
@@ -1013,6 +1014,7 @@ func TestApisBindsApiError(t *testing.T) {
 }
 
 func TestLoadingDynamicModel(t *testing.T) {
+	test_utils.LoadTestEnv()
 	app, _ := tests.NewTestApp()
 	defer app.Cleanup()
 
@@ -1069,6 +1071,7 @@ func TestLoadingDynamicModel(t *testing.T) {
 }
 
 func TestLoadingArrayOf(t *testing.T) {
+	test_utils.LoadTestEnv()
 	app, _ := tests.NewTestApp()
 	defer app.Cleanup()
 

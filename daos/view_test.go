@@ -17,6 +17,7 @@ import (
 func ensureNoTempViews(app core.App, t *testing.T) {
 	var total int
 
+	// TODO: fix this
 	err := app.Dao().DB().Select("count(*)").
 		From("sqlite_schema").
 		AndWhere(dbx.HashExp{"type": "view"}).
@@ -126,7 +127,7 @@ func TestSaveView(t *testing.T) {
 		{
 			"try to break the parent parenthesis",
 			"123Test",
-			"select *, count(id) as c  from `_admins`)",
+			"select *, count(id) as c  from \"_admins\")",
 			true,
 			nil,
 		},
