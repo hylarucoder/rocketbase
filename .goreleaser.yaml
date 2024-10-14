@@ -40,7 +40,6 @@ builds:
       - arm
     tags:
       - pq
-      - sqlite
     goarm:
       - 7
     ignore:

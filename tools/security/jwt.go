@@ -25,27 +25,9 @@ func ParseUnverifiedJWT(token string) (jwt.MapClaims, error) {
 	return claims, err
 }
 
-// // ParseJWT verifies and parses JWT and returns its claims.
-// func ParseJWT(token string, verificationKey string) (jwt.MapClaims, error) {
-// 	parser := jwt.NewParser(jwt.WithValidMethods([]string{"HS256"}))
-
-// 	parsedToken, err := parser.Parse(token, func(t *jwt.Token) (any, error) {
-// 		return []byte(verificationKey), nil
-// 	})
-// 	if err != nil {
-// 		return nil, err
-// 	}
-
-// 	if claims, ok := parsedToken.Claims.(jwt.MapClaims); ok && parsedToken.Valid {
-// 		return claims, nil
-// 	}
-
-// 	return nil, errors.New("Unable to parse token.")
-// }
-
 // ParseJWT verifies and parses JWT and returns its claims.
 func ParseJWT(token string, oldVerificationKey string) (jwt.MapClaims, error) {
-	parser := jwt.NewParser(jwt.WithValidMethods([]string{"RS256"}))
+	parser := jwt.NewParser(jwt.WithValidMethods([]string{"HS256"}))
 
 	publicKey, err := jwt.ParseRSAPublicKeyFromPEM([]byte(os.Getenv("JWT_PUBLIC_KEY")))
 	if err != nil {
@@ -93,12 +75,7 @@ func NewJWT(payload jwt.MapClaims, oldSigninKey string, secondsDuration int64) (
 		claims[k] = v
 	}
 
-	privateKey, err := jwt.ParseRSAPrivateKeyFromPEM([]byte(os.Getenv("JWT_PRIVATE_KEY")))
-	if err != nil {
-		return "", err
-	}
-
-	return jwt.NewWithClaims(jwt.SigningMethodRS256, claims).SignedString(privateKey)
+	return jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString(oldSigninKey)
 }
 
 // Deprecated:

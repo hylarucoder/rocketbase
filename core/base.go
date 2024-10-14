@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"fmt"
 	"log"
 	"log/slog"
 	"os"
@@ -1020,7 +1019,6 @@ func (app *BaseApp) initLogsDB() error {
 	if app.logsMaxIdleConns > 0 {
 		maxIdleConns = app.logsMaxIdleConns
 	}
-	fmt.Println("logsDataDir", app.DataDir())
 	concurrentDB, err := ConnectDB(dbLogDSN)
 	if err != nil {
 		return err

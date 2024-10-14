@@ -17,6 +17,7 @@ import (
 func ensureNoTempViews(app core.App, t *testing.T) {
 	var total int
 
+	// TODO: fix this
 	err := app.Dao().DB().Select("count(*)").
 		From("sqlite_schema").
 		AndWhere(dbx.HashExp{"type": "view"}).

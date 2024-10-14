@@ -4,12 +4,14 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
+	"os"
 	"testing"
 	"time"
 
 	"github.com/hylarucoder/rocketbase/tools/list"
+	"github.com/hylarucoder/rocketbase/tools/test_utils"
+	_ "github.com/lib/pq"
 	"github.com/pocketbase/dbx"
-	_ "modernc.org/sqlite"
 )
 
 func TestNewRunner(t *testing.T) {
@@ -34,7 +36,7 @@ func TestNewRunner(t *testing.T) {
 	}
 
 	expectedQueries := []string{
-		"CREATE TABLE IF NOT EXISTS `_migrations` (file VARCHAR(255) PRIMARY KEY NOT NULL, applied TIMESTAMPTZ NOT NULL)",
+		"CREATE TABLE IF NOT EXISTS \"_migrations\" (file VARCHAR(255) PRIMARY KEY NOT NULL, applied TIMESTAMPTZ NOT NULL)",
 	}
 	if len(expectedQueries) != len(testDB.CalledQueries) {
 		t.Fatalf("Expected %d queries, got %d: \n%v", len(expectedQueries), len(testDB.CalledQueries), testDB.CalledQueries)
@@ -199,13 +201,14 @@ type testDB struct {
 
 // NB! Don't forget to call `db.Close()` at the end of the test.
 func createTestDB() (*testDB, error) {
-	// TODO: use postgres instead
-	sqlDB, err := sql.Open("sqlite", ":memory:")
+	test_utils.LoadTestEnv()
+	dbDSN := os.Getenv("DATABASE")
+	sqlDB, err := sql.Open("postgres", dbDSN)
 	if err != nil {
 		return nil, err
 	}
 
-	db := testDB{DB: dbx.NewFromDB(sqlDB, "sqlite")}
+	db := testDB{DB: dbx.NewFromDB(sqlDB, "postgres")}
 	db.QueryLogFunc = func(ctx context.Context, t time.Duration, sql string, rows *sql.Rows, err error) {
 		db.CalledQueries = append(db.CalledQueries, sql)
 	}
