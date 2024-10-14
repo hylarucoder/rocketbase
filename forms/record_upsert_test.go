@@ -51,6 +51,7 @@ func TestNewRecordUpsert(t *testing.T) {
 	form := forms.NewRecordUpsert(app, record)
 
 	val := form.Data()["title"]
+
 	if val != "test_value" {
 		t.Errorf("Expected record data to be loaded, got %v", form.Data())
 	}

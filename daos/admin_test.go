@@ -13,7 +13,7 @@ func TestAdminQuery(t *testing.T) {
 	app, _ := tests.NewTestApp()
 	defer app.Cleanup()
 
-	expected := "SELECT {{_admins}}.* FROM `_admins`"
+	expected := "SELECT {{_admins}}.* FROM \"_admins\""
 
 	sql := app.Dao().AdminQuery().Build().SQL()
 	if sql != expected {

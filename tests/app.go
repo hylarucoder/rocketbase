@@ -2,12 +2,15 @@
 package tests
 
 import (
+	"fmt"
 	"io"
 	"os"
 	"path"
 	"path/filepath"
 	"runtime"
 	"sync"
+
+	"github.com/joho/godotenv"
 
 	"github.com/hylarucoder/rocketbase/core"
 	"github.com/hylarucoder/rocketbase/tools/mailer"
@@ -80,6 +83,31 @@ func (t *TestApp) registerEventCall(name string) error {
 // It is the caller's responsibility to call `app.Cleanup()`
 // when the app is no longer needed.
 func NewTestApp(optTestDataDir ...string) (*TestApp, error) {
+	// Start from the current directory and search for .env.test file
+	dir, err := os.Getwd()
+	if err != nil {
+		fmt.Printf("Error getting current working directory: %v\n", err)
+	} else {
+		for {
+			envFile := filepath.Join(dir, ".env.test")
+			if _, err := os.Stat(envFile); err == nil {
+				if err := godotenv.Load(envFile); err != nil {
+					fmt.Printf("Error loading .env.test file: %v\n", err)
+				} else {
+					fmt.Printf("Loaded .env.test from: %s\n", envFile)
+					break
+				}
+			}
+
+			parent := filepath.Dir(dir)
+			if parent == dir {
+				fmt.Println("Reached root directory, .env.test not found")
+				break
+			}
+			dir = parent
+		}
+	}
+
 	var testDataDir string
 	if len(optTestDataDir) == 0 || optTestDataDir[0] == "" {
 		// fallback to the default test data directory

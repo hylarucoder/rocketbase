@@ -126,7 +126,7 @@ func TestSaveView(t *testing.T) {
 		{
 			"try to break the parent parenthesis",
 			"123Test",
-			"select *, count(id) as c  from `_admins`)",
+			"select *, count(id) as c  from \"_admins\")",
 			true,
 			nil,
 		},

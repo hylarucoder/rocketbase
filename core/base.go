@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"fmt"
 	"log"
 	"log/slog"
 	"os"
@@ -1010,6 +1011,7 @@ func (app *BaseApp) OnCollectionsAfterImportRequest() *hook.Hook[*CollectionsImp
 // -------------------------------------------------------------------
 
 func (app *BaseApp) initLogsDB() error {
+	dbLogDSN := os.Getenv("LOGS_DATABASE")
 	maxOpenConns := DefaultLogsMaxOpenConns
 	maxIdleConns := DefaultLogsMaxIdleConns
 	if app.logsMaxOpenConns > 0 {
@@ -1018,8 +1020,8 @@ func (app *BaseApp) initLogsDB() error {
 	if app.logsMaxIdleConns > 0 {
 		maxIdleConns = app.logsMaxIdleConns
 	}
-
-	concurrentDB, err := connectDB(filepath.Join(app.DataDir(), "logs.db"))
+	fmt.Println("logsDataDir", app.DataDir())
+	concurrentDB, err := ConnectDB(dbLogDSN)
 	if err != nil {
 		return err
 	}
@@ -1027,7 +1029,7 @@ func (app *BaseApp) initLogsDB() error {
 	concurrentDB.DB().SetMaxIdleConns(maxIdleConns)
 	concurrentDB.DB().SetConnMaxIdleTime(3 * time.Minute)
 
-	nonconcurrentDB, err := connectDB(filepath.Join(app.DataDir(), "logs.db"))
+	nonconcurrentDB, err := ConnectDB(dbLogDSN)
 	if err != nil {
 		return err
 	}
@@ -1041,6 +1043,7 @@ func (app *BaseApp) initLogsDB() error {
 }
 
 func (app *BaseApp) initDataDB() error {
+	dbDSN := os.Getenv("DATABASE")
 	maxOpenConns := DefaultDataMaxOpenConns
 	maxIdleConns := DefaultDataMaxIdleConns
 	if app.dataMaxOpenConns > 0 {
@@ -1050,7 +1053,7 @@ func (app *BaseApp) initDataDB() error {
 		maxIdleConns = app.dataMaxIdleConns
 	}
 
-	concurrentDB, err := connectDB(filepath.Join(app.DataDir(), "data.db"))
+	concurrentDB, err := ConnectDB(dbDSN)
 	if err != nil {
 		return err
 	}
@@ -1058,7 +1061,7 @@ func (app *BaseApp) initDataDB() error {
 	concurrentDB.DB().SetMaxIdleConns(maxIdleConns)
 	concurrentDB.DB().SetConnMaxIdleTime(3 * time.Minute)
 
-	nonconcurrentDB, err := connectDB(filepath.Join(app.DataDir(), "data.db"))
+	nonconcurrentDB, err := ConnectDB(dbDSN)
 	if err != nil {
 		return err
 	}
