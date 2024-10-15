@@ -24,6 +24,7 @@ require (
 	github.com/pocketbase/tygoja v0.0.0-20231111102932-5420517293f4
 	github.com/spf13/cast v1.6.0
 	github.com/spf13/cobra v1.8.0
+	github.com/stretchr/testify v1.9.0
 	gocloud.dev v0.36.0
 	golang.org/x/crypto v0.17.0
 	golang.org/x/net v0.19.0
@@ -52,6 +53,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.21.6 // indirect
 	github.com/aws/aws-sdk-go-v2/service/sts v1.26.7 // indirect
 	github.com/aws/smithy-go v1.19.0 // indirect
+	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dlclark/regexp2 v1.10.0 // indirect
 	github.com/go-sourcemap/sourcemap v2.1.3+incompatible // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
@@ -65,6 +67,7 @@ require (
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mgutz/ansi v0.0.0-20200706080929-d51e80ef957d // indirect
+	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v1.2.2 // indirect
@@ -82,4 +85,5 @@ require (
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240102182953-50ed04b92917 // indirect
 	google.golang.org/grpc v1.60.1 // indirect
 	google.golang.org/protobuf v1.32.0 // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
