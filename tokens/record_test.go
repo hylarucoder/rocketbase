@@ -10,7 +10,11 @@ import (
 func TestNewRecordAuthToken(t *testing.T) {
 	t.Parallel()
 
-	app, _ := tests.NewTestApp()
+	app, err := tests.NewTestApp()
+	if err != nil {
+		t.Fatal("Failed to create new test app:", err)
+	}
+
 	defer app.Cleanup()
 
 	user, err := app.Dao().FindAuthRecordByEmail("users", "test@example.com")

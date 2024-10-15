@@ -59,7 +59,7 @@ func NewRecordResetPasswordToken(app core.App, record *models.Record) (string, e
 			"collectionId": record.Collection().Id,
 			"email":        record.Email(),
 		},
-		(record.TokenKey() + app.Settings().RecordPasswordResetToken.Secret),
+		record.TokenKey()+app.Settings().RecordPasswordResetToken.Secret,
 		app.Settings().RecordPasswordResetToken.Duration,
 	)
 }
@@ -91,7 +91,7 @@ func NewRecordFileToken(app core.App, record *models.Record) (string, error) {
 			"type":         TypeAuthRecord,
 			"collectionId": record.Collection().Id,
 		},
-		(record.TokenKey() + app.Settings().RecordFileToken.Secret),
+		record.TokenKey()+app.Settings().RecordFileToken.Secret,
 		app.Settings().RecordFileToken.Duration,
 	)
 }

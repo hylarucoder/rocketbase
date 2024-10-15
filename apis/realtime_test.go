@@ -2,6 +2,7 @@ package apis_test
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"strings"
 	"testing"
@@ -180,7 +181,8 @@ func TestRealtimeSubscribe(t *testing.T) {
 				app.SubscriptionsBroker().Register(client)
 			},
 			AfterTestFunc: func(t *testing.T, app *tests.TestApp, res *http.Response) {
-				admin, _ := client.Get(apis.ContextAdminKey).(*models.Admin)
+				admin, err := client.Get(apis.ContextAdminKey).(*models.Admin)
+				fmt.Println("---> ", err, admin, app.EncryptionEnv())
 				if admin == nil {
 					t.Errorf("Expected admin auth model, got nil")
 				}

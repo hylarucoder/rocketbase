@@ -12,9 +12,10 @@ import (
 	"testing"
 	"time"
 
+	"github.com/labstack/echo/v5"
+
 	"github.com/hylarucoder/rocketbase/apis"
 	"github.com/hylarucoder/rocketbase/core"
-	"github.com/labstack/echo/v5"
 )
 
 // ApiScenario defines a single api request test case/scenario.
@@ -124,6 +125,13 @@ func (scenario *ApiScenario) test(t *testing.T) {
 	res := recorder.Result()
 
 	if res.StatusCode != scenario.ExpectedStatus {
+		if scenario.Body != nil {
+			bodyBytes, _ := io.ReadAll(scenario.Body)
+			bodyString := string(bodyBytes)
+			println("Request body:", bodyString)
+		} else {
+			println("Request body: <empty>")
+		}
 		t.Errorf("Expected status code %d, got %d", scenario.ExpectedStatus, res.StatusCode)
 	}
 

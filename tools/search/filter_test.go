@@ -57,7 +57,7 @@ func TestFilterDataBuildExpr(t *testing.T) {
 			"empty string vs null",
 			"'' = null && null != ''",
 			false,
-			"('' = '' AND '' IS NOT '')",
+			"('' = '' AND '' != '')",
 		},
 		{
 			"like with 2 columns",

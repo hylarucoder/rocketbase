@@ -635,7 +635,7 @@ func TestFileSystemCreateThumb(t *testing.T) {
 // ---
 
 func createTestDir(t *testing.T) string {
-	dir, err := os.MkdirTemp(os.TempDir(), "pb_test")
+	dir, err := os.MkdirTemp(os.TempDir(), "rb_test")
 	if err != nil {
 		t.Fatal(err)
 	}

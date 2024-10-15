@@ -30,7 +30,7 @@ func TestExtractSuccess(t *testing.T) {
 	testDir := createTestDir(t)
 	defer os.RemoveAll(testDir)
 
-	zipPath := filepath.Join(os.TempDir(), "pb_test.zip")
+	zipPath := filepath.Join(os.TempDir(), "rb_test.zip")
 	defer os.RemoveAll(zipPath)
 
 	extractedPath := filepath.Join(os.TempDir(), "pb_zip_extract")

@@ -53,14 +53,14 @@ func (form *TestEmailSend) Submit() error {
 
 	// create a test auth record
 	collection := &models.Collection{
-		BaseModel: models.BaseModel{Id: "__pb_test_collection_id__"},
-		Name:      "__pb_test_collection_name__",
+		BaseModel: models.BaseModel{Id: "__rb_test_collection_id__"},
+		Name:      "__rb_test_collection_name__",
 		Type:      models.CollectionTypeAuth,
 	}
 
 	record := models.NewRecord(collection)
-	record.Id = "__pb_test_id__"
-	record.Set(schema.FieldNameUsername, "pb_test")
+	record.Id = "__rb_test_id__"
+	record.Set(schema.FieldNameUsername, "rb_test")
 	record.Set(schema.FieldNameEmail, form.Email)
 	record.RefreshTokenKey()
 

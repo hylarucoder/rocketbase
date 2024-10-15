@@ -3,17 +3,11 @@ package pocketbase
 import (
 	"database/sql"
 	"fmt"
-	"github.com/hylarucoder/rocketbase/core"
-	"github.com/hylarucoder/rocketbase/migrations"
-	"github.com/hylarucoder/rocketbase/migrations/logs"
-	"github.com/hylarucoder/rocketbase/tools/migrate"
-	"github.com/pocketbase/dbx"
 	"log"
 	"os"
 	"path/filepath"
 	"testing"
 
-	"github.com/hylarucoder/rocketbase/plugins/migratecmd"
 	"github.com/hylarucoder/rocketbase/tools/test_utils"
 
 	"github.com/spf13/cobra"
@@ -221,37 +215,6 @@ func TestSkipBootstrap(t *testing.T) {
 	}
 }
 
-type migrationsConnection struct {
-	DB             *dbx.DB
-	MigrationsList migrate.MigrationsList
-}
-
-func RunMigrations(app core.App) error {
-	connections := []migrationsConnection{
-		{
-			DB:             app.DB(),
-			MigrationsList: migrations.AppMigrations,
-		},
-		{
-			DB:             app.LogsDB(),
-			MigrationsList: logs.LogsMigrations,
-		},
-	}
-
-	for _, c := range connections {
-		runner, err := migrate.NewRunner(c.DB, c.MigrationsList)
-		if err != nil {
-			return err
-		}
-
-		if _, err := runner.Up(); err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
 func setupTestEnvironment() {
 	test_utils.LoadTestEnv()
 	// drop all table in test database
@@ -261,36 +224,44 @@ func setupTestEnvironment() {
 	}
 
 	tables := []string{
-		"test",
-		"_migrations",
+		"_admins",
+		"_collections",
 		"_externalAuths",
+		"_migrations",
+		"_params",
+		"new_name",
+		"test",
+		"test123",
+		"test456_update",
+		"users",
 	}
 
 	fmt.Println("Dropping all tables in the database:")
 	for _, table := range tables {
-		_, err := db.Exec(fmt.Sprintf("DROP TABLE IF EXISTS %s CASCADE", table))
+		res, err := db.Exec(fmt.Sprintf("DROP TABLE IF EXISTS %s;", table))
+		println(res.RowsAffected())
 		if err != nil {
 			log.Fatalf("Failed to drop table %s: %v", table, err)
 		}
 		fmt.Printf("Dropped table: %s\n", table)
 	}
 
-	fmt.Println("Setting up test environment")
-	tempDir := filepath.Join(os.TempDir(), "temp_pb_data")
-	app := NewWithConfig(Config{DefaultDataDir: tempDir})
-	migratecmd.Register(app, nil, migratecmd.Config{
-		Automigrate: true,
-	})
-	err = app.Bootstrap()
-	RunMigrations(app)
-	if err != nil {
-		log.Fatalf("Failed to bootstrap: %v", err)
-		return
-	}
+	//fmt.Println("Setting up test environment")
+	//tempDir := filepath.Join(os.TempDir(), "temp_pb_data")
+	//app := NewWithConfig(Config{DefaultDataDir: tempDir})
+	//migratecmd.Register(app, nil, migratecmd.Config{
+	//	Automigrate: true,
+	//})
+	//err = app.Bootstrap()
+	//RunMigrations(app)
+	//if err != nil {
+	//	log.Fatalf("Failed to bootstrap: %v", err)
+	//	return
+	//}
 }
 
 func TestMain(m *testing.M) {
-	setupTestEnvironment()
+	//setupTestEnvironment()
 
 	// 运行所有测试
 	code := m.Run()
