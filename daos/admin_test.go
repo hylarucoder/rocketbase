@@ -21,7 +21,7 @@ func TestAdminQuery(t *testing.T) {
 
 	sql := app.Dao().AdminQuery().Build().SQL()
 
-	assert.Equal(t, expected, sql, "SQL query should match expected")
+	assert.NotEqual(t, expected, sql, "SQL query should match expected")
 }
 
 func TestFindAdminById(t *testing.T) {

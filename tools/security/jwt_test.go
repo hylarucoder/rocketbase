@@ -126,6 +126,7 @@ func TestParseJWT(t *testing.T) {
 }
 
 func TestNewJWT(t *testing.T) {
+	// TODO: fix
 	scenarios := []struct {
 		claims      jwt.MapClaims
 		key         string

@@ -192,7 +192,8 @@ func TestRecordCrudList(t *testing.T) {
 			Url:    "/api/collections/demo3/records",
 			RequestHeaders: map[string]string{
 				// users, test@example.com
-				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.UwD8JvkbQtXpymT09d7J6fdA0aP9g4FJ1GPh_ggEkzc",
+				// TODO: ?? 有点问题似乎
+				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2xsZWN0aW9uSWQiOiIyMTA3OTc3Mzk3MDYzMTIyOTQ0IiwiZXhwIjoxNzMwMzIxNDM3LCJpZCI6Il9wYl91c2Vyc19hdXRoXyIsInR5cGUiOiJhdXRoUmVjb3JkIiwidmVyaWZpZWQiOnRydWV9.v6JU2VuFu2EXcwmCq2l4AK7_DpC5pcKdA9sdwKzk6t4",
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -209,7 +210,7 @@ func TestRecordCrudList(t *testing.T) {
 			Url:    "/api/collections/demo3/records",
 			RequestHeaders: map[string]string{
 				// clients, test@example.com
-				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6ImdrMzkwcWVnczR5NDd3biIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoidjg1MXE0cjc5MHJoa25sIiwiZXhwIjoyMjA4OTg1MjYxfQ.q34IWXrRWsjLvbbVNRfAs_J4SoTHloNBfdGEiLmy-D8",
+				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2xsZWN0aW9uSWQiOiIzNDc5OTQ2MzI5MTI2MzQzNjgxIiwiZXhwIjoxNzMwMzIxNTU5LCJpZCI6IjIxMDg2NDM1MTU5NzcxNzA5NDQiLCJ0eXBlIjoiYXV0aFJlY29yZCIsInZlcmlmaWVkIjp0cnVlfQ.Fy2L5a7PA9qPSJbW7heZwgnEncxt4kr9XVVlpL_M2tw",
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -218,17 +219,18 @@ func TestRecordCrudList(t *testing.T) {
 				`"totalPages":1`,
 				`"totalItems":4`,
 				`"items":[{`,
-				`"id":"1tmknxy2868d869"`,
-				`"id":"lcl9d87w22ml6jy"`,
-				`"id":"7nwo8tuiatetxdm"`,
 				`"id":"3479958939318096910"`,
+				`"id":"3479958939469091857"`,
+				`"id":"3479958939418760208"`,
+				`"id":"3479958939368428559"`,
 			},
 			ExpectedEvents: map[string]int{"OnRecordsListRequest": 1},
 		},
 		{
-			Name:           ":rule modifer",
-			Method:         http.MethodGet,
-			Url:            "/api/collections/demo5/records",
+			Name:   ":rule modifer",
+			Method: http.MethodGet,
+			Url:    "/api/collections/demo5/records",
+			// TODO: fix 400?
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
 				`"page":1`,
@@ -236,7 +238,7 @@ func TestRecordCrudList(t *testing.T) {
 				`"totalPages":1`,
 				`"totalItems":1`,
 				`"items":[{`,
-				`"id":"qjeql998mtp1azp"`,
+				`"id":"3479953184028365833"`,
 			},
 			ExpectedEvents: map[string]int{"OnRecordsListRequest": 1},
 		},
@@ -423,7 +425,7 @@ func TestRecordCrudList(t *testing.T) {
 		{
 			Name:           "public view records",
 			Method:         http.MethodGet,
-			Url:            "/api/collections/view2/records?filter=state=false",
+			Url:            "/api/collections/view2/records?filter=state=\"false\"",
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
 				`"page":1`,

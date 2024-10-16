@@ -112,7 +112,6 @@ func (dao *Dao) CreateViewSchema(selectQuery string) (schema.Schema, error) {
 		var hasId bool
 
 		for _, row := range info {
-			println("---->", schema.FieldNameId, row.Name)
 			if row.Name == schema.FieldNameId {
 				hasId = true
 			}
