@@ -1,7 +1,6 @@
 package daos_test
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/hylarucoder/rocketbase/models"
@@ -13,19 +12,16 @@ func TestAdminQuery(t *testing.T) {
 	t.Parallel()
 
 	app, err := tests.NewTestApp()
-	fmt.Println("====", app, err.Error())
+	if err != nil {
+		t.Fatalf("Failed to create test app: %v", err)
+	}
 	defer app.Cleanup()
 
 	expected := "SELECT {{_admins}}.* FROM \"_admins\""
 
 	sql := app.Dao().AdminQuery().Build().SQL()
-	fmt.Println(sql, expected)
-	assert.Equal(t, expected, sql, "Should be equal")
-	assert.NotEqual(t, expected, sql, "Should be not equal")
-	// if sql != expected {
-	// 	// t.Errorf("Expected sql %s, got %s", expected, sql)
-	// 	assert.NotEqual(t, expected, sql)
-	// }
+
+	assert.Equal(t, expected, sql, "SQL query should match expected")
 }
 
 func TestFindAdminById(t *testing.T) {
@@ -187,7 +183,7 @@ func TestIsAdminEmailUnique(t *testing.T) {
 		{"test2@example.com", "", false},
 		{"test3@example.com", "", false},
 		{"new@example.com", "", true},
-		{"test@example.com", "sywbhecnh46rhm0", true},
+		{"test@example.com", "2107977127528759297", true},
 	}
 
 	for i, scenario := range scenarios {

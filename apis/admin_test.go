@@ -65,7 +65,7 @@ func TestAdminAuthWithPassword(t *testing.T) {
 			Body:           strings.NewReader(`{"identity":"test@example.com","password":"1234567890"}`),
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
-				`"admin":{"id":"sywbhecnh46rhm0"`,
+				`"admin":{"id":"2107977127528759297"`,
 				`"token":`,
 			},
 			ExpectedEvents: map[string]int{
@@ -84,7 +84,7 @@ func TestAdminAuthWithPassword(t *testing.T) {
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
-				`"admin":{"id":"sywbhecnh46rhm0"`,
+				`"admin":{"id":"2107977127528759297"`,
 				`"token":`,
 			},
 			ExpectedEvents: map[string]int{
@@ -322,7 +322,7 @@ func TestAdminRefresh(t *testing.T) {
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
-				`"admin":{"id":"sywbhecnh46rhm0"`,
+				`"admin":{"id":"2107977127528759297"`,
 				`"token":`,
 			},
 			ExpectedEvents: map[string]int{
@@ -391,7 +391,7 @@ func TestAdminsList(t *testing.T) {
 				`"perPage":30`,
 				`"totalItems":3`,
 				`"items":[{`,
-				`"id":"sywbhecnh46rhm0"`,
+				`"id":"2107977127528759297"`,
 				`"id":"sbmbsdb40jyxf7h"`,
 				`"id":"9q2trqumvlyr3bd"`,
 			},
@@ -568,7 +568,7 @@ func TestAdminDelete(t *testing.T) {
 		{
 			Name:   "authorized as admin - try to delete the only remaining admin",
 			Method: http.MethodDelete,
-			Url:    "/api/admins/sywbhecnh46rhm0",
+			Url:    "/api/admins/2107977127528759297",
 			RequestHeaders: map[string]string{
 				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
 			},
@@ -576,7 +576,7 @@ func TestAdminDelete(t *testing.T) {
 				// delete all admins except the authorized one
 				adminModel := &models.Admin{}
 				_, err := app.Dao().DB().Delete(adminModel.TableName(), dbx.Not(dbx.HashExp{
-					"id": "sywbhecnh46rhm0",
+					"id": "2107977127528759297",
 				})).Execute()
 				if err != nil {
 					t.Fatal(err)

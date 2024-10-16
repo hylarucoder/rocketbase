@@ -51,7 +51,7 @@ func TestAdminUpsertValidateAndSubmit(t *testing.T) {
 		},
 		{
 			// update empty
-			"sywbhecnh46rhm0",
+			"2107977127528759297",
 			`{}`,
 			false,
 		},
@@ -87,7 +87,7 @@ func TestAdminUpsertValidateAndSubmit(t *testing.T) {
 		},
 		{
 			// update failure - existing email
-			"sywbhecnh46rhm0",
+			"2107977127528759297",
 			`{
 				"email": "test2@example.com"
 			}`,
@@ -95,7 +95,7 @@ func TestAdminUpsertValidateAndSubmit(t *testing.T) {
 		},
 		{
 			// update failure - mismatching passwords
-			"sywbhecnh46rhm0",
+			"2107977127528759297",
 			`{
 				"password":        "1234567890",
 				"passwordConfirm": "1234567891"
@@ -104,7 +104,7 @@ func TestAdminUpsertValidateAndSubmit(t *testing.T) {
 		},
 		{
 			// update success - new email
-			"sywbhecnh46rhm0",
+			"2107977127528759297",
 			`{
 				"email": "test_update@example.com"
 			}`,
@@ -112,7 +112,7 @@ func TestAdminUpsertValidateAndSubmit(t *testing.T) {
 		},
 		{
 			// update success - new password
-			"sywbhecnh46rhm0",
+			"2107977127528759297",
 			`{
 				"password":        "1234567890",
 				"passwordConfirm": "1234567890"

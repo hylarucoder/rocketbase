@@ -79,14 +79,16 @@ func (dao *Dao) TableIndexes(tableName string) (map[string]string, error) {
 		Sql  string
 	}{}
 
-	err := dao.DB().Select("name", "sql").
-		From("sqlite_master").
-		AndWhere(dbx.NewExp("sql is not null")).
-		AndWhere(dbx.HashExp{
-			"type":     "index",
-			"tbl_name": tableName,
-		}).
-		All(&indexes)
+	err := dao.DB().NewQuery(`
+		SELECT 
+			indexname AS Name,
+			indexdef AS Sql
+		FROM 
+			pg_indexes
+		WHERE 
+			tablename = {:tableName}
+	`).Bind(dbx.Params{"tableName": tableName}).All(&indexes)
+
 	if err != nil {
 		return nil, err
 	}

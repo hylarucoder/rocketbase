@@ -3,12 +3,11 @@ package pocketbase
 import (
 	"database/sql"
 	"fmt"
+	"github.com/hylarucoder/rocketbase/tools/test_utils"
 	"log"
 	"os"
 	"path/filepath"
 	"testing"
-
-	"github.com/hylarucoder/rocketbase/tools/test_utils"
 
 	"github.com/spf13/cobra"
 )

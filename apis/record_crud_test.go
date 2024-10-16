@@ -18,6 +18,8 @@ import (
 
 func TestRecordCrudList(t *testing.T) {
 	t.Parallel()
+	// admin auth token
+	adminAuthToken := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzAyMzYxMTQsImlkIjoiMjEwNzk3NzEyNzUyODc1OTI5NiIsInR5cGUiOiJhZG1pbiJ9.ikCEJR-iPIrZwpbsWjtslMdq75suCAEYfaRK7Oz-NZ0"
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -76,16 +78,16 @@ func TestRecordCrudList(t *testing.T) {
 				`"totalPages":1`,
 				`"totalItems":3`,
 				`"items":[{`,
-				`"id":"0yxhwia2amd8gec"`,
-				`"id":"achvryl401bhse3"`,
-				`"id":"llvuca81nly1qls"`,
+				`"id":"3479948460419978246"`,
+				`"id":"3479948460512252935"`,
+				`"id":"3479948460562584584"`,
 			},
 			ExpectedEvents: map[string]int{"OnRecordsListRequest": 1},
 		},
 		{
 			Name:           "public collection (using the collection id)",
 			Method:         http.MethodGet,
-			Url:            "/api/collections/sz5l5z67tg7gku0/records",
+			Url:            "/api/collections/2108349190391201792/records",
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
 				`"page":1`,
@@ -93,9 +95,9 @@ func TestRecordCrudList(t *testing.T) {
 				`"totalPages":1`,
 				`"totalItems":3`,
 				`"items":[{`,
-				`"id":"0yxhwia2amd8gec"`,
-				`"id":"achvryl401bhse3"`,
-				`"id":"llvuca81nly1qls"`,
+				`"id":"3479948460419978246"`,
+				`"id":"3479948460512252935"`,
+				`"id":"3479948460562584584"`,
 			},
 			ExpectedEvents: map[string]int{"OnRecordsListRequest": 1},
 		},
@@ -104,7 +106,7 @@ func TestRecordCrudList(t *testing.T) {
 			Method: http.MethodGet,
 			Url:    "/api/collections/demo1/records",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": adminAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -113,9 +115,9 @@ func TestRecordCrudList(t *testing.T) {
 				`"totalPages":1`,
 				`"totalItems":3`,
 				`"items":[{`,
-				`"id":"al1h9ijdeojtsjy"`,
-				`"id":"84nmscqy84lsi1t"`,
-				`"id":"imy661ixudk5izi"`,
+				`"id":"3479947686654776325"`,
+				`"id":"3479947686587667460"`,
+				`"id":"3479947686461838339"`,
 			},
 			ExpectedEvents: map[string]int{"OnRecordsListRequest": 1},
 		},
@@ -124,7 +126,7 @@ func TestRecordCrudList(t *testing.T) {
 			Method: http.MethodGet,
 			Url:    "/api/collections/demo1/records?filter=text~'test'&sort=-bool",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": adminAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -132,8 +134,8 @@ func TestRecordCrudList(t *testing.T) {
 				`"perPage":30`,
 				`"totalItems":2`,
 				`"items":[{`,
-				`"id":"al1h9ijdeojtsjy"`,
-				`"id":"84nmscqy84lsi1t"`,
+				//`"id":"3479947686654776325"`,
+				`"id":"3479947686461838339"`,
 			},
 			ExpectedEvents: map[string]int{"OnRecordsListRequest": 1},
 		},
@@ -142,17 +144,18 @@ func TestRecordCrudList(t *testing.T) {
 			Method: http.MethodGet,
 			Url:    "/api/collections/demo1/records?filter=invalid~'test'",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": adminAuthToken,
 			},
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{}`},
 		},
 		{
+			// TODO: admin fix
 			Name:   "expand relations",
 			Method: http.MethodGet,
 			Url:    "/api/collections/demo1/records?expand=rel_one,rel_many.rel,missing&perPage=2&sort=created",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": adminAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -162,8 +165,8 @@ func TestRecordCrudList(t *testing.T) {
 				`"totalItems":3`,
 				`"items":[{`,
 				`"collectionName":"demo1"`,
-				`"id":"84nmscqy84lsi1t"`,
-				`"id":"al1h9ijdeojtsjy"`,
+				`"id":"3479947686461838339"`,
+				`"id":"3479946329126343681"`,
 				`"expand":{`,
 				`"rel_one":""`,
 				`"rel_one":{"`,
@@ -174,7 +177,7 @@ func TestRecordCrudList(t *testing.T) {
 				`"select_many":["optionB","optionC"]`,
 				`"select_many":["optionB"]`,
 				// subrel items
-				`"id":"0yxhwia2amd8gec"`,
+				`"id":"3479948460419978246"`,
 				`"id":"llvuca81nly1qls"`,
 				// email visibility should be ignored for admins even in expanded rels
 				`"email":"test@example.com"`,
@@ -218,7 +221,7 @@ func TestRecordCrudList(t *testing.T) {
 				`"id":"1tmknxy2868d869"`,
 				`"id":"lcl9d87w22ml6jy"`,
 				`"id":"7nwo8tuiatetxdm"`,
-				`"id":"mk5fmymtx4wsprk"`,
+				`"id":"3479958939318096910"`,
 			},
 			ExpectedEvents: map[string]int{"OnRecordsListRequest": 1},
 		},
@@ -280,9 +283,9 @@ func TestRecordCrudList(t *testing.T) {
 				`"totalPages":1`,
 				`"totalItems":3`,
 				`"items":[{`,
-				`"id":"phhq3wr65cap535"`,
-				`"id":"dc49k6jgejn40h3"`,
-				`"id":"oos036e9xvqeexy"`,
+				`"id":"3480271880273794066"`,
+				`"id":"3480271880340902931"`,
+				`"id":"3480271880374457364"`,
 				`"email":"test2@example.com"`,
 				`"emailVisibility":true`,
 				`"emailVisibility":false`,
@@ -310,9 +313,9 @@ func TestRecordCrudList(t *testing.T) {
 				`"totalPages":1`,
 				`"totalItems":3`,
 				`"items":[{`,
-				`"id":"phhq3wr65cap535"`,
-				`"id":"dc49k6jgejn40h3"`,
-				`"id":"oos036e9xvqeexy"`,
+				`"id":"3480271880273794066"`,
+				`"id":"3480271880340902931"`,
+				`"id":"3480271880374457364"`,
 				`"email":"test2@example.com"`,
 				`"emailVisibility":true`,
 				`"emailVisibility":false`,
@@ -340,9 +343,9 @@ func TestRecordCrudList(t *testing.T) {
 				`"totalPages":1`,
 				`"totalItems":3`,
 				`"items":[{`,
-				`"id":"phhq3wr65cap535"`,
-				`"id":"dc49k6jgejn40h3"`,
-				`"id":"oos036e9xvqeexy"`,
+				`"id":"3480271880273794066"`,
+				`"id":"3480271880340902931"`,
+				`"id":"3480271880374457364"`,
 				`"email":"test@example.com"`,
 				`"email":"test2@example.com"`,
 				`"email":"test3@example.com"`,
@@ -369,9 +372,9 @@ func TestRecordCrudList(t *testing.T) {
 				`"totalPages":1`,
 				`"totalItems":3`,
 				`"items":[{`,
-				`"id":"phhq3wr65cap535"`,
-				`"id":"dc49k6jgejn40h3"`,
-				`"id":"oos036e9xvqeexy"`,
+				`"id":"3480271880273794066"`,
+				`"id":"3480271880340902931"`,
+				`"id":"3480271880374457364"`,
 				`"email":"test@example.com"`,
 				`"email":"test2@example.com"`,
 				`"email":"test3@example.com"`,
@@ -399,9 +402,9 @@ func TestRecordCrudList(t *testing.T) {
 				`"totalPages":1`,
 				`"totalItems":3`,
 				`"items":[{`,
-				`"id":"phhq3wr65cap535"`,
-				`"id":"dc49k6jgejn40h3"`,
-				`"id":"oos036e9xvqeexy"`,
+				`"id":"3480271880273794066"`,
+				`"id":"3480271880340902931"`,
+				`"id":"3480271880374457364"`,
 				`"email":"test2@example.com"`,
 				`"email":"test@example.com"`,
 				`"emailVisibility":true`,
@@ -428,8 +431,8 @@ func TestRecordCrudList(t *testing.T) {
 				`"totalPages":1`,
 				`"totalItems":2`,
 				`"items":[{`,
-				`"id":"al1h9ijdeojtsjy"`,
-				`"id":"imy661ixudk5izi"`,
+				`"id":"3479947686654776325"`,
+				`"id":"3479947686587667460"`,
 			},
 			NotExpectedContent: []string{
 				`"created"`,
@@ -466,7 +469,7 @@ func TestRecordCrudList(t *testing.T) {
 				`"totalPages":1`,
 				`"totalItems":1`,
 				`"items":[{`,
-				`"id":"84nmscqy84lsi1t"`,
+				`"id":"3479947686461838339"`,
 				`"bool":true`,
 			},
 			ExpectedEvents: map[string]int{"OnRecordsListRequest": 1},
@@ -501,7 +504,7 @@ func TestRecordCrudView(t *testing.T) {
 		{
 			Name:            "missing collection",
 			Method:          http.MethodGet,
-			Url:             "/api/collections/missing/records/0yxhwia2amd8gec",
+			Url:             "/api/collections/missing/records/3479948460419978246",
 			ExpectedStatus:  404,
 			ExpectedContent: []string{`"data":{}`},
 		},
@@ -515,14 +518,14 @@ func TestRecordCrudView(t *testing.T) {
 		{
 			Name:            "unauthenticated trying to access nil rule collection (aka. need admin auth)",
 			Method:          http.MethodGet,
-			Url:             "/api/collections/demo1/records/imy661ixudk5izi",
+			Url:             "/api/collections/demo1/records/3479947686587667460",
 			ExpectedStatus:  403,
 			ExpectedContent: []string{`"data":{}`},
 		},
 		{
 			Name:   "authenticated record trying to access nil rule collection (aka. need admin auth)",
 			Method: http.MethodGet,
-			Url:    "/api/collections/demo1/records/imy661ixudk5izi",
+			Url:    "/api/collections/demo1/records/3479947686587667460",
 			RequestHeaders: map[string]string{
 				// users, test@example.com
 				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.UwD8JvkbQtXpymT09d7J6fdA0aP9g4FJ1GPh_ggEkzc",
@@ -544,10 +547,10 @@ func TestRecordCrudView(t *testing.T) {
 		{
 			Name:           "public collection view",
 			Method:         http.MethodGet,
-			Url:            "/api/collections/demo2/records/0yxhwia2amd8gec",
+			Url:            "/api/collections/demo2/records/3479948460419978246",
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
-				`"id":"0yxhwia2amd8gec"`,
+				`"id":"3479948460419978246"`,
 				`"collectionName":"demo2"`,
 			},
 			ExpectedEvents: map[string]int{"OnRecordViewRequest": 1},
@@ -555,10 +558,10 @@ func TestRecordCrudView(t *testing.T) {
 		{
 			Name:           "public collection view (using the collection id)",
 			Method:         http.MethodGet,
-			Url:            "/api/collections/sz5l5z67tg7gku0/records/0yxhwia2amd8gec",
+			Url:            "/api/collections/2108349190391201792/records/3479948460419978246",
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
-				`"id":"0yxhwia2amd8gec"`,
+				`"id":"3479948460419978246"`,
 				`"collectionName":"demo2"`,
 			},
 			ExpectedEvents: map[string]int{"OnRecordViewRequest": 1},
@@ -566,13 +569,13 @@ func TestRecordCrudView(t *testing.T) {
 		{
 			Name:   "authorized as admin trying to access nil rule collection view (aka. need admin auth)",
 			Method: http.MethodGet,
-			Url:    "/api/collections/demo1/records/imy661ixudk5izi",
+			Url:    "/api/collections/demo1/records/3479947686587667460",
 			RequestHeaders: map[string]string{
 				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
-				`"id":"imy661ixudk5izi"`,
+				`"id":"3479947686587667460"`,
 				`"collectionName":"demo1"`,
 			},
 			ExpectedEvents: map[string]int{"OnRecordViewRequest": 1},
@@ -580,14 +583,14 @@ func TestRecordCrudView(t *testing.T) {
 		{
 			Name:   "authenticated record that does match the collection view rule",
 			Method: http.MethodGet,
-			Url:    "/api/collections/users/records/4q1xlclmfloku33",
+			Url:    "/api/collections/users/records/2107977397063122944",
 			RequestHeaders: map[string]string{
 				// users, test@example.com
 				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.UwD8JvkbQtXpymT09d7J6fdA0aP9g4FJ1GPh_ggEkzc",
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
-				`"id":"4q1xlclmfloku33"`,
+				`"id":"2107977397063122944"`,
 				`"collectionName":"users"`,
 				// owners can always view their email
 				`"emailVisibility":false`,
@@ -598,20 +601,20 @@ func TestRecordCrudView(t *testing.T) {
 		{
 			Name:   "expand relations",
 			Method: http.MethodGet,
-			Url:    "/api/collections/demo1/records/al1h9ijdeojtsjy?expand=rel_one,rel_many.rel,missing&perPage=2&sort=created",
+			Url:    "/api/collections/demo1/records/3479947686461838339?expand=rel_one,rel_many.rel,missing&perPage=2&sort=created",
 			RequestHeaders: map[string]string{
 				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
-				`"id":"al1h9ijdeojtsjy"`,
+				`"id":"3479947686461838339"`,
 				`"collectionName":"demo1"`,
 				`"rel_many":[{`,
 				`"rel_one":{`,
 				`"collectionName":"users"`,
-				`"id":"bgs820n361vj1qd"`,
+				`"id":"3479946329126343681"`,
 				`"expand":{"rel":{`,
-				`"id":"0yxhwia2amd8gec"`,
+				`"id":"3479947686587667460"`,
 				`"collectionName":"demo2"`,
 			},
 			ExpectedEvents: map[string]int{"OnRecordViewRequest": 1},
@@ -622,10 +625,10 @@ func TestRecordCrudView(t *testing.T) {
 		{
 			Name:           "check email visibility as guest",
 			Method:         http.MethodGet,
-			Url:            "/api/collections/nologin/records/oos036e9xvqeexy",
+			Url:            "/api/collections/nologin/records/3480271880374457364",
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
-				`"id":"oos036e9xvqeexy"`,
+				`"id":"3480271880374457364"`,
 				`"emailVisibility":false`,
 				`"verified":true`,
 			},
@@ -639,14 +642,14 @@ func TestRecordCrudView(t *testing.T) {
 		{
 			Name:   "check email visibility as any authenticated record",
 			Method: http.MethodGet,
-			Url:    "/api/collections/nologin/records/oos036e9xvqeexy",
+			Url:    "/api/collections/nologin/records/3480271880374457364",
 			RequestHeaders: map[string]string{
 				// clients, test@example.com
 				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6ImdrMzkwcWVnczR5NDd3biIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoidjg1MXE0cjc5MHJoa25sIiwiZXhwIjoyMjA4OTg1MjYxfQ.q34IWXrRWsjLvbbVNRfAs_J4SoTHloNBfdGEiLmy-D8",
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
-				`"id":"oos036e9xvqeexy"`,
+				`"id":"3480271880374457364"`,
 				`"emailVisibility":false`,
 				`"verified":true`,
 			},
@@ -660,14 +663,14 @@ func TestRecordCrudView(t *testing.T) {
 		{
 			Name:   "check email visibility as manage auth record",
 			Method: http.MethodGet,
-			Url:    "/api/collections/nologin/records/oos036e9xvqeexy",
+			Url:    "/api/collections/nologin/records/3480271880374457364",
 			RequestHeaders: map[string]string{
 				// users, test@example.com
 				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.UwD8JvkbQtXpymT09d7J6fdA0aP9g4FJ1GPh_ggEkzc",
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
-				`"id":"oos036e9xvqeexy"`,
+				`"id":"3480271880374457364"`,
 				`"emailVisibility":false`,
 				`"email":"test3@example.com"`,
 				`"verified":true`,
@@ -677,13 +680,13 @@ func TestRecordCrudView(t *testing.T) {
 		{
 			Name:   "check email visibility as admin",
 			Method: http.MethodGet,
-			Url:    "/api/collections/nologin/records/oos036e9xvqeexy",
+			Url:    "/api/collections/nologin/records/3480271880374457364",
 			RequestHeaders: map[string]string{
 				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
-				`"id":"oos036e9xvqeexy"`,
+				`"id":"3480271880374457364"`,
 				`"emailVisibility":false`,
 				`"email":"test3@example.com"`,
 				`"verified":true`,
@@ -697,14 +700,14 @@ func TestRecordCrudView(t *testing.T) {
 		{
 			Name:   "check self email visibility resolver",
 			Method: http.MethodGet,
-			Url:    "/api/collections/nologin/records/dc49k6jgejn40h3",
+			Url:    "/api/collections/nologin/records/3480271880273794066",
 			RequestHeaders: map[string]string{
 				// nologin, test@example.com
 				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6ImRjNDlrNmpnZWpuNDBoMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoia3B2NzA5c2sybHFicWs4IiwiZXhwIjoyMjA4OTg1MjYxfQ.DOYSon3x1-C0hJbwjEU6dp2-6oLeEa8bOlkyP1CinyM",
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
-				`"id":"dc49k6jgejn40h3"`,
+				`"id":"3480271880273794066"`,
 				`"email":"test@example.com"`,
 				`"emailVisibility":false`,
 				`"verified":false`,
@@ -721,10 +724,10 @@ func TestRecordCrudView(t *testing.T) {
 		{
 			Name:           "public view record",
 			Method:         http.MethodGet,
-			Url:            "/api/collections/view2/records/84nmscqy84lsi1t",
+			Url:            "/api/collections/view2/records/3479947686461838339",
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
-				`"id":"84nmscqy84lsi1t"`,
+				`"id":"3479947686461838339"`,
 				`"state":true`,
 				`"file_many":["`,
 				`"rel_many":["`,
@@ -738,21 +741,21 @@ func TestRecordCrudView(t *testing.T) {
 		{
 			Name:            "guest that doesn't match the view collection view rule",
 			Method:          http.MethodGet,
-			Url:             "/api/collections/view1/records/84nmscqy84lsi1t",
+			Url:             "/api/collections/view1/records/3479947686461838339",
 			ExpectedStatus:  404,
 			ExpectedContent: []string{`"data":{}`},
 		},
 		{
 			Name:   "authenticated record that matches the view collection view rule",
 			Method: http.MethodGet,
-			Url:    "/api/collections/view1/records/84nmscqy84lsi1t",
+			Url:    "/api/collections/view1/records/3479947686461838339",
 			RequestHeaders: map[string]string{
 				// users, test@example.com
 				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.UwD8JvkbQtXpymT09d7J6fdA0aP9g4FJ1GPh_ggEkzc",
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
-				`"id":"84nmscqy84lsi1t"`,
+				`"id":"3479947686461838339"`,
 				`"bool":true`,
 				`"text":"`,
 			},
@@ -778,6 +781,7 @@ func TestRecordCrudView(t *testing.T) {
 func TestRecordCrudDelete(t *testing.T) {
 	t.Parallel()
 
+	adminAuthToken := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzAyMzYxMTQsImlkIjoiMjEwNzk3NzEyNzUyODc1OTI5NiIsInR5cGUiOiJhZG1pbiJ9.ikCEJR-iPIrZwpbsWjtslMdq75suCAEYfaRK7Oz-NZ0"
 	ensureDeletedFiles := func(app *tests.TestApp, collectionId string, recordId string) {
 		storageDir := filepath.Join(app.DataDir(), "storage", collectionId, recordId)
 
@@ -791,7 +795,7 @@ func TestRecordCrudDelete(t *testing.T) {
 		{
 			Name:            "missing collection",
 			Method:          http.MethodDelete,
-			Url:             "/api/collections/missing/records/0yxhwia2amd8gec",
+			Url:             "/api/collections/missing/records/3479948460419978246",
 			ExpectedStatus:  404,
 			ExpectedContent: []string{`"data":{}`},
 		},
@@ -805,14 +809,14 @@ func TestRecordCrudDelete(t *testing.T) {
 		{
 			Name:            "unauthenticated trying to delete nil rule collection (aka. need admin auth)",
 			Method:          http.MethodDelete,
-			Url:             "/api/collections/demo1/records/imy661ixudk5izi",
+			Url:             "/api/collections/demo1/records/3479947686587667460",
 			ExpectedStatus:  403,
 			ExpectedContent: []string{`"data":{}`},
 		},
 		{
 			Name:   "authenticated record trying to delete nil rule collection (aka. need admin auth)",
 			Method: http.MethodDelete,
-			Url:    "/api/collections/demo1/records/imy661ixudk5izi",
+			Url:    "/api/collections/demo1/records/3479947686587667460",
 			RequestHeaders: map[string]string{
 				// users, test@example.com
 				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.UwD8JvkbQtXpymT09d7J6fdA0aP9g4FJ1GPh_ggEkzc",
@@ -834,14 +838,14 @@ func TestRecordCrudDelete(t *testing.T) {
 		{
 			Name:            "trying to delete a view collection record",
 			Method:          http.MethodDelete,
-			Url:             "/api/collections/view1/records/imy661ixudk5izi",
+			Url:             "/api/collections/view1/records/3479947686587667460",
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{}`},
 		},
 		{
 			Name:           "public collection record delete",
 			Method:         http.MethodDelete,
-			Url:            "/api/collections/nologin/records/dc49k6jgejn40h3",
+			Url:            "/api/collections/nologin/records/3480271880273794066",
 			ExpectedStatus: 204,
 			ExpectedEvents: map[string]int{
 				"OnModelAfterDelete":          1,
@@ -853,7 +857,7 @@ func TestRecordCrudDelete(t *testing.T) {
 		{
 			Name:           "public collection record delete (using the collection id as identifier)",
 			Method:         http.MethodDelete,
-			Url:            "/api/collections/kpv709sk2lqbqk8/records/dc49k6jgejn40h3",
+			Url:            "/api/collections/2108654300501639168/records/3480271880273794066",
 			ExpectedStatus: 204,
 			ExpectedEvents: map[string]int{
 				"OnModelAfterDelete":          1,
@@ -865,9 +869,9 @@ func TestRecordCrudDelete(t *testing.T) {
 		{
 			Name:   "authorized as admin trying to delete nil rule collection view (aka. need admin auth)",
 			Method: http.MethodDelete,
-			Url:    "/api/collections/clients/records/o1y0dd0spd786md",
+			Url:    "/api/collections/clients/records/3479946329210229762",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": adminAuthToken,
 			},
 			ExpectedStatus: 204,
 			ExpectedEvents: map[string]int{
@@ -880,9 +884,9 @@ func TestRecordCrudDelete(t *testing.T) {
 		{
 			Name:   "OnRecordAfterDeleteRequest error response",
 			Method: http.MethodDelete,
-			Url:    "/api/collections/clients/records/o1y0dd0spd786md",
+			Url:    "/api/collections/clients/records/3479946329210229762",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": adminAuthToken,
 			},
 			BeforeTestFunc: func(t *testing.T, app *tests.TestApp, e *echo.Echo) {
 				app.OnRecordAfterDeleteRequest().Add(func(e *core.RecordDeleteEvent) error {
@@ -901,7 +905,7 @@ func TestRecordCrudDelete(t *testing.T) {
 		{
 			Name:   "authenticated record that match the collection delete rule",
 			Method: http.MethodDelete,
-			Url:    "/api/collections/users/records/4q1xlclmfloku33",
+			Url:    "/api/collections/users/records/2107977397063122944",
 			RequestHeaders: map[string]string{
 				// users, test@example.com
 				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.UwD8JvkbQtXpymT09d7J6fdA0aP9g4FJ1GPh_ggEkzc",
@@ -917,12 +921,12 @@ func TestRecordCrudDelete(t *testing.T) {
 				"OnRecordBeforeDeleteRequest": 1,
 			},
 			AfterTestFunc: func(t *testing.T, app *tests.TestApp, res *http.Response) {
-				ensureDeletedFiles(app, "_pb_users_auth_", "4q1xlclmfloku33")
+				ensureDeletedFiles(app, "_pb_users_auth_", "2107977397063122944")
 
 				// check if all the external auths records were deleted
 				collection, _ := app.Dao().FindCollectionByNameOrId("users")
 				record := models.NewRecord(collection)
-				record.Id = "4q1xlclmfloku33"
+				record.Id = "2107977397063122944"
 				externalAuths, err := app.Dao().FindAllExternalAuthsByRecord(record)
 				if err != nil {
 					t.Errorf("Failed to fetch external auths: %v", err)
@@ -989,7 +993,7 @@ func TestRecordCrudDelete(t *testing.T) {
 		{
 			Name:   "delete a record with cascade references",
 			Method: http.MethodDelete,
-			Url:    "/api/collections/users/records/oap640cot4yru2s",
+			Url:    "/api/collections/users/records/2108356222582259712",
 			RequestHeaders: map[string]string{
 				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
 			},
@@ -1004,13 +1008,13 @@ func TestRecordCrudDelete(t *testing.T) {
 				"OnRecordAfterDeleteRequest":  1,
 			},
 			AfterTestFunc: func(t *testing.T, app *tests.TestApp, res *http.Response) {
-				recId := "84nmscqy84lsi1t"
+				recId := "3479947686461838339"
 				rec, _ := app.Dao().FindRecordById("demo1", recId, nil)
 				if rec != nil {
 					t.Errorf("Expected record %s to be cascade deleted", recId)
 				}
-				ensureDeletedFiles(app, "wsmn24bux7wo113", recId)
-				ensureDeletedFiles(app, "_pb_users_auth_", "oap640cot4yru2s")
+				ensureDeletedFiles(app, "2108348993330216960", recId)
+				ensureDeletedFiles(app, "_pb_users_auth_", "2108356222582259712")
 			},
 		},
 	}
@@ -1137,10 +1141,10 @@ func TestRecordCrudCreate(t *testing.T) {
 			Url:    "/api/collections/demo4/records?expand=missing,rel_one_no_cascade,rel_many_no_cascade_required",
 			Body: strings.NewReader(`{
 				"title":"test123",
-				"rel_one_no_cascade":"mk5fmymtx4wsprk",
+				"rel_one_no_cascade":"3479958939318096910",
 				"rel_one_no_cascade_required":"7nwo8tuiatetxdm",
-				"rel_one_cascade":"mk5fmymtx4wsprk",
-				"rel_many_no_cascade":"mk5fmymtx4wsprk",
+				"rel_one_cascade":"3479958939318096910",
+				"rel_many_no_cascade":"3479958939318096910",
 				"rel_many_no_cascade_required":["7nwo8tuiatetxdm","lcl9d87w22ml6jy"],
 				"rel_many_cascade":"lcl9d87w22ml6jy"
 			}`),
@@ -1152,10 +1156,10 @@ func TestRecordCrudCreate(t *testing.T) {
 			ExpectedContent: []string{
 				`"id":`,
 				`"title":"test123"`,
-				`"rel_one_no_cascade":"mk5fmymtx4wsprk"`,
+				`"rel_one_no_cascade":"3479958939318096910"`,
 				`"rel_one_no_cascade_required":"7nwo8tuiatetxdm"`,
-				`"rel_one_cascade":"mk5fmymtx4wsprk"`,
-				`"rel_many_no_cascade":["mk5fmymtx4wsprk"]`,
+				`"rel_one_cascade":"3479958939318096910"`,
+				`"rel_many_no_cascade":["3479958939318096910"]`,
 				`"rel_many_no_cascade_required":["7nwo8tuiatetxdm","lcl9d87w22ml6jy"]`,
 				`"rel_many_cascade":["lcl9d87w22ml6jy"]`,
 			},
@@ -1163,7 +1167,7 @@ func TestRecordCrudCreate(t *testing.T) {
 				// the users auth records don't have access to view the demo3 expands
 				`"expand":{`,
 				`"missing"`,
-				`"id":"mk5fmymtx4wsprk"`,
+				`"id":"3479958939318096910"`,
 				`"id":"7nwo8tuiatetxdm"`,
 				`"id":"lcl9d87w22ml6jy"`,
 			},
@@ -1180,10 +1184,10 @@ func TestRecordCrudCreate(t *testing.T) {
 			Url:    "/api/collections/demo4/records?expand=missing,rel_one_no_cascade,rel_many_no_cascade_required",
 			Body: strings.NewReader(`{
 				"title":"test123",
-				"rel_one_no_cascade":"mk5fmymtx4wsprk",
+				"rel_one_no_cascade":"3479958939318096910",
 				"rel_one_no_cascade_required":"7nwo8tuiatetxdm",
-				"rel_one_cascade":"mk5fmymtx4wsprk",
-				"rel_many_no_cascade":"mk5fmymtx4wsprk",
+				"rel_one_cascade":"3479958939318096910",
+				"rel_many_no_cascade":"3479958939318096910",
 				"rel_many_no_cascade_required":["7nwo8tuiatetxdm","lcl9d87w22ml6jy"],
 				"rel_many_cascade":"lcl9d87w22ml6jy"
 			}`),
@@ -1194,14 +1198,14 @@ func TestRecordCrudCreate(t *testing.T) {
 			ExpectedContent: []string{
 				`"id":`,
 				`"title":"test123"`,
-				`"rel_one_no_cascade":"mk5fmymtx4wsprk"`,
+				`"rel_one_no_cascade":"3479958939318096910"`,
 				`"rel_one_no_cascade_required":"7nwo8tuiatetxdm"`,
-				`"rel_one_cascade":"mk5fmymtx4wsprk"`,
-				`"rel_many_no_cascade":["mk5fmymtx4wsprk"]`,
+				`"rel_one_cascade":"3479958939318096910"`,
+				`"rel_many_no_cascade":["3479958939318096910"]`,
 				`"rel_many_no_cascade_required":["7nwo8tuiatetxdm","lcl9d87w22ml6jy"]`,
 				`"rel_many_cascade":["lcl9d87w22ml6jy"]`,
 				`"expand":{`,
-				`"id":"mk5fmymtx4wsprk"`,
+				`"id":"3479958939318096910"`,
 				`"id":"7nwo8tuiatetxdm"`,
 				`"id":"lcl9d87w22ml6jy"`,
 			},
@@ -1333,7 +1337,7 @@ func TestRecordCrudCreate(t *testing.T) {
 			Method: http.MethodPost,
 			Url:    "/api/collections/demo3/records",
 			Body: strings.NewReader(`{
-				"id": "0yxhwia2amd8gec",
+				"id": "3479948460419978246",
 				"title": "test"
 			}`),
 			RequestHeaders: map[string]string{
@@ -1341,7 +1345,7 @@ func TestRecordCrudCreate(t *testing.T) {
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
-				`"id":"0yxhwia2amd8gec"`,
+				`"id":"3479948460419978246"`,
 				`"title":"test"`,
 			},
 			ExpectedEvents: map[string]int{
@@ -1356,7 +1360,7 @@ func TestRecordCrudCreate(t *testing.T) {
 			Method: http.MethodPost,
 			Url:    "/api/collections/users/records",
 			Body: strings.NewReader(`{
-				"id":"o1y0dd0spd786md",
+				"id":"3479946329210229762",
 				"title":"test",
 				"password":"1234567890",
 				"passwordConfirm":"1234567890"
@@ -1612,21 +1616,21 @@ func TestRecordCrudUpdate(t *testing.T) {
 		{
 			Name:            "missing collection",
 			Method:          http.MethodPatch,
-			Url:             "/api/collections/missing/records/0yxhwia2amd8gec",
+			Url:             "/api/collections/missing/records/3479948460419978246",
 			ExpectedStatus:  404,
 			ExpectedContent: []string{`"data":{}`},
 		},
 		{
 			Name:            "guest trying to access nil-rule collection record",
 			Method:          http.MethodPatch,
-			Url:             "/api/collections/demo1/records/imy661ixudk5izi",
+			Url:             "/api/collections/demo1/records/3479947686587667460",
 			ExpectedStatus:  403,
 			ExpectedContent: []string{`"data":{}`},
 		},
 		{
 			Name:   "auth record trying to access nil-rule collection",
 			Method: http.MethodPatch,
-			Url:    "/api/collections/demo1/records/imy661ixudk5izi",
+			Url:    "/api/collections/demo1/records/3479947686587667460",
 			RequestHeaders: map[string]string{
 				// users, test@example.com
 				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.UwD8JvkbQtXpymT09d7J6fdA0aP9g4FJ1GPh_ggEkzc",
@@ -1637,7 +1641,7 @@ func TestRecordCrudUpdate(t *testing.T) {
 		{
 			Name:            "submit invalid body",
 			Method:          http.MethodPatch,
-			Url:             "/api/collections/demo2/records/0yxhwia2amd8gec",
+			Url:             "/api/collections/demo2/records/34799484604199782460",
 			Body:            strings.NewReader(`{"`),
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{}`},
@@ -1645,7 +1649,7 @@ func TestRecordCrudUpdate(t *testing.T) {
 		{
 			Name:            "trying to update a view collection record",
 			Method:          http.MethodPatch,
-			Url:             "/api/collections/view1/records/imy661ixudk5izi",
+			Url:             "/api/collections/view1/records/3479947686654776325",
 			Body:            strings.NewReader(`{"text":"new"}`),
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{}`},
@@ -1653,7 +1657,7 @@ func TestRecordCrudUpdate(t *testing.T) {
 		{
 			Name:            "submit nil body",
 			Method:          http.MethodPatch,
-			Url:             "/api/collections/demo2/records/0yxhwia2amd8gec",
+			Url:             "/api/collections/demo2/records/3479948460419978246",
 			Body:            nil,
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{}`},
@@ -1661,12 +1665,12 @@ func TestRecordCrudUpdate(t *testing.T) {
 		{
 			Name:           "submit empty body (aka. no fields change)",
 			Method:         http.MethodPatch,
-			Url:            "/api/collections/demo2/records/0yxhwia2amd8gec",
+			Url:            "/api/collections/demo2/records/3479948460419978246",
 			Body:           strings.NewReader(`{}`),
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
 				`"collectionName":"demo2"`,
-				`"id":"0yxhwia2amd8gec"`,
+				`"id":"3479948460419978246"`,
 			},
 			ExpectedEvents: map[string]int{
 				"OnModelAfterUpdate":          1,
@@ -1678,7 +1682,7 @@ func TestRecordCrudUpdate(t *testing.T) {
 		{
 			Name:           "trigger field validation",
 			Method:         http.MethodPatch,
-			Url:            "/api/collections/demo2/records/0yxhwia2amd8gec",
+			Url:            "/api/collections/demo2/records/3479948460419978246",
 			Body:           strings.NewReader(`{"title":"a"}`),
 			ExpectedStatus: 400,
 			ExpectedContent: []string{
@@ -1689,11 +1693,11 @@ func TestRecordCrudUpdate(t *testing.T) {
 		{
 			Name:           "guest submit in public collection",
 			Method:         http.MethodPatch,
-			Url:            "/api/collections/demo2/records/0yxhwia2amd8gec",
+			Url:            "/api/collections/demo2/records/3479948460419978246",
 			Body:           strings.NewReader(`{"title":"new"}`),
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
-				`"id":"0yxhwia2amd8gec"`,
+				`"id":"3479948460419978246"`,
 				`"title":"new"`,
 				`"active":true`,
 			},
@@ -1707,7 +1711,7 @@ func TestRecordCrudUpdate(t *testing.T) {
 		{
 			Name:            "guest trying to submit in restricted collection",
 			Method:          http.MethodPatch,
-			Url:             "/api/collections/demo3/records/mk5fmymtx4wsprk",
+			Url:             "/api/collections/demo3/records/3479958939318096910",
 			Body:            strings.NewReader(`{"title":"new"}`),
 			ExpectedStatus:  404,
 			ExpectedContent: []string{`"data":{}`},
@@ -1715,7 +1719,7 @@ func TestRecordCrudUpdate(t *testing.T) {
 		{
 			Name:   "auth record submit in restricted collection (rule failure check)",
 			Method: http.MethodPatch,
-			Url:    "/api/collections/demo3/records/mk5fmymtx4wsprk",
+			Url:    "/api/collections/demo3/records/3479958939318096910",
 			Body:   strings.NewReader(`{"title":"new"}`),
 			RequestHeaders: map[string]string{
 				// users, test@example.com
@@ -1730,10 +1734,10 @@ func TestRecordCrudUpdate(t *testing.T) {
 			Url:    "/api/collections/demo4/records/i9naidtvr6qsgb4?expand=missing,rel_one_no_cascade,rel_many_no_cascade_required",
 			Body: strings.NewReader(`{
 				"title":"test123",
-				"rel_one_no_cascade":"mk5fmymtx4wsprk",
+				"rel_one_no_cascade":"3479958939318096910",
 				"rel_one_no_cascade_required":"7nwo8tuiatetxdm",
-				"rel_one_cascade":"mk5fmymtx4wsprk",
-				"rel_many_no_cascade":"mk5fmymtx4wsprk",
+				"rel_one_cascade":"3479958939318096910",
+				"rel_many_no_cascade":"3479958939318096910",
 				"rel_many_no_cascade_required":["7nwo8tuiatetxdm","lcl9d87w22ml6jy"],
 				"rel_many_cascade":"lcl9d87w22ml6jy"
 			}`),
@@ -1745,10 +1749,10 @@ func TestRecordCrudUpdate(t *testing.T) {
 			ExpectedContent: []string{
 				`"id":"i9naidtvr6qsgb4"`,
 				`"title":"test123"`,
-				`"rel_one_no_cascade":"mk5fmymtx4wsprk"`,
+				`"rel_one_no_cascade":"3479958939318096910"`,
 				`"rel_one_no_cascade_required":"7nwo8tuiatetxdm"`,
-				`"rel_one_cascade":"mk5fmymtx4wsprk"`,
-				`"rel_many_no_cascade":["mk5fmymtx4wsprk"]`,
+				`"rel_one_cascade":"3479958939318096910"`,
+				`"rel_many_no_cascade":["3479958939318096910"]`,
 				`"rel_many_no_cascade_required":["7nwo8tuiatetxdm","lcl9d87w22ml6jy"]`,
 				`"rel_many_cascade":["lcl9d87w22ml6jy"]`,
 			},
@@ -1756,7 +1760,7 @@ func TestRecordCrudUpdate(t *testing.T) {
 				// the users auth records don't have access to view the demo3 expands
 				`"expand":{`,
 				`"missing"`,
-				`"id":"mk5fmymtx4wsprk"`,
+				`"id":"3479958939318096910"`,
 				`"id":"7nwo8tuiatetxdm"`,
 				`"id":"lcl9d87w22ml6jy"`,
 			},
@@ -1773,10 +1777,10 @@ func TestRecordCrudUpdate(t *testing.T) {
 			Url:    "/api/collections/demo4/records/i9naidtvr6qsgb4?expand=missing,rel_one_no_cascade,rel_many_no_cascade_required",
 			Body: strings.NewReader(`{
 				"title":"test123",
-				"rel_one_no_cascade":"mk5fmymtx4wsprk",
+				"rel_one_no_cascade":"3479958939318096910",
 				"rel_one_no_cascade_required":"7nwo8tuiatetxdm",
-				"rel_one_cascade":"mk5fmymtx4wsprk",
-				"rel_many_no_cascade":"mk5fmymtx4wsprk",
+				"rel_one_cascade":"3479958939318096910",
+				"rel_many_no_cascade":"3479958939318096910",
 				"rel_many_no_cascade_required":["7nwo8tuiatetxdm","lcl9d87w22ml6jy"],
 				"rel_many_cascade":"lcl9d87w22ml6jy"
 			}`),
@@ -1787,14 +1791,14 @@ func TestRecordCrudUpdate(t *testing.T) {
 			ExpectedContent: []string{
 				`"id":"i9naidtvr6qsgb4"`,
 				`"title":"test123"`,
-				`"rel_one_no_cascade":"mk5fmymtx4wsprk"`,
+				`"rel_one_no_cascade":"3479958939318096910"`,
 				`"rel_one_no_cascade_required":"7nwo8tuiatetxdm"`,
-				`"rel_one_cascade":"mk5fmymtx4wsprk"`,
-				`"rel_many_no_cascade":["mk5fmymtx4wsprk"]`,
+				`"rel_one_cascade":"3479958939318096910"`,
+				`"rel_many_no_cascade":["3479958939318096910"]`,
 				`"rel_many_no_cascade_required":["7nwo8tuiatetxdm","lcl9d87w22ml6jy"]`,
 				`"rel_many_cascade":["lcl9d87w22ml6jy"]`,
 				`"expand":{`,
-				`"id":"mk5fmymtx4wsprk"`,
+				`"id":"3479958939318096910"`,
 				`"id":"7nwo8tuiatetxdm"`,
 				`"id":"lcl9d87w22ml6jy"`,
 			},
@@ -1811,7 +1815,7 @@ func TestRecordCrudUpdate(t *testing.T) {
 		{
 			Name:   "submit via multipart form data",
 			Method: http.MethodPatch,
-			Url:    "/api/collections/demo3/records/mk5fmymtx4wsprk",
+			Url:    "/api/collections/demo3/records/3479958939318096910",
 			Body:   formData,
 			RequestHeaders: map[string]string{
 				"Content-Type":  mp.FormDataContentType(),
@@ -1819,7 +1823,7 @@ func TestRecordCrudUpdate(t *testing.T) {
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
-				`"id":"mk5fmymtx4wsprk"`,
+				`"id":"3479958939318096910"`,
 				`"title":"title_test"`,
 				`"files":["`,
 			},
@@ -1833,7 +1837,7 @@ func TestRecordCrudUpdate(t *testing.T) {
 		{
 			Name:   "OnRecordAfterUpdateRequest error response",
 			Method: http.MethodPatch,
-			Url:    "/api/collections/demo2/records/0yxhwia2amd8gec",
+			Url:    "/api/collections/demo2/records/3479948460419978246",
 			Body:   strings.NewReader(`{"title":"new"}`),
 			BeforeTestFunc: func(t *testing.T, app *tests.TestApp, e *echo.Echo) {
 				app.OnRecordAfterUpdateRequest().Add(func(e *core.RecordUpdateEvent) error {
@@ -1852,7 +1856,7 @@ func TestRecordCrudUpdate(t *testing.T) {
 		{
 			Name:   "try to change the id of an existing record",
 			Method: http.MethodPatch,
-			Url:    "/api/collections/demo3/records/mk5fmymtx4wsprk",
+			Url:    "/api/collections/demo3/records/3479958939318096910",
 			Body: strings.NewReader(`{
 				"id": "mk5fmymtx4wspra"
 			}`),
@@ -1993,7 +1997,7 @@ func TestRecordCrudUpdate(t *testing.T) {
 		{
 			Name:   "try to change account managing fields by auth record (owner)",
 			Method: http.MethodPatch,
-			Url:    "/api/collections/users/records/4q1xlclmfloku33",
+			Url:    "/api/collections/users/records/2107977397063122944",
 			RequestHeaders: map[string]string{
 				// users, test@example.com
 				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.UwD8JvkbQtXpymT09d7J6fdA0aP9g4FJ1GPh_ggEkzc",
@@ -2059,7 +2063,7 @@ func TestRecordCrudUpdate(t *testing.T) {
 		{
 			Name:   "update auth record with valid data by admin",
 			Method: http.MethodPatch,
-			Url:    "/api/collections/users/records/oap640cot4yru2s",
+			Url:    "/api/collections/users/records/2108356222582259712",
 			Body: strings.NewReader(`{
 				"username":"test.valid",
 				"email":"new@example.com",
@@ -2093,7 +2097,7 @@ func TestRecordCrudUpdate(t *testing.T) {
 				"OnRecordBeforeUpdateRequest": 1,
 			},
 			AfterTestFunc: func(t *testing.T, app *tests.TestApp, res *http.Response) {
-				record, _ := app.Dao().FindRecordById("users", "oap640cot4yru2s")
+				record, _ := app.Dao().FindRecordById("users", "2108356222582259712")
 				if !record.ValidatePassword("12345678") {
 					t.Fatal("Password update failed.")
 				}
@@ -2102,7 +2106,7 @@ func TestRecordCrudUpdate(t *testing.T) {
 		{
 			Name:   "update auth record with valid data by guest (empty update filter)",
 			Method: http.MethodPatch,
-			Url:    "/api/collections/nologin/records/dc49k6jgejn40h3",
+			Url:    "/api/collections/nologin/records/3480271880273794066",
 			Body: strings.NewReader(`{
 				"username":"test_new",
 				"emailVisibility":true,
@@ -2132,7 +2136,7 @@ func TestRecordCrudUpdate(t *testing.T) {
 		{
 			Name:   "success password change with oldPassword",
 			Method: http.MethodPatch,
-			Url:    "/api/collections/nologin/records/dc49k6jgejn40h3",
+			Url:    "/api/collections/nologin/records/3480271880273794066",
 			Body: strings.NewReader(`{
 				"password":"123456789",
 				"passwordConfirm":"123456789",
@@ -2140,7 +2144,7 @@ func TestRecordCrudUpdate(t *testing.T) {
 			}`),
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
-				`"id":"dc49k6jgejn40h3"`,
+				`"id":"3480271880273794066"`,
 			},
 			NotExpectedContent: []string{
 				`"tokenKey"`,
@@ -2155,7 +2159,7 @@ func TestRecordCrudUpdate(t *testing.T) {
 				"OnRecordBeforeUpdateRequest": 1,
 			},
 			AfterTestFunc: func(t *testing.T, app *tests.TestApp, res *http.Response) {
-				record, _ := app.Dao().FindRecordById("nologin", "dc49k6jgejn40h3")
+				record, _ := app.Dao().FindRecordById("nologin", "3480271880273794066")
 				if !record.ValidatePassword("123456789") {
 					t.Fatal("Password update failed.")
 				}
