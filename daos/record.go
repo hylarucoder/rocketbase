@@ -439,6 +439,7 @@ func (dao *Dao) FindAuthRecordByToken(token string, baseTokenKey string) (*model
 
 	// verify token signature
 	if _, err := security.ParseJWT(token, verificationKey); err != nil {
+		// TODO: error? println(err.Error())
 		return nil, err
 	}
 

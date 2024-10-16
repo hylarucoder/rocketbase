@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/golang-jwt/jwt/v4"
-	"github.com/pocketbase/pocketbase/tools/security"
+	"github.com/hylarucoder/rocketbase/tools/security"
 )
 
 func TestParseUnverifiedJWT(t *testing.T) {
@@ -126,6 +126,7 @@ func TestParseJWT(t *testing.T) {
 }
 
 func TestNewJWT(t *testing.T) {
+	// TODO: fix
 	scenarios := []struct {
 		claims      jwt.MapClaims
 		key         string

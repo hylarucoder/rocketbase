@@ -64,7 +64,7 @@ func Serve(app core.App, config ServeConfig) (*http.Server, error) {
 	}
 
 	// ensure that the latest migrations are applied before starting the server
-	if err := runMigrations(app); err != nil {
+	if err := RunMigrations(app); err != nil {
 		return nil, err
 	}
 
@@ -250,7 +250,7 @@ type migrationsConnection struct {
 	MigrationsList migrate.MigrationsList
 }
 
-func runMigrations(app core.App) error {
+func RunMigrations(app core.App) error {
 	connections := []migrationsConnection{
 		{
 			DB:             app.DB(),

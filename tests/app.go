@@ -2,11 +2,14 @@
 package tests
 
 import (
+	"database/sql"
+	"fmt"
 	"io"
 	"os"
 	"path"
 	"path/filepath"
 	"runtime"
+	"strings"
 	"sync"
 
 	"github.com/hylarucoder/rocketbase/core"
@@ -92,15 +95,59 @@ func NewTestApp(optTestDataDir ...string) (*TestApp, error) {
 	} else {
 		testDataDir = optTestDataDir[0]
 	}
+	// 依据 tempDir 的 name 创建 postgres db
 
+	// TODO: 注意 并且 dump 一份数据库进行测试，这里的 che
 	tempDir, err := TempDirClone(testDataDir)
 	if err != nil {
 		return nil, err
 	}
 
+	//println("make new tempDir", tempDir)
+	database := filepath.Base(tempDir)
+
+	OLD_DATABASE := os.Getenv("DATABASE")
+	DATABASE := strings.Replace(OLD_DATABASE, "test_rocketbase", database, -1)
+	LOGS_DATABASE := strings.Replace(os.Getenv("LOGS_DATABASE"), "test_rocketbase_logs", database+"_logs", -1)
+
+	os.Setenv("DATABASE", DATABASE)
+	os.Setenv("LOGS_DATABASE", LOGS_DATABASE)
+	//fmt.Println("---->", DATABASE, LOGS_DATABASE)
+	// create database if not exists
+	db, err := sql.Open("postgres", OLD_DATABASE)
+	if err != nil {
+		return nil, err
+	}
+	defer db.Close()
+	//println("default", DATABASE)
+
+	// Sanitize the database name to prevent SQL injection
+	//sanitizedDBName := pq.QuoteIdentifier(database)
+	//println("sanitizedDBName", sanitizedDBName)
+
+	// 前期这么搞, 等稳定下来之后固定 sql
+	_, err = db.Exec("CREATE DATABASE " + database + " WITH TEMPLATE rocketbase;")
+	if err != nil {
+		// If the database already exists, ignore the error
+		if !strings.Contains(err.Error(), "already exists") {
+			return nil, fmt.Errorf("error creating database: %w", err)
+		}
+	}
+	_, err = db.Exec("CREATE DATABASE " + database + "_logs" + " WITH TEMPLATE rocketbase_logs;")
+	if err != nil {
+		// If the database already exists, ignore the error
+		if !strings.Contains(err.Error(), "already exists") {
+			return nil, fmt.Errorf("error creating database: %w", err)
+		}
+	}
+	if err != nil {
+		println("Error creating database:", err.Error())
+		return nil, err
+	}
+
 	app := core.NewBaseApp(core.BaseAppConfig{
 		DataDir:       tempDir,
-		EncryptionEnv: "pb_test_env",
+		EncryptionEnv: "rb_test_env",
 	})
 
 	// load data dir and db connections
@@ -475,7 +522,7 @@ func NewTestApp(optTestDataDir ...string) (*TestApp, error) {
 // It is the caller's responsibility to call `os.RemoveAll(tempDir)`
 // when the directory is no longer needed!
 func TempDirClone(dirToClone string) (string, error) {
-	tempDir, err := os.MkdirTemp("", "pb_test_*")
+	tempDir, err := os.MkdirTemp("", "rb_test_*")
 	if err != nil {
 		return "", err
 	}

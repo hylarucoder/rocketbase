@@ -260,8 +260,8 @@ func TestProviderExecNonEmptyQuery(t *testing.T) {
 			false,
 			`{"page":1,"perPage":10,"totalItems":2,"totalPages":1,"items":[{"test1":1,"test2":"test2.1","test3":""},{"test1":2,"test2":"test2.2","test3":""}]}`,
 			[]string{
-				"SELECT COUNT(DISTINCT [[test.id]]) FROM `test` WHERE NOT (`test1` IS NULL)",
-				"SELECT * FROM `test` WHERE NOT (`test1` IS NULL) ORDER BY `test1` ASC LIMIT 10",
+				"SELECT COUNT(DISTINCT [[test.id]]) FROM \"test\" WHERE NOT (\"test1\" IS NULL)",
+				"SELECT * FROM \"test\" WHERE NOT (\"test1\" IS NULL) ORDER BY \"test1\" ASC LIMIT 10",
 			},
 		},
 		{
@@ -274,8 +274,8 @@ func TestProviderExecNonEmptyQuery(t *testing.T) {
 			false,
 			`{"page":10,"perPage":30,"totalItems":2,"totalPages":1,"items":[]}`,
 			[]string{
-				"SELECT COUNT(DISTINCT [[test.id]]) FROM `test` WHERE NOT (`test1` IS NULL)",
-				"SELECT * FROM `test` WHERE NOT (`test1` IS NULL) ORDER BY `test1` ASC LIMIT 30 OFFSET 270",
+				"SELECT COUNT(DISTINCT [[test.id]]) FROM \"test\" WHERE NOT (\"test1\" IS NULL)",
+				"SELECT * FROM \"test\" WHERE NOT (\"test1\" IS NULL) ORDER BY \"test1\" ASC LIMIT 30 OFFSET 270",
 			},
 		},
 		{
@@ -310,8 +310,8 @@ func TestProviderExecNonEmptyQuery(t *testing.T) {
 			false,
 			`{"page":1,"perPage":` + fmt.Sprint(MaxPerPage) + `,"totalItems":1,"totalPages":1,"items":[{"test1":2,"test2":"test2.2","test3":""}]}`,
 			[]string{
-				"SELECT COUNT(DISTINCT [[test.id]]) FROM `test` WHERE ((NOT (`test1` IS NULL)) AND (((test2 IS NOT '' AND test2 IS NOT NULL)))) AND (test1 >= 2)",
-				"SELECT * FROM `test` WHERE ((NOT (`test1` IS NULL)) AND (((test2 IS NOT '' AND test2 IS NOT NULL)))) AND (test1 >= 2) ORDER BY `test1` ASC, `test2` DESC LIMIT " + fmt.Sprint(MaxPerPage),
+				"SELECT COUNT(DISTINCT [[test.id]]) FROM \"test\" WHERE ((NOT (\"test1\" IS NULL)) AND (((test2 != '' AND test2 IS NOT NULL)))) AND (test1 >= 2)",
+				"SELECT * FROM \"test\" WHERE ((NOT (\"test1\" IS NULL)) AND (((test2 != '' AND test2 IS NOT NULL)))) AND (test1 >= 2) ORDER BY \"test1\" ASC, \"test2\" DESC LIMIT " + fmt.Sprint(MaxPerPage),
 			},
 		},
 		{
@@ -324,7 +324,7 @@ func TestProviderExecNonEmptyQuery(t *testing.T) {
 			false,
 			`{"page":1,"perPage":` + fmt.Sprint(MaxPerPage) + `,"totalItems":-1,"totalPages":-1,"items":[{"test1":2,"test2":"test2.2","test3":""}]}`,
 			[]string{
-				"SELECT * FROM `test` WHERE ((NOT (`test1` IS NULL)) AND (((test2 IS NOT '' AND test2 IS NOT NULL)))) AND (test1 >= 2) ORDER BY `test1` ASC, `test2` DESC LIMIT " + fmt.Sprint(MaxPerPage),
+				"SELECT * FROM \"test\" WHERE ((NOT (\"test1\" IS NULL)) AND (((test2 != '' AND test2 IS NOT NULL)))) AND (test1 >= 2) ORDER BY \"test1\" ASC, \"test2\" DESC LIMIT " + fmt.Sprint(MaxPerPage),
 			},
 		},
 		{
@@ -337,8 +337,8 @@ func TestProviderExecNonEmptyQuery(t *testing.T) {
 			false,
 			`{"page":1,"perPage":10,"totalItems":0,"totalPages":0,"items":[]}`,
 			[]string{
-				"SELECT COUNT(DISTINCT [[test.id]]) FROM `test` WHERE (NOT (`test1` IS NULL)) AND (((test3 IS NOT '' AND test3 IS NOT NULL)))",
-				"SELECT * FROM `test` WHERE (NOT (`test1` IS NULL)) AND (((test3 IS NOT '' AND test3 IS NOT NULL))) ORDER BY `test1` ASC, `test3` ASC LIMIT 10",
+				"SELECT COUNT(DISTINCT [[test.id]]) FROM \"test\" WHERE (NOT (\"test1\" IS NULL)) AND (((test3 != '' AND test3 IS NOT NULL)))",
+				"SELECT * FROM \"test\" WHERE (NOT (\"test1\" IS NULL)) AND (((test3 != '' AND test3 IS NOT NULL))) ORDER BY \"test1\" ASC, \"test3\" ASC LIMIT 10",
 			},
 		},
 		{
@@ -351,7 +351,7 @@ func TestProviderExecNonEmptyQuery(t *testing.T) {
 			false,
 			`{"page":1,"perPage":10,"totalItems":-1,"totalPages":-1,"items":[]}`,
 			[]string{
-				"SELECT * FROM `test` WHERE (NOT (`test1` IS NULL)) AND (((test3 IS NOT '' AND test3 IS NOT NULL))) ORDER BY `test1` ASC, `test3` ASC LIMIT 10",
+				"SELECT * FROM \"test\" WHERE (NOT (\"test1\" IS NULL)) AND (((test3 != '' AND test3 IS NOT NULL))) ORDER BY \"test1\" ASC, \"test3\" ASC LIMIT 10",
 			},
 		},
 		{
@@ -364,8 +364,8 @@ func TestProviderExecNonEmptyQuery(t *testing.T) {
 			false,
 			`{"page":2,"perPage":1,"totalItems":2,"totalPages":2,"items":[{"test1":2,"test2":"test2.2","test3":""}]}`,
 			[]string{
-				"SELECT COUNT(DISTINCT [[test.id]]) FROM `test` WHERE NOT (`test1` IS NULL)",
-				"SELECT * FROM `test` WHERE NOT (`test1` IS NULL) ORDER BY `test1` ASC LIMIT 1 OFFSET 1",
+				"SELECT COUNT(DISTINCT [[test.id]]) FROM \"test\" WHERE NOT (\"test1\" IS NULL)",
+				"SELECT * FROM \"test\" WHERE NOT (\"test1\" IS NULL) ORDER BY \"test1\" ASC LIMIT 1 OFFSET 1",
 			},
 		},
 		{
@@ -378,7 +378,7 @@ func TestProviderExecNonEmptyQuery(t *testing.T) {
 			false,
 			`{"page":2,"perPage":1,"totalItems":-1,"totalPages":-1,"items":[{"test1":2,"test2":"test2.2","test3":""}]}`,
 			[]string{
-				"SELECT * FROM `test` WHERE NOT (`test1` IS NULL) ORDER BY `test1` ASC LIMIT 1 OFFSET 1",
+				"SELECT * FROM \"test\" WHERE NOT (\"test1\" IS NULL) ORDER BY \"test1\" ASC LIMIT 1 OFFSET 1",
 			},
 		},
 	}

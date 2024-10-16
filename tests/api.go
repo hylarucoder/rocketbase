@@ -12,9 +12,10 @@ import (
 	"testing"
 	"time"
 
+	"github.com/labstack/echo/v5"
+
 	"github.com/hylarucoder/rocketbase/apis"
 	"github.com/hylarucoder/rocketbase/core"
-	"github.com/labstack/echo/v5"
 )
 
 // ApiScenario defines a single api request test case/scenario.

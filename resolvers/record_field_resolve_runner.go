@@ -588,9 +588,14 @@ func (r *runner) processActiveProps() (*search.ResolverResult, error) {
 }
 
 func jsonArrayLength(tableColumnPair string) string {
-	return fmt.Sprintf(
-		// note: the case is used to normalize value access for single and multiple relations.
-		`json_array_length(CASE WHEN json_valid([[%s]]) THEN [[%s]] ELSE (CASE WHEN [[%s]] = '' OR [[%s]] IS NULL THEN json_array() ELSE json_array([[%s]]) END) END)`,
+	return fmt.Sprintf(`
+        CASE
+            WHEN json_typeof([[%s]]) = 'array' THEN json_array_length([[%s]])
+            WHEN [[%s]]::text = '' OR [[%s]] IS NULL THEN 0
+            WHEN json_typeof([[%s]]) IS NOT NULL THEN 1
+            ELSE 1
+        END
+    `,
 		tableColumnPair, tableColumnPair, tableColumnPair, tableColumnPair, tableColumnPair,
 	)
 }

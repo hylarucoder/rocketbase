@@ -5,13 +5,19 @@ import (
 	"testing"
 	"time"
 
+	"github.com/hylarucoder/rocketbase/tools/test_utils"
+
 	"github.com/hylarucoder/rocketbase/daos"
 	"github.com/hylarucoder/rocketbase/models"
 	"github.com/hylarucoder/rocketbase/tests"
 )
 
 func TestNew(t *testing.T) {
-	testApp, _ := tests.NewTestApp()
+	testApp, err := tests.NewTestApp()
+	if err != nil {
+		t.Fatal("Failed to create new test app:", err)
+	}
+
 	defer testApp.Cleanup()
 
 	dao := daos.New(testApp.DB())
@@ -215,7 +221,7 @@ func TestDaoModelQuery(t *testing.T) {
 		},
 		{
 			&models.Log{},
-			"SELECT {{_requests}}.* FROM \"_requests\"",
+			"SELECT {{_logs}}.* FROM \"_logs\"",
 		},
 	}
 
@@ -867,4 +873,8 @@ func TestDaoTransactionHooksCallsOnSuccess(t *testing.T) {
 	if afterDeleteFuncCalls != 1 {
 		t.Fatalf("Expected afterDeleteFuncCalls to be called 1 times, got %d", afterDeleteFuncCalls)
 	}
+}
+
+func TestMain(m *testing.M) {
+	test_utils.LoadTestEnv()
 }

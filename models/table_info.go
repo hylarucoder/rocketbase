@@ -8,8 +8,8 @@ type TableInfoRow struct {
 	PK int
 
 	Index        int           `db:"cid"`
-	Name         string        `db:"name"`
+	Name         string        `db:"column_name"`
 	Type         string        `db:"type"`
 	NotNull      bool          `db:"notnull"`
-	DefaultValue types.JsonRaw `db:"dflt_value"`
+	DefaultValue types.JsonRaw `db:"column_default"`
 }

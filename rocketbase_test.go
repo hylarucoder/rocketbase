@@ -3,13 +3,11 @@ package pocketbase
 import (
 	"database/sql"
 	"fmt"
+	"github.com/hylarucoder/rocketbase/tools/test_utils"
 	"log"
 	"os"
 	"path/filepath"
 	"testing"
-
-	"github.com/hylarucoder/rocketbase/plugins/migratecmd"
-	"github.com/hylarucoder/rocketbase/tools/test_utils"
 
 	"github.com/spf13/cobra"
 )
@@ -223,45 +221,46 @@ func setupTestEnvironment() {
 	if err != nil {
 		log.Fatalf("Failed to connect to database: %v", err)
 	}
-	rows, err := db.Query("SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema'")
-	if err != nil {
-		log.Fatalf("Failed to query tables: %v", err)
-	}
-	defer rows.Close()
 
-	var tables []string
-	for rows.Next() {
-		var tableName string
-		if err := rows.Scan(&tableName); err != nil {
-			log.Fatalf("Failed to scan table name: %v", err)
-		}
-		tables = append(tables, tableName)
-	}
-
-	if err := rows.Err(); err != nil {
-		log.Fatalf("Error iterating over rows: %v", err)
+	tables := []string{
+		"_admins",
+		"_collections",
+		"_externalAuths",
+		"_migrations",
+		"_params",
+		"new_name",
+		"test",
+		"test123",
+		"test456_update",
+		"users",
 	}
 
 	fmt.Println("Dropping all tables in the database:")
 	for _, table := range tables {
-		_, err := db.Exec(fmt.Sprintf("DROP TABLE IF EXISTS %s CASCADE", table))
+		res, err := db.Exec(fmt.Sprintf("DROP TABLE IF EXISTS %s;", table))
+		println(res.RowsAffected())
 		if err != nil {
 			log.Fatalf("Failed to drop table %s: %v", table, err)
 		}
 		fmt.Printf("Dropped table: %s\n", table)
 	}
 
-	fmt.Println("Setting up test environment")
-	tempDir := filepath.Join(os.TempDir(), "temp_pb_data")
-	app := NewWithConfig(Config{DefaultDataDir: tempDir})
-	migratecmd.Register(app, nil, migratecmd.Config{
-		Automigrate: true,
-	})
-	app.Bootstrap()
+	//fmt.Println("Setting up test environment")
+	//tempDir := filepath.Join(os.TempDir(), "temp_pb_data")
+	//app := NewWithConfig(Config{DefaultDataDir: tempDir})
+	//migratecmd.Register(app, nil, migratecmd.Config{
+	//	Automigrate: true,
+	//})
+	//err = app.Bootstrap()
+	//RunMigrations(app)
+	//if err != nil {
+	//	log.Fatalf("Failed to bootstrap: %v", err)
+	//	return
+	//}
 }
 
 func TestMain(m *testing.M) {
-	setupTestEnvironment()
+	//setupTestEnvironment()
 
 	// 运行所有测试
 	code := m.Run()

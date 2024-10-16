@@ -56,7 +56,7 @@ func (dao *Dao) SaveView(name string, selectQuery string) error {
 		//
 		// note: the query is wrapped in a secondary SELECT as a rudimentary
 		// measure to discourage multiple inline sql statements execution.
-		viewQuery := fmt.Sprintf("CREATE VIEW {{%s}} AS SELECT * FROM (%s)", name, selectQuery)
+		viewQuery := fmt.Sprintf("CREATE VIEW {{%s}} AS (%s) ", name, selectQuery)
 		if _, err := txDao.DB().NewQuery(viewQuery).Execute(); err != nil {
 			return err
 		}
@@ -66,7 +66,12 @@ func (dao *Dao) SaveView(name string, selectQuery string) error {
 		if _, err := txDao.TableInfo(name); err != nil {
 			// manually cleanup previously created view in case the func
 			// is called in a nested transaction and the error is discarded
-			txDao.DeleteView(name)
+			err := txDao.DeleteView(name)
+			if err != nil {
+				print("delete rrow", err.Error())
+				return err
+			}
+			print("delete true", err.Error())
 
 			return err
 		}

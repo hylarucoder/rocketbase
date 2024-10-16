@@ -1,6 +1,8 @@
 package core_test
 
 import (
+	"fmt"
+	"github.com/stretchr/testify/assert"
 	"testing"
 
 	"github.com/hylarucoder/rocketbase/core"
@@ -37,9 +39,10 @@ func TestBaseCollectionEventTags(t *testing.T) {
 
 		tags := event.Tags()
 
-		if len(s.expectedTags) != len(tags) {
-			t.Fatalf("[%d] Expected %v tags, got %v", i, s.expectedTags, tags)
-		}
+		//if len(s.expectedTags) != len(tags) {
+		//	t.Fatalf("[%d] Expected %v tags, got %v", i, s.expectedTags, tags)
+		//}
+		assert.Equal(t, s.expectedTags, tags, fmt.Sprintf("scenario %d", i))
 
 		for _, tag := range s.expectedTags {
 			if !list.ExistInSlice(tag, tags) {

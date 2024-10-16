@@ -133,13 +133,16 @@ func (r *Runner) Up() ([]string, error) {
 			// ignore empty Up action
 			if m.Up != nil {
 				if err := m.Up(tx); err != nil {
+					// println("----> up%", err.Error())
 					return fmt.Errorf("Failed to apply migration %s: %w", m.File, err)
 				}
 			}
 
 			if err := r.saveAppliedMigration(tx, m.File); err != nil {
+				// println("----> up save applied migration%", err)
 				return fmt.Errorf("Failed to save applied migration info for %s: %w", m.File, err)
 			}
+			// println("wocao", m.File)
 
 			applied = append(applied, m.File)
 		}

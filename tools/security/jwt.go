@@ -2,7 +2,6 @@ package security
 
 import (
 	"errors"
-	"os"
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
@@ -26,16 +25,11 @@ func ParseUnverifiedJWT(token string) (jwt.MapClaims, error) {
 }
 
 // ParseJWT verifies and parses JWT and returns its claims.
-func ParseJWT(token string, oldVerificationKey string) (jwt.MapClaims, error) {
+func ParseJWT(token string, verificationKey string) (jwt.MapClaims, error) {
 	parser := jwt.NewParser(jwt.WithValidMethods([]string{"HS256"}))
 
-	publicKey, err := jwt.ParseRSAPublicKeyFromPEM([]byte(os.Getenv("JWT_PUBLIC_KEY")))
-	if err != nil {
-		return nil, err
-	}
-
 	parsedToken, err := parser.Parse(token, func(t *jwt.Token) (any, error) {
-		return publicKey, nil
+		return []byte(verificationKey), nil
 	})
 	if err != nil {
 		return nil, err
@@ -45,7 +39,7 @@ func ParseJWT(token string, oldVerificationKey string) (jwt.MapClaims, error) {
 		return claims, nil
 	}
 
-	return nil, errors.New("Unable to parse token.")
+	return nil, errors.New("unable to parse token")
 }
 
 // // NewJWT generates and returns new HS256 signed JWT.
@@ -64,7 +58,7 @@ func ParseJWT(token string, oldVerificationKey string) (jwt.MapClaims, error) {
 // }
 
 // NewJWT generates and returns new HS256 signed JWT.
-func NewJWT(payload jwt.MapClaims, oldSigninKey string, secondsDuration int64) (string, error) {
+func NewJWT(payload jwt.MapClaims, signingKey string, secondsDuration int64) (string, error) {
 	seconds := time.Duration(secondsDuration) * time.Second
 
 	claims := jwt.MapClaims{
@@ -75,7 +69,7 @@ func NewJWT(payload jwt.MapClaims, oldSigninKey string, secondsDuration int64) (
 		claims[k] = v
 	}
 
-	return jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString(oldSigninKey)
+	return jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString([]byte(signingKey))
 }
 
 // Deprecated:
