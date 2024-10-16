@@ -45,10 +45,16 @@ func (dao *Dao) TableColumns(tableName string) ([]string, error) {
 
 // TableInfo returns the `table_info` pragma result for the specified table.
 func (dao *Dao) TableInfo(tableName string) ([]*models.TableInfoRow, error) {
-	info := []*models.TableInfoRow{}
+	var info []*models.TableInfoRow
 
 	// !CHANGED: sqlite pragma to postgres information_schema
-	err := dao.DB().NewQuery("SELECT * FROM information_schema.columns WHERE table_name = {:tableName}").
+	err := dao.DB().NewQuery(`
+		SELECT 
+			* 
+		FROM 
+			information_schema.columns 
+		WHERE 
+			table_name = {:tableName}`).
 		Bind(dbx.Params{"tableName": tableName}).
 		All(&info)
 	if err != nil {

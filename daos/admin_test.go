@@ -1,24 +1,31 @@
 package daos_test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/hylarucoder/rocketbase/models"
 	"github.com/hylarucoder/rocketbase/tests"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestAdminQuery(t *testing.T) {
 	t.Parallel()
 
-	app, _ := tests.NewTestApp()
+	app, err := tests.NewTestApp()
+	fmt.Println("====", app, err.Error())
 	defer app.Cleanup()
 
 	expected := "SELECT {{_admins}}.* FROM \"_admins\""
 
 	sql := app.Dao().AdminQuery().Build().SQL()
-	if sql != expected {
-		t.Errorf("Expected sql %s, got %s", expected, sql)
-	}
+	fmt.Println(sql, expected)
+	assert.Equal(t, expected, sql, "Should be equal")
+	assert.NotEqual(t, expected, sql, "Should be not equal")
+	// if sql != expected {
+	// 	// t.Errorf("Expected sql %s, got %s", expected, sql)
+	// 	assert.NotEqual(t, expected, sql)
+	// }
 }
 
 func TestFindAdminById(t *testing.T) {

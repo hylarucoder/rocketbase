@@ -125,13 +125,6 @@ func (scenario *ApiScenario) test(t *testing.T) {
 	res := recorder.Result()
 
 	if res.StatusCode != scenario.ExpectedStatus {
-		if scenario.Body != nil {
-			bodyBytes, _ := io.ReadAll(scenario.Body)
-			bodyString := string(bodyBytes)
-			println("Request body:", bodyString)
-		} else {
-			println("Request body: <empty>")
-		}
 		t.Errorf("Expected status code %d, got %d", scenario.ExpectedStatus, res.StatusCode)
 	}
 

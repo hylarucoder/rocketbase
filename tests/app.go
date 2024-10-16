@@ -125,14 +125,15 @@ func NewTestApp(optTestDataDir ...string) (*TestApp, error) {
 	//sanitizedDBName := pq.QuoteIdentifier(database)
 	//println("sanitizedDBName", sanitizedDBName)
 
-	_, err = db.Exec("CREATE DATABASE " + database)
+	// 前期这么搞, 等稳定下来之后固定 sql
+	_, err = db.Exec("CREATE DATABASE " + database + " WITH TEMPLATE rocketbase;")
 	if err != nil {
 		// If the database already exists, ignore the error
 		if !strings.Contains(err.Error(), "already exists") {
 			return nil, fmt.Errorf("error creating database: %w", err)
 		}
 	}
-	_, err = db.Exec("CREATE DATABASE " + database + "_logs")
+	_, err = db.Exec("CREATE DATABASE " + database + "_logs" + " WITH TEMPLATE rocketbase_logs;")
 	if err != nil {
 		// If the database already exists, ignore the error
 		if !strings.Contains(err.Error(), "already exists") {
