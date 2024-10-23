@@ -269,7 +269,7 @@ func TestDaoFindById(t *testing.T) {
 		// existing collection id
 		{
 			&models.Collection{},
-			"wsmn24bux7wo113",
+			"2108348993330216960",
 			false,
 		},
 		// existing admin id

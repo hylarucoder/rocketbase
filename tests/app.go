@@ -152,6 +152,7 @@ func NewTestApp(optTestDataDir ...string) (*TestApp, error) {
 
 	// load data dir and db connections
 	if err := app.Bootstrap(); err != nil {
+		fmt.Println("")
 		return nil, err
 	}
 

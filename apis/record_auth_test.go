@@ -229,7 +229,7 @@ func TestRecordAuthWithPassword(t *testing.T) {
 			ExpectedContent: []string{
 				`"record":{`,
 				`"token":"`,
-				`"id":"4q1xlclmfloku33"`,
+				`"id":"2107977397063122944"`,
 				`"email":"test@example.com"`,
 				`"verified":false`,
 			},
@@ -297,7 +297,7 @@ func TestRecordAuthWithPassword(t *testing.T) {
 			ExpectedContent: []string{
 				`"record":{`,
 				`"token":"`,
-				`"id":"4q1xlclmfloku33"`,
+				`"id":"2107977397063122944"`,
 				`"email":"test@example.com"`,
 			},
 			ExpectedEvents: map[string]int{
@@ -321,7 +321,7 @@ func TestRecordAuthWithPassword(t *testing.T) {
 			ExpectedContent: []string{
 				`"record":{`,
 				`"token":"`,
-				`"id":"4q1xlclmfloku33"`,
+				`"id":"2107977397063122944"`,
 				`"email":"test@example.com"`,
 			},
 			ExpectedEvents: map[string]int{
@@ -411,12 +411,12 @@ func TestRecordAuthRefresh(t *testing.T) {
 			ExpectedContent: []string{
 				`"token":`,
 				`"record":`,
-				`"id":"4q1xlclmfloku33"`,
+				`"id":"2107977397063122944"`,
 				`"emailVisibility":false`,
 				`"email":"test@example.com"`, // the owner can always view their email address
 				`"expand":`,
 				`"rel":`,
-				`"id":"llvuca81nly1qls"`,
+				`"id":"3479948460512252935"`,
 			},
 			NotExpectedContent: []string{
 				`"missing":`,
@@ -1148,7 +1148,7 @@ func TestRecordAuthListExternalsAuths(t *testing.T) {
 		{
 			Name:            "unauthorized",
 			Method:          http.MethodGet,
-			Url:             "/api/collections/users/records/4q1xlclmfloku33/external-auths",
+			Url:             "/api/collections/users/records/2107977397063122944/external-auths",
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
 		},
@@ -1176,7 +1176,7 @@ func TestRecordAuthListExternalsAuths(t *testing.T) {
 		{
 			Name:   "admin + existing user id and 2 external auths",
 			Method: http.MethodGet,
-			Url:    "/api/collections/users/records/4q1xlclmfloku33/external-auths",
+			Url:    "/api/collections/users/records/2107977397063122944/external-auths",
 			RequestHeaders: map[string]string{
 				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
 			},
@@ -1184,7 +1184,7 @@ func TestRecordAuthListExternalsAuths(t *testing.T) {
 			ExpectedContent: []string{
 				`"id":"clmflokuq1xl341"`,
 				`"id":"dlmflokuq1xl342"`,
-				`"recordId":"4q1xlclmfloku33"`,
+				`"recordId":"2107977397063122944"`,
 				`"collectionId":"_pb_users_auth_"`,
 			},
 			ExpectedEvents: map[string]int{"OnRecordListExternalAuthsRequest": 1},
@@ -1192,7 +1192,7 @@ func TestRecordAuthListExternalsAuths(t *testing.T) {
 		{
 			Name:   "auth record + trying to list another user external auths",
 			Method: http.MethodGet,
-			Url:    "/api/collections/users/records/4q1xlclmfloku33/external-auths",
+			Url:    "/api/collections/users/records/2107977397063122944/external-auths",
 			RequestHeaders: map[string]string{
 				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6Im9hcDY0MGNvdDR5cnUycyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.uatnTBFqMnF0p4FkmwEpA9R-uGFu0Putwyk6NJCKBno",
 			},
@@ -1223,7 +1223,7 @@ func TestRecordAuthListExternalsAuths(t *testing.T) {
 		{
 			Name:   "authorized as user - owner with 2 external auths",
 			Method: http.MethodGet,
-			Url:    "/api/collections/users/records/4q1xlclmfloku33/external-auths",
+			Url:    "/api/collections/users/records/2107977397063122944/external-auths",
 			RequestHeaders: map[string]string{
 				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.UwD8JvkbQtXpymT09d7J6fdA0aP9g4FJ1GPh_ggEkzc",
 			},
@@ -1231,7 +1231,7 @@ func TestRecordAuthListExternalsAuths(t *testing.T) {
 			ExpectedContent: []string{
 				`"id":"clmflokuq1xl341"`,
 				`"id":"dlmflokuq1xl342"`,
-				`"recordId":"4q1xlclmfloku33"`,
+				`"recordId":"2107977397063122944"`,
 				`"collectionId":"_pb_users_auth_"`,
 			},
 			ExpectedEvents: map[string]int{"OnRecordListExternalAuthsRequest": 1},
@@ -1250,7 +1250,7 @@ func TestRecordAuthUnlinkExternalsAuth(t *testing.T) {
 		{
 			Name:            "unauthorized",
 			Method:          http.MethodDelete,
-			Url:             "/api/collections/users/records/4q1xlclmfloku33/external-auths/google",
+			Url:             "/api/collections/users/records/2107977397063122944/external-auths/google",
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
 		},
@@ -1267,7 +1267,7 @@ func TestRecordAuthUnlinkExternalsAuth(t *testing.T) {
 		{
 			Name:   "admin - nonlinked provider",
 			Method: http.MethodDelete,
-			Url:    "/api/collections/users/records/4q1xlclmfloku33/external-auths/facebook",
+			Url:    "/api/collections/users/records/2107977397063122944/external-auths/facebook",
 			RequestHeaders: map[string]string{
 				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
 			},
@@ -1277,7 +1277,7 @@ func TestRecordAuthUnlinkExternalsAuth(t *testing.T) {
 		{
 			Name:   "admin - linked provider",
 			Method: http.MethodDelete,
-			Url:    "/api/collections/users/records/4q1xlclmfloku33/external-auths/google",
+			Url:    "/api/collections/users/records/2107977397063122944/external-auths/google",
 			RequestHeaders: map[string]string{
 				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
 			},
@@ -1290,7 +1290,7 @@ func TestRecordAuthUnlinkExternalsAuth(t *testing.T) {
 				"OnRecordBeforeUnlinkExternalAuthRequest": 1,
 			},
 			AfterTestFunc: func(t *testing.T, app *tests.TestApp, res *http.Response) {
-				record, err := app.Dao().FindRecordById("users", "4q1xlclmfloku33")
+				record, err := app.Dao().FindRecordById("users", "2107977397063122944")
 				if err != nil {
 					t.Fatal(err)
 				}
@@ -1303,7 +1303,7 @@ func TestRecordAuthUnlinkExternalsAuth(t *testing.T) {
 		{
 			Name:   "auth record - trying to unlink another user external auth",
 			Method: http.MethodDelete,
-			Url:    "/api/collections/users/records/4q1xlclmfloku33/external-auths/google",
+			Url:    "/api/collections/users/records/2107977397063122944/external-auths/google",
 			RequestHeaders: map[string]string{
 				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6Im9hcDY0MGNvdDR5cnUycyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.uatnTBFqMnF0p4FkmwEpA9R-uGFu0Putwyk6NJCKBno",
 			},
@@ -1323,7 +1323,7 @@ func TestRecordAuthUnlinkExternalsAuth(t *testing.T) {
 		{
 			Name:   "auth record - owner with existing external auth",
 			Method: http.MethodDelete,
-			Url:    "/api/collections/users/records/4q1xlclmfloku33/external-auths/google",
+			Url:    "/api/collections/users/records/2107977397063122944/external-auths/google",
 			RequestHeaders: map[string]string{
 				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.UwD8JvkbQtXpymT09d7J6fdA0aP9g4FJ1GPh_ggEkzc",
 			},
@@ -1336,7 +1336,7 @@ func TestRecordAuthUnlinkExternalsAuth(t *testing.T) {
 				"OnRecordBeforeUnlinkExternalAuthRequest": 1,
 			},
 			AfterTestFunc: func(t *testing.T, app *tests.TestApp, res *http.Response) {
-				record, err := app.Dao().FindRecordById("users", "4q1xlclmfloku33")
+				record, err := app.Dao().FindRecordById("users", "2107977397063122944")
 				if err != nil {
 					t.Fatal(err)
 				}
@@ -1349,7 +1349,7 @@ func TestRecordAuthUnlinkExternalsAuth(t *testing.T) {
 		{
 			Name:   "OnRecordBeforeUnlinkExternalAuthRequest error response",
 			Method: http.MethodDelete,
-			Url:    "/api/collections/users/records/4q1xlclmfloku33/external-auths/google",
+			Url:    "/api/collections/users/records/2107977397063122944/external-auths/google",
 			RequestHeaders: map[string]string{
 				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
 			},

@@ -263,19 +263,19 @@ func TestSingleVsMultipleValuesNormalization(t *testing.T) {
 			},
 		},
 		{
-			"al1h9ijdeojtsjy",
+			"3479947686587667460",
 			fieldsExpectation{
 				SelectOne:   `["optionB"]`,
 				SelectMany:  `optionB`,
 				FileOne:     `["300_Jsjq7RdBgA.png"]`,
 				FileMany:    ``,
-				RelOne:      `["84nmscqy84lsi1t"]`,
+				RelOne:      `["3479947686461838339"]`,
 				RelMany:     `oap640cot4yru2s`,
 				NewMultiple: `[]`,
 			},
 		},
 		{
-			"84nmscqy84lsi1t",
+			"3479947686461838339",
 			fieldsExpectation{
 				SelectOne:   `["optionB"]`,
 				SelectMany:  `optionC`,

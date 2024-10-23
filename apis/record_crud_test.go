@@ -178,7 +178,7 @@ func TestRecordCrudList(t *testing.T) {
 				`"select_many":["optionB"]`,
 				// subrel items
 				`"id":"3479948460419978246"`,
-				`"id":"llvuca81nly1qls"`,
+				`"id":"3479948460512252935"`,
 				// email visibility should be ignored for admins even in expanded rels
 				`"email":"test@example.com"`,
 				`"email":"test2@example.com"`,
@@ -1874,7 +1874,7 @@ func TestRecordCrudUpdate(t *testing.T) {
 		{
 			Name:   "unique field error check",
 			Method: http.MethodPatch,
-			Url:    "/api/collections/demo2/records/llvuca81nly1qls",
+			Url:    "/api/collections/demo2/records/3479948460512252935",
 			Body: strings.NewReader(`{
 				"title":"test2"
 			}`),

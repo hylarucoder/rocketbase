@@ -40,7 +40,7 @@ func TestRecordQueryWithDifferentCollectionValues(t *testing.T) {
 		{"with pointer model", collection, 3, false},
 		{"with value model", *collection, 3, false},
 		{"with name", "demo1", 3, false},
-		{"with id", "wsmn24bux7wo113", 3, false},
+		{"with id", "2108348993330216960", 3, false},
 	}
 
 	for _, s := range scenarios {
@@ -70,7 +70,7 @@ func TestRecordQueryOneWithRecord(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	id := "84nmscqy84lsi1t"
+	id := "3479947686461838339"
 
 	q := app.Dao().RecordQuery(collection).
 		Where(dbx.HashExp{"id": id})
@@ -96,8 +96,8 @@ func TestRecordQueryAllWithRecordsSlices(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	id1 := "84nmscqy84lsi1t"
-	id2 := "al1h9ijdeojtsjy"
+	id1 := "3479947686461838339"
+	id2 := "3479947686587667460"
 
 	{
 		records := []models.Record{}
@@ -162,27 +162,27 @@ func TestFindRecordById(t *testing.T) {
 		expectError        bool
 	}{
 		{"demo2", "missing", nil, nil, true},
-		{"missing", "0yxhwia2amd8gec", nil, nil, true},
-		{"demo2", "0yxhwia2amd8gec", nil, nil, false},
-		{"demo2", "0yxhwia2amd8gec", func(q *dbx.SelectQuery) error {
+		{"missing", "3479948460562584584", nil, nil, true},
+		{"demo2", "3479948460562584584", nil, nil, false},
+		{"demo2", "3479948460562584584", func(q *dbx.SelectQuery) error {
 			q.AndWhere(dbx.HashExp{"title": "missing"})
 			return nil
 		}, nil, true},
-		{"demo2", "0yxhwia2amd8gec", func(q *dbx.SelectQuery) error {
+		{"demo2", "3479948460562584584", func(q *dbx.SelectQuery) error {
 			return errors.New("test error")
 		}, nil, true},
-		{"demo2", "0yxhwia2amd8gec", func(q *dbx.SelectQuery) error {
+		{"demo2", "3479948460562584584", func(q *dbx.SelectQuery) error {
 			q.AndWhere(dbx.HashExp{"title": "test3"})
 			return nil
 		}, nil, false},
-		{"demo2", "0yxhwia2amd8gec", func(q *dbx.SelectQuery) error {
+		{"demo2", "3479948460562584584", func(q *dbx.SelectQuery) error {
 			q.AndWhere(dbx.HashExp{"title": "test3"})
 			return nil
 		}, func(q *dbx.SelectQuery) error {
 			q.AndWhere(dbx.HashExp{"active": false})
 			return nil
 		}, true},
-		{"sz5l5z67tg7gku0", "0yxhwia2amd8gec", func(q *dbx.SelectQuery) error {
+		{"sz5l5z67tg7gku0", "3479948460562584584", func(q *dbx.SelectQuery) error {
 			q.AndWhere(dbx.HashExp{"title": "test3"})
 			return nil
 		}, func(q *dbx.SelectQuery) error {
@@ -227,12 +227,12 @@ func TestFindRecordsByIds(t *testing.T) {
 		{"demo2", []string{}, nil, nil, 0, false},
 		{"demo2", []string{""}, nil, nil, 0, false},
 		{"demo2", []string{"missing"}, nil, nil, 0, false},
-		{"missing", []string{"0yxhwia2amd8gec"}, nil, nil, 0, true},
-		{"demo2", []string{"0yxhwia2amd8gec"}, nil, nil, 1, false},
-		{"sz5l5z67tg7gku0", []string{"0yxhwia2amd8gec"}, nil, nil, 1, false},
+		{"missing", []string{"3479948460562584584"}, nil, nil, 0, true},
+		{"demo2", []string{"3479948460562584584"}, nil, nil, 1, false},
+		{"sz5l5z67tg7gku0", []string{"3479948460562584584"}, nil, nil, 1, false},
 		{
 			"demo2",
-			[]string{"0yxhwia2amd8gec", "llvuca81nly1qls"},
+			[]string{"3479948460562584584", "3479948460419978246"},
 			nil,
 			nil,
 			2,
@@ -240,7 +240,7 @@ func TestFindRecordsByIds(t *testing.T) {
 		},
 		{
 			"demo2",
-			[]string{"0yxhwia2amd8gec", "llvuca81nly1qls"},
+			[]string{"3479948460562584584", "3479948460419978246"},
 			func(q *dbx.SelectQuery) error {
 				return nil // empty filter
 			},
@@ -252,7 +252,7 @@ func TestFindRecordsByIds(t *testing.T) {
 		},
 		{
 			"demo2",
-			[]string{"0yxhwia2amd8gec", "llvuca81nly1qls"},
+			[]string{"3479948460562584584", "3479948460419978246"},
 			func(q *dbx.SelectQuery) error {
 				q.AndWhere(dbx.HashExp{"active": true})
 				return nil
@@ -263,7 +263,7 @@ func TestFindRecordsByIds(t *testing.T) {
 		},
 		{
 			"sz5l5z67tg7gku0",
-			[]string{"0yxhwia2amd8gec", "llvuca81nly1qls"},
+			[]string{"3479948460562584584", "3479948460419978246"},
 			func(q *dbx.SelectQuery) error {
 				q.AndWhere(dbx.HashExp{"active": true})
 				return nil
@@ -326,8 +326,8 @@ func TestFindRecordsByExpr(t *testing.T) {
 			nil,
 			[]string{
 				"achvryl401bhse3",
-				"llvuca81nly1qls",
-				"0yxhwia2amd8gec",
+				"3479948460419978246",
+				"3479948460562584584",
 			},
 			false,
 		},
@@ -348,7 +348,7 @@ func TestFindRecordsByExpr(t *testing.T) {
 			},
 			[]string{
 				"achvryl401bhse3",
-				"0yxhwia2amd8gec",
+				"3479948460562584584",
 			},
 			false,
 		},
@@ -391,14 +391,14 @@ func TestFindFirstRecordByData(t *testing.T) {
 		{
 			"missing",
 			"id",
-			"llvuca81nly1qls",
-			"llvuca81nly1qls",
+			"3479948460419978246",
+			"3479948460419978246",
 			true,
 		},
 		{
 			"demo2",
 			"",
-			"llvuca81nly1qls",
+			"3479948460419978246",
 			"",
 			true,
 		},
@@ -412,15 +412,15 @@ func TestFindFirstRecordByData(t *testing.T) {
 		{
 			"demo2",
 			"id",
-			"llvuca81nly1qls",
-			"llvuca81nly1qls",
+			"3479948460419978246",
+			"3479948460419978246",
 			false,
 		},
 		{
 			"sz5l5z67tg7gku0",
 			"title",
 			"test3",
-			"0yxhwia2amd8gec",
+			"3479948460562584584",
 			false,
 		},
 	}
@@ -500,9 +500,9 @@ func TestFindRecordsByFilter(t *testing.T) {
 			nil,
 			false,
 			[]string{
-				"llvuca81nly1qls",
+				"3479948460419978246",
 				"achvryl401bhse3",
-				"0yxhwia2amd8gec",
+				"3479948460562584584",
 			},
 		},
 		{
@@ -515,7 +515,7 @@ func TestFindRecordsByFilter(t *testing.T) {
 			nil,
 			false,
 			[]string{
-				"0yxhwia2amd8gec",
+				"3479948460562584584",
 				"achvryl401bhse3",
 			},
 		},
@@ -530,7 +530,7 @@ func TestFindRecordsByFilter(t *testing.T) {
 			false,
 			[]string{
 				"achvryl401bhse3",
-				"0yxhwia2amd8gec",
+				"3479948460562584584",
 			},
 		},
 		{
@@ -543,7 +543,7 @@ func TestFindRecordsByFilter(t *testing.T) {
 			[]dbx.Params{{"active": false}},
 			false,
 			[]string{
-				"llvuca81nly1qls",
+				"3479948460419978246",
 			},
 		},
 		{
@@ -646,7 +646,7 @@ func TestFindFirstRecordByFilter(t *testing.T) {
 			"id != ''",
 			nil,
 			false,
-			"llvuca81nly1qls",
+			"3479948460419978246",
 		},
 		{
 			"with placeholder params",
@@ -654,7 +654,7 @@ func TestFindFirstRecordByFilter(t *testing.T) {
 			"active = {:active}",
 			[]dbx.Params{{"active": false}},
 			false,
-			"llvuca81nly1qls",
+			"3479948460419978246",
 		},
 	}
 
@@ -853,7 +853,7 @@ func TestIsRecordValueUnique(t *testing.T) {
 	defer app.Cleanup()
 
 	testManyRelsId1 := "bgs820n361vj1qd"
-	testManyRelsId2 := "4q1xlclmfloku33"
+	testManyRelsId2 := "2107977397063122944"
 	testManyRelsId3 := "oap640cot4yru2s"
 
 	scenarios := []struct {
@@ -870,10 +870,10 @@ func TestIsRecordValueUnique(t *testing.T) {
 		{"demo2", "title", "unique", []string{}, true},
 		{"demo2", "title", "unique", []string{""}, true},
 		{"demo2", "title", "test1", []string{""}, false},
-		{"demo2", "title", "test1", []string{"llvuca81nly1qls"}, true},
+		{"demo2", "title", "test1", []string{"3479948460419978246"}, true},
 		{"demo1", "rel_many", []string{testManyRelsId3}, nil, false},
-		{"wsmn24bux7wo113", "rel_many", []any{testManyRelsId3}, []string{""}, false},
-		{"wsmn24bux7wo113", "rel_many", []any{testManyRelsId3}, []string{"84nmscqy84lsi1t"}, true},
+		{"2108348993330216960", "rel_many", []any{testManyRelsId3}, []string{""}, false},
+		{"2108348993330216960", "rel_many", []any{testManyRelsId3}, []string{"3479947686461838339"}, true},
 		// mixed json array order
 		{"demo1", "rel_many", []string{testManyRelsId1, testManyRelsId3, testManyRelsId2}, nil, true},
 		// username special case-insensitive match
@@ -1090,7 +1090,7 @@ func TestSaveRecord(t *testing.T) {
 
 	// update
 	// ---
-	r2, _ := app.Dao().FindFirstRecordByData(collection.Id, "id", "0yxhwia2amd8gec")
+	r2, _ := app.Dao().FindFirstRecordByData(collection.Id, "id", "3479948460562584584")
 	r2.Set("title", "test_update")
 	err2 := app.Dao().SaveRecord(r2)
 	if err2 != nil {
@@ -1153,7 +1153,7 @@ func TestDeleteRecord(t *testing.T) {
 
 	// delete existing record + external auths
 	// ---
-	rec1, _ := app.Dao().FindRecordById("users", "4q1xlclmfloku33")
+	rec1, _ := app.Dao().FindRecordById("users", "2107977397063122944")
 	if err := app.Dao().DeleteRecord(rec1); err != nil {
 		t.Fatalf("(rec1) Expected nil, got error %v", err)
 	}
@@ -1199,7 +1199,7 @@ func TestDeleteRecord(t *testing.T) {
 		t.Fatalf("(rec3) Expected record to be deleted, got %v", rec3)
 	}
 	// check if the operation cascaded
-	rel, _ := app.Dao().FindRecordById("demo1", "84nmscqy84lsi1t")
+	rel, _ := app.Dao().FindRecordById("demo1", "3479947686461838339")
 	if rel != nil {
 		t.Fatalf("(rec3) Expected the delete to cascade, found relation %v", rel)
 	}

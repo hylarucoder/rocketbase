@@ -252,6 +252,9 @@ func (r *runner) processRequestInfoSelectEachModifier(dataField *schema.SchemaFi
 	jeTable := fmt.Sprintf("json_each({:%s})", placeholder)
 	jeAlias := "__dataSelect_" + cleanFieldName + "_je"
 	r.resolver.registerJoin(jeTable, jeAlias, nil)
+	//, dbx.HashExp{
+	//	"true": "",
+	//}
 
 	result := &search.ResolverResult{
 		Identifier: fmt.Sprintf("[[%s.value]]", jeAlias),
@@ -603,7 +606,7 @@ func jsonArrayLength(tableColumnPair string) string {
 func jsonEach(tableColumnPair string) string {
 	return fmt.Sprintf(
 		// note: the case is used to normalize value access for single and multiple relations.
-		`json_each(CASE WHEN json_valid([[%s]]) THEN [[%s]] ELSE json_array([[%s]]) END)`,
+		`json_array_elements(CASE WHEN json_typeof([[%s]]) = 'array' THEN [[%s]]::json ELSE json_build_array([[%s]]) END)`,
 		tableColumnPair, tableColumnPair, tableColumnPair,
 	)
 }

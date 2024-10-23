@@ -53,7 +53,7 @@ func TestCollectionsList(t *testing.T) {
 				`"id":"_pb_users_auth_"`,
 				`"id":"v851q4r790rhknl"`,
 				`"id":"kpv709sk2lqbqk8"`,
-				`"id":"wsmn24bux7wo113"`,
+				`"id":"2108348993330216960"`,
 				`"id":"sz5l5z67tg7gku0"`,
 				`"id":"wzlqyes4orhoygb"`,
 				`"id":"4d1blo5cuycfaca"`,
@@ -109,7 +109,7 @@ func TestCollectionsList(t *testing.T) {
 				`"perPage":30`,
 				`"totalItems":5`,
 				`"items":[{`,
-				`"id":"wsmn24bux7wo113"`,
+				`"id":"2108348993330216960"`,
 				`"id":"sz5l5z67tg7gku0"`,
 				`"id":"wzlqyes4orhoygb"`,
 				`"id":"4d1blo5cuycfaca"`,
@@ -166,7 +166,7 @@ func TestCollectionView(t *testing.T) {
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
-				`"id":"wsmn24bux7wo113"`,
+				`"id":"2108348993330216960"`,
 				`"name":"demo1"`,
 			},
 			ExpectedEvents: map[string]int{
@@ -176,13 +176,13 @@ func TestCollectionView(t *testing.T) {
 		{
 			Name:   "authorized as admin + using the collection id",
 			Method: http.MethodGet,
-			Url:    "/api/collections/wsmn24bux7wo113",
+			Url:    "/api/collections/2108348993330216960",
 			RequestHeaders: map[string]string{
 				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
-				`"id":"wsmn24bux7wo113"`,
+				`"id":"2108348993330216960"`,
 				`"name":"demo1"`,
 			},
 			ExpectedEvents: map[string]int{
@@ -764,7 +764,7 @@ func TestCollectionUpdate(t *testing.T) {
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
-				`"id":"wsmn24bux7wo113"`,
+				`"id":"2108348993330216960"`,
 				`"name":"demo1"`,
 			},
 			ExpectedEvents: map[string]int{
@@ -1324,7 +1324,7 @@ func TestCollectionsImport(t *testing.T) {
 					    ]
 					},
 					{
-						"id":"wsmn24bux7wo113",
+						"id":"2108348993330216960",
 						"name":"demo1",
 						"schema":[
 							{

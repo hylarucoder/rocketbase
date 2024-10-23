@@ -99,7 +99,7 @@ func TestExpandRecords(t *testing.T) {
 			"users",
 			[]string{
 				"bgs820n361vj1qd",
-				"4q1xlclmfloku33",
+				"2107977397063122944",
 				"oap640cot4yru2s", // no rels
 			},
 			[]string{"rel"},
@@ -128,7 +128,7 @@ func TestExpandRecords(t *testing.T) {
 			"users",
 			[]string{
 				"bgs820n361vj1qd",
-				"4q1xlclmfloku33",
+				"2107977397063122944",
 				"oap640cot4yru2s", // no rels
 			},
 			[]string{"rel"},
@@ -143,7 +143,7 @@ func TestExpandRecords(t *testing.T) {
 			"users",
 			[]string{
 				"bgs820n361vj1qd",
-				"4q1xlclmfloku33",
+				"2107977397063122944",
 				"oap640cot4yru2s", // no rels
 			},
 			[]string{"rel"},

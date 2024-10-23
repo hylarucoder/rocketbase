@@ -77,12 +77,12 @@ func TestRecordAuthResponse(t *testing.T) {
 	dummyAdmin := &models.Admin{}
 	dummyAdmin.Id = "id1"
 
-	nonAuthRecord, err := app.Dao().FindRecordById("demo1", "al1h9ijdeojtsjy")
+	nonAuthRecord, err := app.Dao().FindRecordById("demo1", "3479947686587667460")
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	authRecord, err := app.Dao().FindRecordById("users", "4q1xlclmfloku33")
+	authRecord, err := app.Dao().FindRecordById("users", "2107977397063122944")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -208,7 +208,7 @@ func TestEnrichRecords(t *testing.T) {
 	app, _ := tests.NewTestApp()
 	defer app.Cleanup()
 
-	records, err := app.Dao().FindRecordsByIds("demo1", []string{"al1h9ijdeojtsjy", "84nmscqy84lsi1t"})
+	records, err := app.Dao().FindRecordsByIds("demo1", []string{"3479947686587667460", "3479947686461838339"})
 	if err != nil {
 		t.Fatal(err)
 	}

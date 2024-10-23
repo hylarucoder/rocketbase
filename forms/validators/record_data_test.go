@@ -1154,8 +1154,8 @@ func TestRecordDataValidatorValidateRelation(t *testing.T) {
 	relId4 := "1tmknxy2868d869"
 
 	// record rel ids from different collections
-	diffRelId1 := "0yxhwia2amd8gec"
-	diffRelId2 := "llvuca81nly1qls"
+	diffRelId1 := "3479948460512252935"
+	diffRelId2 := "3479948460512252935"
 
 	// create new test collection
 	collection := &models.Collection{}

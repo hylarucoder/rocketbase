@@ -61,7 +61,7 @@ func TestRecordUpsertLoadRequestUnsupported(t *testing.T) {
 	app, _ := tests.NewTestApp()
 	defer app.Cleanup()
 
-	record, err := app.Dao().FindRecordById("demo2", "0yxhwia2amd8gec")
+	record, err := app.Dao().FindRecordById("demo2", "3479948460562584584")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -81,7 +81,7 @@ func TestRecordUpsertLoadRequestJson(t *testing.T) {
 	app, _ := tests.NewTestApp()
 	defer app.Cleanup()
 
-	record, err := app.Dao().FindRecordById("demo1", "84nmscqy84lsi1t")
+	record, err := app.Dao().FindRecordById("demo1", "3479947686461838339")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -145,7 +145,7 @@ func TestRecordUpsertLoadRequestMultipart(t *testing.T) {
 	app, _ := tests.NewTestApp()
 	defer app.Cleanup()
 
-	record, err := app.Dao().FindRecordById("demo1", "84nmscqy84lsi1t")
+	record, err := app.Dao().FindRecordById("demo1", "3479947686461838339")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -208,7 +208,7 @@ func TestRecordUpsertLoadData(t *testing.T) {
 	app, _ := tests.NewTestApp()
 	defer app.Cleanup()
 
-	record, err := app.Dao().FindRecordById("demo2", "llvuca81nly1qls")
+	record, err := app.Dao().FindRecordById("demo2", "3479948460512252935")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -237,7 +237,7 @@ func TestRecordUpsertDrySubmitFailure(t *testing.T) {
 	defer app.Cleanup()
 
 	collection, _ := app.Dao().FindCollectionByNameOrId("demo1")
-	recordBefore, err := app.Dao().FindRecordById(collection.Id, "al1h9ijdeojtsjy")
+	recordBefore, err := app.Dao().FindRecordById(collection.Id, "3479947686587667460")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -291,7 +291,7 @@ func TestRecordUpsertDrySubmitSuccess(t *testing.T) {
 	defer app.Cleanup()
 
 	collection, _ := app.Dao().FindCollectionByNameOrId("demo1")
-	recordBefore, err := app.Dao().FindRecordById(collection.Id, "84nmscqy84lsi1t")
+	recordBefore, err := app.Dao().FindRecordById(collection.Id, "3479947686461838339")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -347,7 +347,7 @@ func TestRecordUpsertDrySubmitWithNestedTx(t *testing.T) {
 	defer app.Cleanup()
 
 	collection, _ := app.Dao().FindCollectionByNameOrId("demo1")
-	recordBefore, err := app.Dao().FindRecordById(collection.Id, "84nmscqy84lsi1t")
+	recordBefore, err := app.Dao().FindRecordById(collection.Id, "3479947686461838339")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -411,7 +411,7 @@ func TestRecordUpsertSubmitFailure(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	recordBefore, err := app.Dao().FindRecordById(collection.Id, "84nmscqy84lsi1t")
+	recordBefore, err := app.Dao().FindRecordById(collection.Id, "3479947686461838339")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -489,7 +489,7 @@ func TestRecordUpsertSubmitSuccess(t *testing.T) {
 	defer app.Cleanup()
 
 	collection, _ := app.Dao().FindCollectionByNameOrId("demo1")
-	recordBefore, err := app.Dao().FindRecordById(collection.Id, "84nmscqy84lsi1t")
+	recordBefore, err := app.Dao().FindRecordById(collection.Id, "3479947686461838339")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -735,7 +735,7 @@ func TestRecordUpsertAuthRecord(t *testing.T) {
 		},
 		{
 			"empty update data",
-			"4q1xlclmfloku33",
+			"2107977397063122944",
 			map[string]any{},
 			false,
 			false,
@@ -813,7 +813,7 @@ func TestRecordUpsertAuthRecord(t *testing.T) {
 		},
 		{
 			"try to update verified without managed access",
-			"4q1xlclmfloku33",
+			"2107977397063122944",
 			map[string]any{
 				"verified": true,
 			},
@@ -833,7 +833,7 @@ func TestRecordUpsertAuthRecord(t *testing.T) {
 		},
 		{
 			"update verified with managed access",
-			"4q1xlclmfloku33",
+			"2107977397063122944",
 			map[string]any{
 				"verified": true,
 			},
@@ -844,7 +844,7 @@ func TestRecordUpsertAuthRecord(t *testing.T) {
 		// email
 		{
 			"try to update email without managed access",
-			"4q1xlclmfloku33",
+			"2107977397063122944",
 			map[string]any{
 				"email": "test_update@example.com",
 			},
@@ -853,7 +853,7 @@ func TestRecordUpsertAuthRecord(t *testing.T) {
 		},
 		{
 			"update email with managed access",
-			"4q1xlclmfloku33",
+			"2107977397063122944",
 			map[string]any{
 				"email": "test_update@example.com",
 			},
@@ -864,7 +864,7 @@ func TestRecordUpsertAuthRecord(t *testing.T) {
 		// password
 		{
 			"trigger the password validations if only oldPassword is set",
-			"4q1xlclmfloku33",
+			"2107977397063122944",
 			map[string]any{
 				"oldPassword": "1234567890",
 			},
@@ -873,7 +873,7 @@ func TestRecordUpsertAuthRecord(t *testing.T) {
 		},
 		{
 			"trigger the password validations if only passwordConfirm is set",
-			"4q1xlclmfloku33",
+			"2107977397063122944",
 			map[string]any{
 				"passwordConfirm": "1234567890",
 			},
@@ -882,7 +882,7 @@ func TestRecordUpsertAuthRecord(t *testing.T) {
 		},
 		{
 			"try to update password without managed access",
-			"4q1xlclmfloku33",
+			"2107977397063122944",
 			map[string]any{
 				"password":        "1234567890",
 				"passwordConfirm": "1234567890",
@@ -892,7 +892,7 @@ func TestRecordUpsertAuthRecord(t *testing.T) {
 		},
 		{
 			"update password without managed access but with oldPassword",
-			"4q1xlclmfloku33",
+			"2107977397063122944",
 			map[string]any{
 				"oldPassword":     "1234567890",
 				"password":        "1234567890",
@@ -903,7 +903,7 @@ func TestRecordUpsertAuthRecord(t *testing.T) {
 		},
 		{
 			"update email with managed access (without oldPassword)",
-			"4q1xlclmfloku33",
+			"2107977397063122944",
 			map[string]any{
 				"password":        "1234567890",
 				"passwordConfirm": "1234567890",
@@ -1061,7 +1061,7 @@ func TestRecordUpsertAddAndRemoveFiles(t *testing.T) {
 	app, _ := tests.NewTestApp()
 	defer app.Cleanup()
 
-	recordBefore, err := app.Dao().FindRecordById("demo1", "84nmscqy84lsi1t")
+	recordBefore, err := app.Dao().FindRecordById("demo1", "3479947686461838339")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1124,7 +1124,7 @@ func TestRecordUpsertAddAndRemoveFiles(t *testing.T) {
 		t.Fatalf("Failed to submit the RecordUpsert form, got %v", err)
 	}
 
-	recordAfter, err := app.Dao().FindRecordById("demo1", "84nmscqy84lsi1t")
+	recordAfter, err := app.Dao().FindRecordById("demo1", "3479947686461838339")
 	if err != nil {
 		t.Fatal(err)
 	}
