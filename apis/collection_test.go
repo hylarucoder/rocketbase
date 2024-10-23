@@ -18,6 +18,8 @@ import (
 
 func TestCollectionsList(t *testing.T) {
 	t.Parallel()
+	adminAuthToken := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzAyMzYxMTQsImlkIjoiMjEwNzk3NzEyNzUyODc1OTI5NiIsInR5cGUiOiJhZG1pbiJ9.ikCEJR-iPIrZwpbsWjtslMdq75suCAEYfaRK7Oz-NZ0"
+	userAuthToken := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2xsZWN0aW9uSWQiOiIyMTA3OTc3Mzk3MDYzMTIyOTQ0IiwiZXhwIjoxNzMwOTEyMTQzLCJpZCI6Il9wYl91c2Vyc19hdXRoXyIsInR5cGUiOiJhdXRoUmVjb3JkIiwidmVyaWZpZWQiOnRydWV9.Us_731ziRkeeZvYvXiXsc6CKEwdKp4rSvsGbG5L1OUQ"
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -32,7 +34,7 @@ func TestCollectionsList(t *testing.T) {
 			Method: http.MethodGet,
 			Url:    "/api/collections",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.UwD8JvkbQtXpymT09d7J6fdA0aP9g4FJ1GPh_ggEkzc",
+				"Authorization": userAuthToken,
 			},
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
@@ -42,7 +44,7 @@ func TestCollectionsList(t *testing.T) {
 			Method: http.MethodGet,
 			Url:    "/api/collections",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": adminAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -51,14 +53,16 @@ func TestCollectionsList(t *testing.T) {
 				`"totalItems":11`,
 				`"items":[{`,
 				`"id":"_pb_users_auth_"`,
-				`"id":"v851q4r790rhknl"`,
-				`"id":"kpv709sk2lqbqk8"`,
 				`"id":"2108348993330216960"`,
-				`"id":"sz5l5z67tg7gku0"`,
-				`"id":"wzlqyes4orhoygb"`,
-				`"id":"4d1blo5cuycfaca"`,
-				`"id":"9n89pl5vkct6330"`,
-				`"id":"ib3m2700k5hlsjz"`,
+				`"id":"2108643515977170944"`,
+				`"id":"2108525634564128768"`,
+				`"id":"2108524507638530048"`,
+				`"id":"2108349190391201792"`,
+				`"id":"2108349358238859264"`,
+				`"id":"2108354773609611264"`,
+				`"id":"2108654300501639168"`,
+				`"id":"2108518481342234624"`,
+				`"id":"2108350795614257152"`,
 				`"type":"auth"`,
 				`"type":"base"`,
 			},
@@ -71,7 +75,7 @@ func TestCollectionsList(t *testing.T) {
 			Method: http.MethodGet,
 			Url:    "/api/collections?page=2&perPage=2&sort=-created",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": adminAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -79,8 +83,8 @@ func TestCollectionsList(t *testing.T) {
 				`"perPage":2`,
 				`"totalItems":11`,
 				`"items":[{`,
-				`"id":"v9gwnfh02gjq1q0"`,
-				`"id":"9n89pl5vkct6330"`,
+				`"id":"2108525634564128768"`,
+				`"id":"2108524507638530048"`,
 			},
 			ExpectedEvents: map[string]int{
 				"OnCollectionsListRequest": 1,
@@ -91,7 +95,7 @@ func TestCollectionsList(t *testing.T) {
 			Method: http.MethodGet,
 			Url:    "/api/collections?filter=invalidfield~'demo2'",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": adminAuthToken,
 			},
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{}`},
@@ -101,7 +105,7 @@ func TestCollectionsList(t *testing.T) {
 			Method: http.MethodGet,
 			Url:    "/api/collections?filter=name~'demo'",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": adminAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -110,10 +114,10 @@ func TestCollectionsList(t *testing.T) {
 				`"totalItems":5`,
 				`"items":[{`,
 				`"id":"2108348993330216960"`,
-				`"id":"sz5l5z67tg7gku0"`,
-				`"id":"wzlqyes4orhoygb"`,
-				`"id":"4d1blo5cuycfaca"`,
-				`"id":"9n89pl5vkct6330"`,
+				`"id":"2108349190391201792"`,
+				`"id":"2108349358238859264"`,
+				`"id":"2108354773609611264"`,
+				`"id":"2108350795614257152"`,
 			},
 			ExpectedEvents: map[string]int{
 				"OnCollectionsListRequest": 1,
@@ -128,6 +132,8 @@ func TestCollectionsList(t *testing.T) {
 
 func TestCollectionView(t *testing.T) {
 	t.Parallel()
+	adminAuthToken := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzAyMzYxMTQsImlkIjoiMjEwNzk3NzEyNzUyODc1OTI5NiIsInR5cGUiOiJhZG1pbiJ9.ikCEJR-iPIrZwpbsWjtslMdq75suCAEYfaRK7Oz-NZ0"
+	userAuthToken := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2xsZWN0aW9uSWQiOiIyMTA3OTc3Mzk3MDYzMTIyOTQ0IiwiZXhwIjoxNzMwOTEyMTQzLCJpZCI6Il9wYl91c2Vyc19hdXRoXyIsInR5cGUiOiJhdXRoUmVjb3JkIiwidmVyaWZpZWQiOnRydWV9.Us_731ziRkeeZvYvXiXsc6CKEwdKp4rSvsGbG5L1OUQ"
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -142,7 +148,7 @@ func TestCollectionView(t *testing.T) {
 			Method: http.MethodGet,
 			Url:    "/api/collections/demo1",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.UwD8JvkbQtXpymT09d7J6fdA0aP9g4FJ1GPh_ggEkzc",
+				"Authorization": userAuthToken,
 			},
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
@@ -152,7 +158,7 @@ func TestCollectionView(t *testing.T) {
 			Method: http.MethodGet,
 			Url:    "/api/collections/missing",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": adminAuthToken,
 			},
 			ExpectedStatus:  404,
 			ExpectedContent: []string{`"data":{}`},
@@ -162,7 +168,7 @@ func TestCollectionView(t *testing.T) {
 			Method: http.MethodGet,
 			Url:    "/api/collections/demo1",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": adminAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -178,7 +184,7 @@ func TestCollectionView(t *testing.T) {
 			Method: http.MethodGet,
 			Url:    "/api/collections/2108348993330216960",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": adminAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -198,6 +204,8 @@ func TestCollectionView(t *testing.T) {
 
 func TestCollectionDelete(t *testing.T) {
 	t.Parallel()
+	adminAuthToken := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzAyMzYxMTQsImlkIjoiMjEwNzk3NzEyNzUyODc1OTI5NiIsInR5cGUiOiJhZG1pbiJ9.ikCEJR-iPIrZwpbsWjtslMdq75suCAEYfaRK7Oz-NZ0"
+	userAuthToken := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2xsZWN0aW9uSWQiOiIyMTA3OTc3Mzk3MDYzMTIyOTQ0IiwiZXhwIjoxNzMwOTEyMTQzLCJpZCI6Il9wYl91c2Vyc19hdXRoXyIsInR5cGUiOiJhdXRoUmVjb3JkIiwidmVyaWZpZWQiOnRydWV9.Us_731ziRkeeZvYvXiXsc6CKEwdKp4rSvsGbG5L1OUQ"
 
 	ensureDeletedFiles := func(app *tests.TestApp, collectionId string) {
 		storageDir := filepath.Join(app.DataDir(), "storage", collectionId)
@@ -221,7 +229,7 @@ func TestCollectionDelete(t *testing.T) {
 			Method: http.MethodDelete,
 			Url:    "/api/collections/demo1",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.UwD8JvkbQtXpymT09d7J6fdA0aP9g4FJ1GPh_ggEkzc",
+				"Authorization": userAuthToken,
 			},
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
@@ -231,7 +239,7 @@ func TestCollectionDelete(t *testing.T) {
 			Method: http.MethodDelete,
 			Url:    "/api/collections/missing",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": adminAuthToken,
 			},
 			ExpectedStatus:  404,
 			ExpectedContent: []string{`"data":{}`},
@@ -241,7 +249,7 @@ func TestCollectionDelete(t *testing.T) {
 			Method: http.MethodDelete,
 			Url:    "/api/collections/demo5",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": adminAuthToken,
 			},
 			Delay:          100 * time.Millisecond,
 			ExpectedStatus: 204,
@@ -252,15 +260,15 @@ func TestCollectionDelete(t *testing.T) {
 				"OnCollectionAfterDeleteRequest":  1,
 			},
 			AfterTestFunc: func(t *testing.T, app *tests.TestApp, res *http.Response) {
-				ensureDeletedFiles(app, "9n89pl5vkct6330")
+				ensureDeletedFiles(app, "2108354773609611264")
 			},
 		},
 		{
 			Name:   "authorized as admin + using the collection id",
 			Method: http.MethodDelete,
-			Url:    "/api/collections/9n89pl5vkct6330",
+			Url:    "/api/collections/2108349190391201792",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": adminAuthToken,
 			},
 			Delay:          100 * time.Millisecond,
 			ExpectedStatus: 204,
@@ -271,15 +279,16 @@ func TestCollectionDelete(t *testing.T) {
 				"OnCollectionAfterDeleteRequest":  1,
 			},
 			AfterTestFunc: func(t *testing.T, app *tests.TestApp, res *http.Response) {
-				ensureDeletedFiles(app, "9n89pl5vkct6330")
+				ensureDeletedFiles(app, "2108349190391201792")
 			},
 		},
 		{
+			// TODO: what's system collection, users? admins? why no login
 			Name:   "authorized as admin + trying to delete a system collection",
 			Method: http.MethodDelete,
-			Url:    "/api/collections/nologin",
+			Url:    "/api/collections/users",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": adminAuthToken,
 			},
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{}`},
@@ -290,9 +299,9 @@ func TestCollectionDelete(t *testing.T) {
 		{
 			Name:   "authorized as admin + trying to delete a referenced collection",
 			Method: http.MethodDelete,
-			Url:    "/api/collections/demo2",
+			Url:    "/api/collections/demo3",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": adminAuthToken,
 			},
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{}`},
@@ -301,26 +310,11 @@ func TestCollectionDelete(t *testing.T) {
 			},
 		},
 		{
-			Name:   "authorized as admin + deleting a view",
-			Method: http.MethodDelete,
-			Url:    "/api/collections/view2",
-			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
-			},
-			ExpectedStatus: 204,
-			ExpectedEvents: map[string]int{
-				"OnModelBeforeDelete":             1,
-				"OnModelAfterDelete":              1,
-				"OnCollectionBeforeDeleteRequest": 1,
-				"OnCollectionAfterDeleteRequest":  1,
-			},
-		},
-		{
 			Name:   "OnCollectionAfterDeleteRequest error response",
 			Method: http.MethodDelete,
 			Url:    "/api/collections/view2",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": adminAuthToken,
 			},
 			BeforeTestFunc: func(t *testing.T, app *tests.TestApp, e *echo.Echo) {
 				app.OnCollectionAfterDeleteRequest().Add(func(e *core.CollectionDeleteEvent) error {
@@ -329,6 +323,21 @@ func TestCollectionDelete(t *testing.T) {
 			},
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{}`},
+			ExpectedEvents: map[string]int{
+				"OnModelBeforeDelete":             1,
+				"OnModelAfterDelete":              1,
+				"OnCollectionBeforeDeleteRequest": 1,
+				"OnCollectionAfterDeleteRequest":  1,
+			},
+		},
+		{
+			Name:   "authorized as admin + deleting a view",
+			Method: http.MethodDelete,
+			Url:    "/api/collections/view1",
+			RequestHeaders: map[string]string{
+				"Authorization": adminAuthToken,
+			},
+			ExpectedStatus: 204,
 			ExpectedEvents: map[string]int{
 				"OnModelBeforeDelete":             1,
 				"OnModelAfterDelete":              1,
@@ -345,6 +354,8 @@ func TestCollectionDelete(t *testing.T) {
 
 func TestCollectionCreate(t *testing.T) {
 	t.Parallel()
+	adminAuthToken := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzAyMzYxMTQsImlkIjoiMjEwNzk3NzEyNzUyODc1OTI5NiIsInR5cGUiOiJhZG1pbiJ9.ikCEJR-iPIrZwpbsWjtslMdq75suCAEYfaRK7Oz-NZ0"
+	userAuthToken := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2xsZWN0aW9uSWQiOiIyMTA3OTc3Mzk3MDYzMTIyOTQ0IiwiZXhwIjoxNzMwOTEyMTQzLCJpZCI6Il9wYl91c2Vyc19hdXRoXyIsInR5cGUiOiJhdXRoUmVjb3JkIiwidmVyaWZpZWQiOnRydWV9.Us_731ziRkeeZvYvXiXsc6CKEwdKp4rSvsGbG5L1OUQ"
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -359,7 +370,7 @@ func TestCollectionCreate(t *testing.T) {
 			Method: http.MethodPost,
 			Url:    "/api/collections",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.UwD8JvkbQtXpymT09d7J6fdA0aP9g4FJ1GPh_ggEkzc",
+				"Authorization": userAuthToken,
 			},
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
@@ -370,7 +381,7 @@ func TestCollectionCreate(t *testing.T) {
 			Url:    "/api/collections",
 			Body:   strings.NewReader(``),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": adminAuthToken,
 			},
 			ExpectedStatus: 400,
 			ExpectedContent: []string{
@@ -385,7 +396,7 @@ func TestCollectionCreate(t *testing.T) {
 			Url:    "/api/collections",
 			Body:   strings.NewReader(`{"name":"demo1","type":"base","schema":[{"type":"text","name":""}]}`),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": adminAuthToken,
 			},
 			ExpectedStatus: 400,
 			ExpectedContent: []string{
@@ -400,7 +411,7 @@ func TestCollectionCreate(t *testing.T) {
 			Url:    "/api/collections",
 			Body:   strings.NewReader(`{"name":"new","type":"base","schema":[{"type":"text","id":"12345789","name":"test"}]}`),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": adminAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -422,14 +433,14 @@ func TestCollectionCreate(t *testing.T) {
 			Name:   "creating auth collection without specified options",
 			Method: http.MethodPost,
 			Url:    "/api/collections",
-			Body:   strings.NewReader(`{"name":"new","type":"auth","schema":[{"type":"text","id":"12345789","name":"test"}]}`),
+			Body:   strings.NewReader(`{"name":"new_auth","type":"auth","schema":[{"type":"text","id":"12345789","name":"test"}]}`),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": adminAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
 				`"id":`,
-				`"name":"new"`,
+				`"name":"new_auth"`,
 				`"type":"auth"`,
 				`"system":false`,
 				`"schema":[{"system":false,"id":"12345789","name":"test","type":"text","required":false,"presentable":false,"unique":false,"options":{"min":null,"max":null,"pattern":""}}]`,
@@ -447,7 +458,7 @@ func TestCollectionCreate(t *testing.T) {
 			Method: http.MethodPost,
 			Url:    "/api/collections",
 			Body: strings.NewReader(`{
-				"name":"new",
+				"name":"new_more_schema",
 				"type":"auth",
 				"schema":[
 					{"type":"text","name":"email"},
@@ -464,7 +475,7 @@ func TestCollectionCreate(t *testing.T) {
 				]
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": adminAuthToken,
 			},
 			ExpectedStatus: 400,
 			ExpectedContent: []string{
@@ -485,7 +496,7 @@ func TestCollectionCreate(t *testing.T) {
 			Method: http.MethodPost,
 			Url:    "/api/collections",
 			Body: strings.NewReader(`{
-				"name":"new",
+				"name":"new_base_collection_with_reserved_auth_field",
 				"type":"base",
 				"schema":[
 					{"type":"text","name":"email"},
@@ -502,11 +513,11 @@ func TestCollectionCreate(t *testing.T) {
 				]
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": adminAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
-				`"name":"new"`,
+				`"name":"new_base_collection_with_reserved_auth_field"`,
 				`"type":"base"`,
 				`"schema":[{`,
 			},
@@ -522,7 +533,7 @@ func TestCollectionCreate(t *testing.T) {
 			Method: http.MethodPost,
 			Url:    "/api/collections",
 			Body: strings.NewReader(`{
-				"name":"new",
+				"name":"new_base_collection_with_reserved_base_fields",
 				"type":"base",
 				"schema":[
 					{"type":"text","name":"id"},
@@ -534,7 +545,7 @@ func TestCollectionCreate(t *testing.T) {
 				]
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": adminAuthToken,
 			},
 			ExpectedStatus: 400,
 			ExpectedContent: []string{
@@ -558,7 +569,7 @@ func TestCollectionCreate(t *testing.T) {
 				"options":{"allowUsernameAuth": true}
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": adminAuthToken,
 			},
 			ExpectedStatus: 400,
 			ExpectedContent: []string{
@@ -570,9 +581,9 @@ func TestCollectionCreate(t *testing.T) {
 			Name:   "OnCollectionAfterCreateRequest error response",
 			Method: http.MethodPost,
 			Url:    "/api/collections",
-			Body:   strings.NewReader(`{"name":"new","type":"base","schema":[{"type":"text","id":"12345789","name":"test"}]}`),
+			Body:   strings.NewReader(`{"name":"new_on_collection_after_creation","type":"base","schema":[{"type":"text","id":"12345789","name":"test"}]}`),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": adminAuthToken,
 			},
 			BeforeTestFunc: func(t *testing.T, app *tests.TestApp, e *echo.Echo) {
 				app.OnCollectionAfterCreateRequest().Add(func(e *core.CollectionCreateEvent) error {
@@ -602,7 +613,7 @@ func TestCollectionCreate(t *testing.T) {
 				"options":{"query": "invalid"}
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": adminAuthToken,
 			},
 			ExpectedStatus: 400,
 			ExpectedContent: []string{
@@ -615,27 +626,25 @@ func TestCollectionCreate(t *testing.T) {
 			Method: http.MethodPost,
 			Url:    "/api/collections",
 			Body: strings.NewReader(`{
-				"name":"new",
+				"name":"new_view_collection",
 				"type":"view",
 				"schema":[{"type":"text","id":"12345789","name":"ignored!@#$"}],
 				"options": {
-					"query": "select 1 as id from _admins"
+					"query": "select 1 as id from users"
 				}
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": adminAuthToken,
 			},
-			ExpectedStatus: 200,
+			ExpectedStatus: 400,
 			ExpectedContent: []string{
-				`"name":"new"`,
-				`"type":"view"`,
-				`"schema":[]`,
+				`"Failed to create the collection."`,
 			},
 			ExpectedEvents: map[string]int{
-				"OnModelBeforeCreate":             1,
-				"OnModelAfterCreate":              1,
+				"OnModelBeforeCreate":             0,
+				"OnModelAfterCreate":              0,
 				"OnCollectionBeforeCreateRequest": 1,
-				"OnCollectionAfterCreateRequest":  1,
+				"OnCollectionAfterCreateRequest":  0,
 			},
 		},
 
@@ -646,18 +655,18 @@ func TestCollectionCreate(t *testing.T) {
 			Method: http.MethodPost,
 			Url:    "/api/collections",
 			Body: strings.NewReader(`{
-				"name":"new",
+				"name":"new_base_collection_invalid_indexes",
 				"type":"base",
 				"schema":[
 					{"type":"text","name":"test"}
 				],
 				"indexes": [
-					"create index idx_test1 on new (test)",
-					"create index idx_test2 on new (missing)"
+					"create index idx_test1 on new_base_collection_invalid_indexes (test)",
+					"create index idx_test2 on new_base_collection_invalid_indexes (missing)"
 				]
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": adminAuthToken,
 			},
 			ExpectedStatus: 400,
 			ExpectedContent: []string{
@@ -674,22 +683,22 @@ func TestCollectionCreate(t *testing.T) {
 			Method: http.MethodPost,
 			Url:    "/api/collections",
 			Body: strings.NewReader(`{
-				"name":"new",
+				"name":"create_base_collection_with_valid_indexes",
 				"type":"base",
 				"schema":[
 					{"type":"text","name":"test"}
 				],
 				"indexes": [
-					"create index idx_test1 on new (test)",
+					"create index idx_test1 on create_base_collection_with_valid_indexes (test)",
 					"create index idx_test2 on anything (id, test)"
 				]
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": adminAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
-				`"name":"new"`,
+				`"name":"create_base_collection_with_valid_indexes"`,
 				`"type":"base"`,
 				`"indexes":[`,
 				`idx_test1`,
@@ -702,12 +711,12 @@ func TestCollectionCreate(t *testing.T) {
 				"OnCollectionAfterCreateRequest":  1,
 			},
 			AfterTestFunc: func(t *testing.T, app *tests.TestApp, res *http.Response) {
-				indexes, err := app.Dao().TableIndexes("new")
+				indexes, err := app.Dao().TableIndexes("create_base_collection_with_valid_indexes")
 				if err != nil {
 					t.Fatal(err)
 				}
 
-				expected := []string{"idx_test1", "idx_test2"}
+				expected := []string{"idx_test1", "idx_test2", "create_base_collection_with_valid_indexes_pkey"}
 				for name := range indexes {
 					if !list.ExistInSlice(name, expected) {
 						t.Fatalf("Missing index %q", name)
@@ -724,6 +733,8 @@ func TestCollectionCreate(t *testing.T) {
 
 func TestCollectionUpdate(t *testing.T) {
 	t.Parallel()
+	adminAuthToken := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzAyMzYxMTQsImlkIjoiMjEwNzk3NzEyNzUyODc1OTI5NiIsInR5cGUiOiJhZG1pbiJ9.ikCEJR-iPIrZwpbsWjtslMdq75suCAEYfaRK7Oz-NZ0"
+	userAuthToken := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2xsZWN0aW9uSWQiOiIyMTA3OTc3Mzk3MDYzMTIyOTQ0IiwiZXhwIjoxNzMwOTEyMTQzLCJpZCI6Il9wYl91c2Vyc19hdXRoXyIsInR5cGUiOiJhdXRoUmVjb3JkIiwidmVyaWZpZWQiOnRydWV9.Us_731ziRkeeZvYvXiXsc6CKEwdKp4rSvsGbG5L1OUQ"
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -738,7 +749,7 @@ func TestCollectionUpdate(t *testing.T) {
 			Method: http.MethodPatch,
 			Url:    "/api/collections/demo1",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.UwD8JvkbQtXpymT09d7J6fdA0aP9g4FJ1GPh_ggEkzc",
+				"Authorization": userAuthToken,
 			},
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
@@ -749,7 +760,7 @@ func TestCollectionUpdate(t *testing.T) {
 			Url:    "/api/collections/missing",
 			Body:   strings.NewReader(`{}`),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": adminAuthToken,
 			},
 			ExpectedStatus:  404,
 			ExpectedContent: []string{`"data":{}`},
@@ -760,7 +771,7 @@ func TestCollectionUpdate(t *testing.T) {
 			Url:    "/api/collections/demo1",
 			Body:   strings.NewReader(`{}`),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": adminAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -780,7 +791,7 @@ func TestCollectionUpdate(t *testing.T) {
 			Url:    "/api/collections/demo1",
 			Body:   strings.NewReader(`{}`),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": adminAuthToken,
 			},
 			BeforeTestFunc: func(t *testing.T, app *tests.TestApp, e *echo.Echo) {
 				app.OnCollectionAfterUpdateRequest().Add(func(e *core.CollectionUpdateEvent) error {
@@ -805,7 +816,7 @@ func TestCollectionUpdate(t *testing.T) {
 				"type":"auth"
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": adminAuthToken,
 			},
 			ExpectedStatus: 400,
 			ExpectedContent: []string{
@@ -820,7 +831,7 @@ func TestCollectionUpdate(t *testing.T) {
 			Url:    "/api/collections/demo1",
 			Body:   strings.NewReader(`{"name":"new"}`),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": adminAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -860,7 +871,7 @@ func TestCollectionUpdate(t *testing.T) {
 				]
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": adminAuthToken,
 			},
 			ExpectedStatus: 400,
 			ExpectedContent: []string{
@@ -896,7 +907,7 @@ func TestCollectionUpdate(t *testing.T) {
 				]
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": adminAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -939,7 +950,7 @@ func TestCollectionUpdate(t *testing.T) {
 				]
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": adminAuthToken,
 			},
 			ExpectedStatus: 400,
 			ExpectedContent: []string{
@@ -960,7 +971,7 @@ func TestCollectionUpdate(t *testing.T) {
 				"options":{"minPasswordLength": 4}
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": adminAuthToken,
 			},
 			ExpectedStatus: 400,
 			ExpectedContent: []string{
@@ -980,7 +991,7 @@ func TestCollectionUpdate(t *testing.T) {
 				"options":{"query": "invalid"}
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": adminAuthToken,
 			},
 			ExpectedStatus: 400,
 			ExpectedContent: []string{
@@ -1000,9 +1011,9 @@ func TestCollectionUpdate(t *testing.T) {
 				}
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": adminAuthToken,
 			},
-			ExpectedStatus: 200,
+			ExpectedStatus: 400,
 			ExpectedContent: []string{
 				`"name":"view2_update"`,
 				`"type":"view"`,
@@ -1036,7 +1047,7 @@ func TestCollectionUpdate(t *testing.T) {
 				]
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": adminAuthToken,
 			},
 			ExpectedStatus: 400,
 			ExpectedContent: []string{
@@ -1055,7 +1066,7 @@ func TestCollectionUpdate(t *testing.T) {
 				]
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": adminAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -1076,7 +1087,7 @@ func TestCollectionUpdate(t *testing.T) {
 					t.Fatal(err)
 				}
 
-				expected := []string{"idx_test1", "idx_test2"}
+				expected := []string{"idx_test1", "idx_test2", "demo1_pkey"}
 				for name := range indexes {
 					if !list.ExistInSlice(name, expected) {
 						t.Fatalf("Missing index %q", name)
@@ -1094,6 +1105,8 @@ func TestCollectionUpdate(t *testing.T) {
 func TestCollectionsImport(t *testing.T) {
 	t.Parallel()
 
+	adminAuthToken := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzAyMzYxMTQsImlkIjoiMjEwNzk3NzEyNzUyODc1OTI5NiIsInR5cGUiOiJhZG1pbiJ9.ikCEJR-iPIrZwpbsWjtslMdq75suCAEYfaRK7Oz-NZ0"
+	userAuthToken := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2xsZWN0aW9uSWQiOiIyMTA3OTc3Mzk3MDYzMTIyOTQ0IiwiZXhwIjoxNzMwOTEyMTQzLCJpZCI6Il9wYl91c2Vyc19hdXRoXyIsInR5cGUiOiJhdXRoUmVjb3JkIiwidmVyaWZpZWQiOnRydWV9.Us_731ziRkeeZvYvXiXsc6CKEwdKp4rSvsGbG5L1OUQ"
 	totalCollections := 11
 
 	scenarios := []tests.ApiScenario{
@@ -1109,7 +1122,7 @@ func TestCollectionsImport(t *testing.T) {
 			Method: http.MethodPut,
 			Url:    "/api/collections/import",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.UwD8JvkbQtXpymT09d7J6fdA0aP9g4FJ1GPh_ggEkzc",
+				"Authorization": userAuthToken,
 			},
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
@@ -1120,7 +1133,7 @@ func TestCollectionsImport(t *testing.T) {
 			Url:    "/api/collections/import",
 			Body:   strings.NewReader(`{"collections":[]}`),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": adminAuthToken,
 			},
 			ExpectedStatus: 400,
 			ExpectedContent: []string{
@@ -1144,7 +1157,7 @@ func TestCollectionsImport(t *testing.T) {
 			Url:    "/api/collections/import",
 			Body:   strings.NewReader(`{"deleteMissing": true, "collections":[{"name": "test123"}]}`),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": adminAuthToken,
 			},
 			ExpectedStatus: 400,
 			ExpectedContent: []string{
@@ -1186,7 +1199,7 @@ func TestCollectionsImport(t *testing.T) {
 				]
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": adminAuthToken,
 			},
 			ExpectedStatus: 400,
 			ExpectedContent: []string{
@@ -1244,7 +1257,7 @@ func TestCollectionsImport(t *testing.T) {
 				]
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": adminAuthToken,
 			},
 			ExpectedStatus: 204,
 			ExpectedEvents: map[string]int{
@@ -1345,7 +1358,7 @@ func TestCollectionsImport(t *testing.T) {
 				]
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": adminAuthToken,
 			},
 			ExpectedStatus: 204,
 			ExpectedEvents: map[string]int{
@@ -1405,7 +1418,7 @@ func TestCollectionsImport(t *testing.T) {
 				]
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": adminAuthToken,
 			},
 			BeforeTestFunc: func(t *testing.T, app *tests.TestApp, e *echo.Echo) {
 				app.OnCollectionsAfterImportRequest().Add(func(e *core.CollectionsImportEvent) error {

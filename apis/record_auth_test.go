@@ -136,7 +136,7 @@ func TestRecordAuthWithPassword(t *testing.T) {
 			Url:    "/api/collections/nologin/auth-with-password",
 			Body: strings.NewReader(`{
 				"identity":"test_username",
-				"password":"1234567890"
+				"password":"123467890"
 			}`),
 			ExpectedStatus: 400,
 			ExpectedContent: []string{

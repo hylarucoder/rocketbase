@@ -1,6 +1,7 @@
 package apis
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/hylarucoder/rocketbase/core"
@@ -135,6 +136,7 @@ func (api *collectionApi) update(c echo.Context) error {
 
 			return api.app.OnCollectionBeforeUpdateRequest().Trigger(event, func(e *core.CollectionUpdateEvent) error {
 				if err := next(e.Collection); err != nil {
+					fmt.Println(err.Error())
 					return NewBadRequestError("Failed to update the collection.", err)
 				}
 

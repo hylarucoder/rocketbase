@@ -10,14 +10,14 @@ import (
 func TestRecordAuth(t *testing.T) {
 	app, _ := NewTestApp()
 	defer app.Cleanup()
-	//record, _ := app.Dao().FindFirstRecordByFilter(""+
-	//	"users",
-	//	`email = 'test@example.com'`,
-	//)
 	record, _ := app.Dao().FindFirstRecordByFilter(""+
-		"clients",
+		"users",
 		`email = 'test@example.com'`,
 	)
+	//record, _ := app.Dao().FindFirstRecordByFilter(""+
+	//	"clients",
+	//	`email = 'test@example.com'`,
+	//)
 	token, _ := security.NewJWT(
 		jwt.MapClaims{
 			"id":           record.Collection().Id,
