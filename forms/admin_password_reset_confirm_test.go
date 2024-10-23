@@ -2,19 +2,19 @@ package forms_test
 
 import (
 	"errors"
-	"fmt"
 	"testing"
 
 	"github.com/hylarucoder/rocketbase/forms"
 	"github.com/hylarucoder/rocketbase/models"
 	"github.com/hylarucoder/rocketbase/tests"
 	"github.com/hylarucoder/rocketbase/tools/security"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/suite"
 )
 
-func (suite *AdminPasswordResetConfirmTestSuite) TestAdminPasswordResetConfirmValidateAndSubmit() {
-	app := suite.App
+func TestAdminPasswordResetConfirmValidateAndSubmit(t *testing.T) {
+	t.Parallel()
+
+	app, _ := tests.NewTestApp()
+	defer app.Cleanup()
 
 	form := forms.NewAdminPasswordResetConfirm(app)
 
@@ -53,7 +53,7 @@ func (suite *AdminPasswordResetConfirmTestSuite) TestAdminPasswordResetConfirmVa
 		},
 	}
 
-	for _, s := range scenarios {
+	for i, s := range scenarios {
 		form.Token = s.token
 		form.Password = s.password
 		form.PasswordConfirm = s.passwordConfirm
@@ -73,9 +73,15 @@ func (suite *AdminPasswordResetConfirmTestSuite) TestAdminPasswordResetConfirmVa
 		if s.expectError {
 			expectInterceptorCalls = 0
 		}
-		assert.Equal(suite.T(), expectInterceptorCalls, interceptorCalls)
+		if interceptorCalls != expectInterceptorCalls {
+			t.Errorf("[%d] Expected interceptor to be called %d, got %d", i, expectInterceptorCalls, interceptorCalls)
+		}
 
-		assert.Equal(suite.T(), s.expectError, err != nil)
+		hasErr := err != nil
+		if hasErr != s.expectError {
+			t.Errorf("(%d) Expected hasErr to be %v, got %v (%v)", i, s.expectError, hasErr, err)
+			continue
+		}
 
 		if s.expectError {
 			continue
@@ -84,18 +90,25 @@ func (suite *AdminPasswordResetConfirmTestSuite) TestAdminPasswordResetConfirmVa
 		claims, _ := security.ParseUnverifiedJWT(s.token)
 		tokenAdminId := claims["id"]
 
-		assert.Equal(suite.T(), tokenAdminId, admin.Id)
+		if admin.Id != tokenAdminId {
+			t.Errorf("(%d) Expected admin with id %s to be returned, got %v", i, tokenAdminId, admin)
+		}
 
-		assert.True(suite.T(), admin.ValidatePassword(form.Password))
+		if !admin.ValidatePassword(form.Password) {
+			t.Errorf("(%d) Expected the admin password to have been updated to %q", i, form.Password)
+		}
 	}
 }
 
-func (s *AdminPasswordResetConfirmTestSuite) TestAdminPasswordResetConfirmInterceptors() {
-	testApp := s.App
+func TestAdminPasswordResetConfirmInterceptors(t *testing.T) {
+	t.Parallel()
+
+	testApp, _ := tests.NewTestApp()
+	defer testApp.Cleanup()
 
 	admin, err := testApp.Dao().FindAdminByEmail("test@example.com")
 	if err != nil {
-		s.T().Fatal(err)
+		t.Fatal(err)
 	}
 
 	form := forms.NewAdminPasswordResetConfirm(testApp)
@@ -123,37 +136,19 @@ func (s *AdminPasswordResetConfirmTestSuite) TestAdminPasswordResetConfirmInterc
 	}
 
 	_, submitErr := form.Submit(interceptor1, interceptor2)
-	assert.Equal(s.T(), testErr, submitErr)
+	if submitErr != testErr {
+		t.Fatalf("Expected submitError %v, got %v", testErr, submitErr)
+	}
 
-	assert.True(s.T(), interceptor1Called)
-	assert.True(s.T(), interceptor2Called)
-	assert.NotEqual(s.T(), admin.TokenKey, interceptorTokenKey)
-}
+	if !interceptor1Called {
+		t.Fatalf("Expected interceptor1 to be called")
+	}
 
-type AdminPasswordResetConfirmTestSuite struct {
-	suite.Suite
-	App *tests.TestApp
-	Var int
-}
+	if !interceptor2Called {
+		t.Fatalf("Expected interceptor2 to be called")
+	}
 
-func (s *AdminPasswordResetConfirmTestSuite) SetupTest() {
-	app, _ := tests.NewTestApp()
-	s.Var = 5
-	s.App = app
-}
-
-func (s *AdminPasswordResetConfirmTestSuite) TearDownTest() {
-	s.App.Cleanup()
-}
-
-func (s *AdminPasswordResetConfirmTestSuite) SetupSuite() {
-	fmt.Println("setup suite")
-}
-
-func (s *AdminPasswordResetConfirmTestSuite) TearDownSuite() {
-	fmt.Println("teardown suite")
-}
-
-func TestAdminPasswordResetConfirmTestSuite(t *testing.T) {
-	suite.Run(t, new(AdminPasswordResetConfirmTestSuite))
+	if interceptorTokenKey == admin.TokenKey {
+		t.Fatalf("Expected the form model to be filled before calling the interceptors")
+	}
 }

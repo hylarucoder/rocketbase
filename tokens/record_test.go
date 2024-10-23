@@ -1,119 +1,137 @@
 package tokens_test
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/hylarucoder/rocketbase/tests"
 	"github.com/hylarucoder/rocketbase/tokens"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/suite"
 )
 
-func (suite *RecordTestSuite) TestNewRecordAuthToken() {
-	app := suite.App
-	assert.NotNil(suite.T(), app)
+func TestNewRecordAuthToken(t *testing.T) {
+	t.Parallel()
+
+	app, err := tests.NewTestApp()
+	if err != nil {
+		t.Fatal("Failed to create new test app:", err)
+	}
+
+	defer app.Cleanup()
 
 	user, err := app.Dao().FindAuthRecordByEmail("users", "test@example.com")
-	assert.Nil(suite.T(), err)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	token, err := tokens.NewRecordAuthToken(app, user)
-	assert.Nil(suite.T(), err)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	tokenRecord, _ := app.Dao().FindAuthRecordByToken(
 		token,
 		app.Settings().RecordAuthToken.Secret,
 	)
-	assert.Equal(suite.T(), user.Id, tokenRecord.Id)
+	if tokenRecord == nil || tokenRecord.Id != user.Id {
+		t.Fatalf("Expected auth record %v, got %v", user, tokenRecord)
+	}
 }
 
-func (suite *RecordTestSuite) TestNewRecordVerifyToken() {
-	app := suite.App
+func TestNewRecordVerifyToken(t *testing.T) {
+	t.Parallel()
+
+	app, _ := tests.NewTestApp()
+	defer app.Cleanup()
 
 	user, err := app.Dao().FindAuthRecordByEmail("users", "test@example.com")
-	assert.Nil(suite.T(), err)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	token, err := tokens.NewRecordVerifyToken(app, user)
-	assert.Nil(suite.T(), err)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	tokenRecord, _ := app.Dao().FindAuthRecordByToken(
 		token,
 		app.Settings().RecordVerificationToken.Secret,
 	)
-	assert.Equal(suite.T(), user.Id, tokenRecord.Id)
+	if tokenRecord == nil || tokenRecord.Id != user.Id {
+		t.Fatalf("Expected auth record %v, got %v", user, tokenRecord)
+	}
 }
 
-func (suite *RecordTestSuite) TestNewRecordResetPasswordToken() {
-	app := suite.App
+func TestNewRecordResetPasswordToken(t *testing.T) {
+	t.Parallel()
+
+	app, _ := tests.NewTestApp()
+	defer app.Cleanup()
 
 	user, err := app.Dao().FindAuthRecordByEmail("users", "test@example.com")
-	assert.Nil(suite.T(), err)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	token, err := tokens.NewRecordResetPasswordToken(app, user)
-	assert.Nil(suite.T(), err)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	tokenRecord, _ := app.Dao().FindAuthRecordByToken(
 		token,
 		app.Settings().RecordPasswordResetToken.Secret,
 	)
-	assert.Equal(suite.T(), user.Id, tokenRecord.Id)
+	if tokenRecord == nil || tokenRecord.Id != user.Id {
+		t.Fatalf("Expected auth record %v, got %v", user, tokenRecord)
+	}
 }
 
-func (suite *RecordTestSuite) TestNewRecordChangeEmailToken() {
-	app := suite.App
+func TestNewRecordChangeEmailToken(t *testing.T) {
+	t.Parallel()
+
+	app, _ := tests.NewTestApp()
+	defer app.Cleanup()
+
 	user, err := app.Dao().FindAuthRecordByEmail("users", "test@example.com")
-	assert.Nil(suite.T(), err)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	token, err := tokens.NewRecordChangeEmailToken(app, user, "test_new@example.com")
-	assert.Nil(suite.T(), err)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	tokenRecord, _ := app.Dao().FindAuthRecordByToken(
 		token,
 		app.Settings().RecordEmailChangeToken.Secret,
 	)
-	assert.Equal(suite.T(), user.Id, tokenRecord.Id)
+	if tokenRecord == nil || tokenRecord.Id != user.Id {
+		t.Fatalf("Expected auth record %v, got %v", user, tokenRecord)
+	}
 }
 
-func (suite *RecordTestSuite) TestNewRecordFileToken() {
-	app := suite.App
+func TestNewRecordFileToken(t *testing.T) {
+	t.Parallel()
+
+	app, _ := tests.NewTestApp()
+	defer app.Cleanup()
 
 	user, err := app.Dao().FindAuthRecordByEmail("users", "test@example.com")
-	assert.Nil(suite.T(), err)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	token, err := tokens.NewRecordFileToken(app, user)
-	assert.Nil(suite.T(), err)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	tokenRecord, _ := app.Dao().FindAuthRecordByToken(
 		token,
 		app.Settings().RecordFileToken.Secret,
 	)
-	assert.Equal(suite.T(), user.Id, tokenRecord.Id)
-}
-
-type RecordTestSuite struct {
-	suite.Suite
-	App *tests.TestApp
-	Var int
-}
-
-func (suite *RecordTestSuite) SetupTest() {
-	app, _ := tests.NewTestApp()
-	suite.Var = 5
-	suite.App = app
-}
-
-func (suite *RecordTestSuite) TearDownTest() {
-	suite.App.Cleanup()
-}
-
-func (suite *RecordTestSuite) SetupSuite() {
-	fmt.Println("setup suite")
-}
-
-func (suite *RecordTestSuite) TearDownSuite() {
-	fmt.Println("teardown suite")
-}
-
-func TestRecordTestSuite(t *testing.T) {
-	suite.Run(t, new(RecordTestSuite))
+	if tokenRecord == nil || tokenRecord.Id != user.Id {
+		t.Fatalf("Expected auth record %v, got %v", user, tokenRecord)
+	}
 }

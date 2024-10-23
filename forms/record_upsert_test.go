@@ -12,9 +12,6 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/suite"
-
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/hylarucoder/rocketbase/core"
 	"github.com/hylarucoder/rocketbase/daos"
@@ -1154,26 +1151,24 @@ func TestRecordUpsertAddAndRemoveFiles(t *testing.T) {
 	}
 }
 
-func (s *RecordUpsertTestSuite) TestNumbers() {
-	assert.Equal(s.T(), 5, s.Var)
-}
-func (s *RecordUpsertTestSuite) TestRecordUpsertUploadFailure() {
-
-	app := s.App
+func TestRecordUpsertUploadFailure(t *testing.T) {
+	app, _ := tests.NewTestApp()
+	defer app.Cleanup()
 
 	collection, err := app.Dao().FindCollectionByNameOrId("demo3")
-
-	assert.Nil(s.T(), err)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	testDaos := []*daos.Dao{
 		app.Dao(),                // with hooks
 		daos.New(app.Dao().DB()), // without hooks
 	}
 
-	for _, dao := range testDaos {
+	for i, dao := range testDaos {
 		// create with invalid file
 		{
-			// prefix := fmt.Sprintf("%d-create", i)
+			prefix := fmt.Sprintf("%d-create", i)
 
 			new := models.NewRecord(collection)
 			new.Id = "123456789012341"
@@ -1183,58 +1178,36 @@ func (s *RecordUpsertTestSuite) TestRecordUpsertUploadFailure() {
 			form.LoadData(map[string]any{"title": "new_test"})
 			form.AddFiles("files", &filesystem.File{Reader: &filesystem.PathReader{Path: "/tmp/__missing__"}})
 
-			assert.NotNil(s.T(), form.Submit())
+			if err := form.Submit(); err == nil {
+				t.Fatalf("[%s] Expected error, got nil", prefix)
+			}
 
-			r, err := app.Dao().FindRecordById(collection.Id, new.Id)
-			assert.Error(s.T(), err)
-			assert.Nil(s.T(), r)
+			if r, err := app.Dao().FindRecordById(collection.Id, new.Id); err == nil {
+				t.Fatalf("[%s] Expected the inserted record to be deleted, found \n%v", prefix, r.PublicExport())
+			}
 		}
 
 		// update with invalid file
 		{
-			// prefix := fmt.Sprintf("%d-update", i)
+			prefix := fmt.Sprintf("%d-update", i)
 
 			record, err := app.Dao().FindRecordById(collection.Id, "1tmknxy2868d869")
-			assert.Nil(s.T(), err)
+			if err != nil {
+				t.Fatal(err)
+			}
 
 			form := forms.NewRecordUpsert(app, record)
 			form.SetDao(dao)
 			form.LoadData(map[string]any{"title": "update_test"})
 			form.AddFiles("files", &filesystem.File{Reader: &filesystem.PathReader{Path: "/tmp/__missing__"}})
 
-			assert.NotNil(s.T(), form.Submit())
+			if err := form.Submit(); err == nil {
+				t.Fatalf("[%s] Expected error, got nil", prefix)
+			}
 
-			r, err := app.Dao().FindRecordById(collection.Id, record.Id)
-			assert.Error(s.T(), err)
-			assert.Nil(s.T(), r)
+			if r, _ := app.Dao().FindRecordById(collection.Id, record.Id); r == nil || r.GetString("title") == "update_test" {
+				t.Fatalf("[%s] Expected the record changes to be reverted, got \n%v", prefix, r.PublicExport())
+			}
 		}
 	}
-}
-
-type RecordUpsertTestSuite struct {
-	suite.Suite
-	App *tests.TestApp
-	Var int
-}
-
-func (s *RecordUpsertTestSuite) SetupTest() {
-	app, _ := tests.NewTestApp()
-	s.Var = 5
-	s.App = app
-}
-
-func (s *RecordUpsertTestSuite) TearDownTest() {
-	s.App.Cleanup()
-}
-
-func (s *RecordUpsertTestSuite) SetupSuite() {
-	fmt.Println("setup suite")
-}
-
-func (s *RecordUpsertTestSuite) TearDownSuite() {
-	fmt.Println("teardown suite")
-}
-
-func TestRecordUpsertTestSuite(t *testing.T) {
-	suite.Run(t, new(RecordUpsertTestSuite))
 }

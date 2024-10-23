@@ -234,9 +234,6 @@ func (r *Runner) saveAppliedMigration(tx dbx.Builder, file string) error {
 		// !CHANGED: use time.Now() for timestamptz
 		"applied": time.Now(),
 	}).Execute()
-	if err != nil {
-		fmt.Printf("Failed to save applied migration info for %s: %v\n", file, err)
-	}
 
 	return err
 }

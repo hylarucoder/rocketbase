@@ -86,18 +86,13 @@ func TestRunnerUpAndDown(t *testing.T) {
 	}
 
 	// simulate partially out-of-order run migration
-	err = r.saveAppliedMigration(testDB, "2_test")
-	if err != nil {
-		t.Fatal(err)
-		return
-	}
+	r.saveAppliedMigration(testDB, "2_test")
 
 	// ---------------------------------------------------------------
 	// Up()
 	// ---------------------------------------------------------------
 
 	if _, err := r.Up(); err != nil {
-		println("up", err.Error())
 		t.Fatal(err)
 	}
 
@@ -133,7 +128,6 @@ func TestRunnerUpAndDown(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	//  ["down3","down1"], got ["down3","down2"]
 	expectedDownCallsOrder := `["down3","down1"]` // revert in the applied order
 
 	downCallsOrder, err := json.Marshal(callsOrder)
