@@ -12,6 +12,8 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/stretchr/testify/suite"
+
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/hylarucoder/rocketbase/core"
 	"github.com/hylarucoder/rocketbase/daos"
@@ -40,9 +42,9 @@ func hasRecordFile(app core.App, record *models.Record, filename string) bool {
 	return exists
 }
 
-func TestNewRecordUpsert(t *testing.T) {
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
+func (suite *RecordUpsertTestSuite) TestNewRecordUpsert() {
+	t := suite.T()
+	app := suite.App
 
 	collection, _ := app.Dao().FindCollectionByNameOrId("demo2")
 	record := models.NewRecord(collection)
@@ -57,9 +59,9 @@ func TestNewRecordUpsert(t *testing.T) {
 	}
 }
 
-func TestRecordUpsertLoadRequestUnsupported(t *testing.T) {
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
+func (suite *RecordUpsertTestSuite) TestRecordUpsertLoadRequestUnsupported() {
+	t := suite.T()
+	app := suite.App
 
 	record, err := app.Dao().FindRecordById("demo2", "3479948460562584584")
 	if err != nil {
@@ -77,9 +79,9 @@ func TestRecordUpsertLoadRequestUnsupported(t *testing.T) {
 	}
 }
 
-func TestRecordUpsertLoadRequestJson(t *testing.T) {
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
+func (suite *RecordUpsertTestSuite) TestRecordUpsertLoadRequestJson() {
+	t := suite.T()
+	app := suite.App
 
 	record, err := app.Dao().FindRecordById("demo1", "3479947686461838339")
 	if err != nil {
@@ -141,9 +143,9 @@ func TestRecordUpsertLoadRequestJson(t *testing.T) {
 	}
 }
 
-func TestRecordUpsertLoadRequestMultipart(t *testing.T) {
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
+func (suite *RecordUpsertTestSuite) TestRecordUpsertLoadRequestMultipart() {
+	t := suite.T()
+	app := suite.App
 
 	record, err := app.Dao().FindRecordById("demo1", "3479947686461838339")
 	if err != nil {
@@ -204,9 +206,9 @@ func TestRecordUpsertLoadRequestMultipart(t *testing.T) {
 	}
 }
 
-func TestRecordUpsertLoadData(t *testing.T) {
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
+func (suite *RecordUpsertTestSuite) TestRecordUpsertLoadData() {
+	t := suite.T()
+	app := suite.App
 
 	record, err := app.Dao().FindRecordById("demo2", "3479948460512252935")
 	if err != nil {
@@ -232,9 +234,9 @@ func TestRecordUpsertLoadData(t *testing.T) {
 	}
 }
 
-func TestRecordUpsertDrySubmitFailure(t *testing.T) {
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
+func (suite *RecordUpsertTestSuite) TestRecordUpsertDrySubmitFailure() {
+	t := suite.T()
+	app := suite.App
 
 	collection, _ := app.Dao().FindCollectionByNameOrId("demo1")
 	recordBefore, err := app.Dao().FindRecordById(collection.Id, "3479947686587667460")
@@ -286,9 +288,9 @@ func TestRecordUpsertDrySubmitFailure(t *testing.T) {
 	}
 }
 
-func TestRecordUpsertDrySubmitSuccess(t *testing.T) {
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
+func (suite *RecordUpsertTestSuite) TestRecordUpsertDrySubmitSuccess() {
+	t := suite.T()
+	app := suite.App
 
 	collection, _ := app.Dao().FindCollectionByNameOrId("demo1")
 	recordBefore, err := app.Dao().FindRecordById(collection.Id, "3479947686461838339")
@@ -342,9 +344,9 @@ func TestRecordUpsertDrySubmitSuccess(t *testing.T) {
 	}
 }
 
-func TestRecordUpsertDrySubmitWithNestedTx(t *testing.T) {
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
+func (suite *RecordUpsertTestSuite) TestRecordUpsertDrySubmitWithNestedTx() {
+	t := suite.T()
+	app := suite.App
 
 	collection, _ := app.Dao().FindCollectionByNameOrId("demo1")
 	recordBefore, err := app.Dao().FindRecordById(collection.Id, "3479947686461838339")
@@ -402,9 +404,9 @@ func TestRecordUpsertDrySubmitWithNestedTx(t *testing.T) {
 	}
 }
 
-func TestRecordUpsertSubmitFailure(t *testing.T) {
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
+func (suite *RecordUpsertTestSuite) TestRecordUpsertSubmitFailure() {
+	t := suite.T()
+	app := suite.App
 
 	collection, err := app.Dao().FindCollectionByNameOrId("demo1")
 	if err != nil {
@@ -484,9 +486,9 @@ func TestRecordUpsertSubmitFailure(t *testing.T) {
 	}
 }
 
-func TestRecordUpsertSubmitSuccess(t *testing.T) {
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
+func (suite *RecordUpsertTestSuite) TestRecordUpsertSubmitSuccess() {
+	t := suite.T()
+	app := suite.App
 
 	collection, _ := app.Dao().FindCollectionByNameOrId("demo1")
 	recordBefore, err := app.Dao().FindRecordById(collection.Id, "3479947686461838339")
@@ -554,9 +556,9 @@ func TestRecordUpsertSubmitSuccess(t *testing.T) {
 	}
 }
 
-func TestRecordUpsertSubmitInterceptors(t *testing.T) {
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
+func (suite *RecordUpsertTestSuite) TestRecordUpsertSubmitInterceptors() {
+	t := suite.T()
+	app := suite.App
 
 	collection, _ := app.Dao().FindCollectionByNameOrId("demo3")
 	record, err := app.Dao().FindRecordById(collection.Id, "mk5fmymtx4wsprk")
@@ -605,9 +607,9 @@ func TestRecordUpsertSubmitInterceptors(t *testing.T) {
 	}
 }
 
-func TestRecordUpsertWithCustomId(t *testing.T) {
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
+func (suite *RecordUpsertTestSuite) TestRecordUpsertWithCustomId() {
+	t := suite.T()
+	app := suite.App
 
 	collection, err := app.Dao().FindCollectionByNameOrId("demo3")
 	if err != nil {
@@ -715,9 +717,9 @@ func TestRecordUpsertWithCustomId(t *testing.T) {
 	}
 }
 
-func TestRecordUpsertAuthRecord(t *testing.T) {
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
+func (suite *RecordUpsertTestSuite) TestRecordUpsertAuthRecord() {
+	t := suite.T()
+	app := suite.App
 
 	scenarios := []struct {
 		name         string
@@ -949,9 +951,9 @@ func TestRecordUpsertAuthRecord(t *testing.T) {
 	}
 }
 
-func TestRecordUpsertUniqueValidator(t *testing.T) {
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
+func (suite *RecordUpsertTestSuite) TestRecordUpsertUniqueValidator() {
+	app := suite.App
+	t := suite.T()
 
 	// create a dummy collection
 	collection := &models.Collection{
@@ -1057,9 +1059,9 @@ func TestRecordUpsertUniqueValidator(t *testing.T) {
 	}
 }
 
-func TestRecordUpsertAddAndRemoveFiles(t *testing.T) {
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
+func (suite *RecordUpsertTestSuite) TestRecordUpsertAddAndRemoveFiles() {
+	app := suite.App
+	t := suite.T()
 
 	recordBefore, err := app.Dao().FindRecordById("demo1", "3479947686461838339")
 	if err != nil {
@@ -1151,9 +1153,9 @@ func TestRecordUpsertAddAndRemoveFiles(t *testing.T) {
 	}
 }
 
-func TestRecordUpsertUploadFailure(t *testing.T) {
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
+func (suite *RecordUpsertTestSuite) TestRecordUpsertUploadFailure() {
+	app := suite.App
+	t := suite.T()
 
 	collection, err := app.Dao().FindCollectionByNameOrId("demo3")
 	if err != nil {
@@ -1210,4 +1212,24 @@ func TestRecordUpsertUploadFailure(t *testing.T) {
 			}
 		}
 	}
+}
+
+type RecordUpsertTestSuite struct {
+	suite.Suite
+	App *tests.TestApp
+	Var int
+}
+
+func (suite *RecordUpsertTestSuite) SetupSuite() {
+	app, _ := tests.NewTestApp()
+	suite.Var = 5
+	suite.App = app
+}
+
+func (suite *RecordUpsertTestSuite) TearDownSuite() {
+	suite.App.Cleanup()
+}
+
+func TestRecordUpsertTestSuite(t *testing.T) {
+	suite.Run(t, new(RecordUpsertTestSuite))
 }

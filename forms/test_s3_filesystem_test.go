@@ -6,13 +6,13 @@ import (
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/hylarucoder/rocketbase/forms"
 	"github.com/hylarucoder/rocketbase/tests"
+	"github.com/stretchr/testify/suite"
 )
 
-func TestS3FilesystemValidate(t *testing.T) {
-	t.Parallel()
+func (suite *S3FilesystemTestSuite) TestS3FilesystemValidate() {
+	t := suite.T()
 
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
+	app := suite.App
 
 	scenarios := []struct {
 		name           string
@@ -67,11 +67,10 @@ func TestS3FilesystemValidate(t *testing.T) {
 	}
 }
 
-func TestS3FilesystemSubmitFailure(t *testing.T) {
-	t.Parallel()
+func (suite *S3FilesystemTestSuite) TestS3FilesystemSubmitFailure() {
+	t := suite.T()
 
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
+	app := suite.App
 
 	// check if validate was called
 	{
@@ -104,4 +103,24 @@ func TestS3FilesystemSubmitFailure(t *testing.T) {
 			t.Fatalf("Didn't expect validation.Error, got %v", result)
 		}
 	}
+}
+
+type S3FilesystemTestSuite struct {
+	suite.Suite
+	App *tests.TestApp
+	Var int
+}
+
+func (suite *S3FilesystemTestSuite) SetupSuite() {
+	app, _ := tests.NewTestApp()
+	suite.Var = 5
+	suite.App = app
+}
+
+func (suite *S3FilesystemTestSuite) TearDownSuite() {
+	suite.App.Cleanup()
+}
+
+func TestS3FilesystemTestSuite(t *testing.T) {
+	suite.Run(t, new(S3FilesystemTestSuite))
 }

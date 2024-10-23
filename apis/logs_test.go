@@ -6,10 +6,11 @@ import (
 
 	"github.com/hylarucoder/rocketbase/tests"
 	"github.com/labstack/echo/v5"
+	"github.com/stretchr/testify/suite"
 )
 
-func TestLogsList(t *testing.T) {
-	t.Parallel()
+func (suite *LogsTestSuite) TestLogsList() {
+	t := suite.T()
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -75,12 +76,12 @@ func TestLogsList(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t)
+		scenario.Test(t, nil)
 	}
 }
 
-func TestLogView(t *testing.T) {
-	t.Parallel()
+func (suite *LogsTestSuite) TestLogView() {
+	t := suite.T()
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -135,12 +136,12 @@ func TestLogView(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t)
+		scenario.Test(t, nil)
 	}
 }
 
-func TestLogsStats(t *testing.T) {
-	t.Parallel()
+func (suite *LogsTestSuite) TestLogsStats() {
+	t := suite.T()
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -197,6 +198,26 @@ func TestLogsStats(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t)
+		scenario.Test(t, nil)
 	}
+}
+
+type LogsTestSuite struct {
+	suite.Suite
+	App *tests.TestApp
+	Var int
+}
+
+func (suite *LogsTestSuite) SetupSuite() {
+	app, _ := tests.NewTestApp()
+	suite.Var = 5
+	suite.App = app
+}
+
+func (suite *LogsTestSuite) TearDownSuite() {
+	suite.App.Cleanup()
+}
+
+func TestLogsTestSuite(t *testing.T) {
+	suite.Run(t, new(LogsTestSuite))
 }

@@ -7,10 +7,12 @@ import (
 
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/hylarucoder/rocketbase/apis"
+	"github.com/hylarucoder/rocketbase/tests"
+	"github.com/stretchr/testify/suite"
 )
 
-func TestNewApiErrorWithRawData(t *testing.T) {
-	t.Parallel()
+func (suite *ApiErrorTestSuite) TestNewApiErrorWithRawData() {
+	t := suite.T()
 
 	e := apis.NewApiError(
 		300,
@@ -34,8 +36,8 @@ func TestNewApiErrorWithRawData(t *testing.T) {
 	}
 }
 
-func TestNewApiErrorWithValidationData(t *testing.T) {
-	t.Parallel()
+func (suite *ApiErrorTestSuite) TestNewApiErrorWithValidationData() {
+	t := suite.T()
 
 	e := apis.NewApiError(
 		300,
@@ -69,8 +71,8 @@ func TestNewApiErrorWithValidationData(t *testing.T) {
 	}
 }
 
-func TestNewNotFoundError(t *testing.T) {
-	t.Parallel()
+func (suite *ApiErrorTestSuite) TestNewNotFoundError() {
+	t := suite.T()
 
 	scenarios := []struct {
 		message  string
@@ -92,8 +94,8 @@ func TestNewNotFoundError(t *testing.T) {
 	}
 }
 
-func TestNewBadRequestError(t *testing.T) {
-	t.Parallel()
+func (suite *ApiErrorTestSuite) TestNewBadRequestError() {
+	t := suite.T()
 
 	scenarios := []struct {
 		message  string
@@ -115,8 +117,8 @@ func TestNewBadRequestError(t *testing.T) {
 	}
 }
 
-func TestNewForbiddenError(t *testing.T) {
-	t.Parallel()
+func (suite *ApiErrorTestSuite) TestNewForbiddenError() {
+	t := suite.T()
 
 	scenarios := []struct {
 		message  string
@@ -138,8 +140,8 @@ func TestNewForbiddenError(t *testing.T) {
 	}
 }
 
-func TestNewUnauthorizedError(t *testing.T) {
-	t.Parallel()
+func (suite *ApiErrorTestSuite) TestNewUnauthorizedError() {
+	t := suite.T()
 
 	scenarios := []struct {
 		message  string
@@ -159,4 +161,24 @@ func TestNewUnauthorizedError(t *testing.T) {
 			t.Errorf("(%d) Expected \n%v, \ngot \n%v", i, scenario.expected, string(result))
 		}
 	}
+}
+
+type ApiErrorTestSuite struct {
+	suite.Suite
+	App *tests.TestApp
+	Var int
+}
+
+func (suite *ApiErrorTestSuite) SetupSuite() {
+	app, _ := tests.NewTestApp()
+	suite.Var = 5
+	suite.App = app
+}
+
+func (suite *ApiErrorTestSuite) TearDownSuite() {
+	suite.App.Cleanup()
+}
+
+func TestApiErrorTestSuite(t *testing.T) {
+	suite.Run(t, new(ApiErrorTestSuite))
 }

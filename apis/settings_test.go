@@ -15,6 +15,7 @@ import (
 	"github.com/hylarucoder/rocketbase/core"
 	"github.com/hylarucoder/rocketbase/tests"
 	"github.com/labstack/echo/v5"
+	"github.com/stretchr/testify/suite"
 )
 
 func TestSettingsList(t *testing.T) {
@@ -94,7 +95,7 @@ func TestSettingsList(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t)
+		scenario.Test(t, nil)
 	}
 }
 
@@ -277,7 +278,7 @@ func TestSettingsSet(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t)
+		scenario.Test(t, nil)
 	}
 }
 
@@ -345,7 +346,7 @@ func TestSettingsTestS3(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t)
+		scenario.Test(t, nil)
 	}
 }
 
@@ -511,7 +512,7 @@ func TestSettingsTestEmail(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t)
+		scenario.Test(t, nil)
 	}
 }
 
@@ -626,6 +627,26 @@ func TestGenerateAppleClientSecret(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t)
+		scenario.Test(t, nil)
 	}
+}
+
+type SettingsTestSuite struct {
+	suite.Suite
+	App *tests.TestApp
+	Var int
+}
+
+func (suite *SettingsTestSuite) SetupSuite() {
+	app, _ := tests.NewTestApp()
+	suite.Var = 5
+	suite.App = app
+}
+
+func (suite *SettingsTestSuite) TearDownSuite() {
+	suite.App.Cleanup()
+}
+
+func TestRecordUpsertTestSuite(t *testing.T) {
+	suite.Run(t, new(SettingsTestSuite))
 }

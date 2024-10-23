@@ -16,9 +16,12 @@ import (
 	"github.com/hylarucoder/rocketbase/tools/subscriptions"
 	"github.com/labstack/echo/v5"
 	"github.com/pocketbase/dbx"
+	"github.com/stretchr/testify/suite"
 )
 
-func TestRealtimeConnect(t *testing.T) {
+func (suite *RealtimeTestSuite) TestRealtimeConnect() {
+	t := suite.T()
+
 	scenarios := []tests.ApiScenario{
 		{
 			Method:         http.MethodGet,
@@ -92,11 +95,11 @@ func TestRealtimeConnect(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t)
+		scenario.Test(t, nil)
 	}
 }
 
-func TestRealtimeSubscribe(t *testing.T) {
+func (suite *RealtimeTestSuite) TestRealtimeSubscribe() {
 	client := subscriptions.NewDefaultClient()
 
 	resetClient := func() {
@@ -239,61 +242,60 @@ func TestRealtimeSubscribe(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t)
+		scenario.Test(t, nil)
 	}
 }
 
-func TestRealtimeAuthRecordDeleteEvent(t *testing.T) {
-	testApp, _ := tests.NewTestApp()
-	defer testApp.Cleanup()
+func (suite *RealtimeTestSuite) TestRealtimeAuthRecordDeleteEvent() {
+	t := suite.T()
+	app := suite.App
+	apis.InitApi(app)
 
-	apis.InitApi(testApp)
-
-	authRecord, err := testApp.Dao().FindFirstRecordByData("users", "email", "test@example.com")
+	authRecord, err := app.Dao().FindFirstRecordByData("users", "email", "test@example.com")
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	client := subscriptions.NewDefaultClient()
 	client.Set(apis.ContextAuthRecordKey, authRecord)
-	testApp.SubscriptionsBroker().Register(client)
+	app.SubscriptionsBroker().Register(client)
 
 	e := new(core.ModelEvent)
-	e.Dao = testApp.Dao()
+	e.Dao = app.Dao()
 	e.Model = authRecord
-	testApp.OnModelAfterDelete().Trigger(e)
+	app.OnModelAfterDelete().Trigger(e)
 
-	if len(testApp.SubscriptionsBroker().Clients()) != 0 {
-		t.Fatalf("Expected no subscription clients, found %d", len(testApp.SubscriptionsBroker().Clients()))
+	if len(app.SubscriptionsBroker().Clients()) != 0 {
+		t.Fatalf("Expected no subscription clients, found %d", len(app.SubscriptionsBroker().Clients()))
 	}
 }
 
-func TestRealtimeAuthRecordUpdateEvent(t *testing.T) {
-	testApp, _ := tests.NewTestApp()
-	defer testApp.Cleanup()
+func (suite *RealtimeTestSuite) TestRealtimeAuthRecordUpdateEvent() {
+	t := suite.T()
+	app := suite.App
 
-	apis.InitApi(testApp)
+	apis.InitApi(app)
 
-	authRecord1, err := testApp.Dao().FindFirstRecordByData("users", "email", "test@example.com")
+	authRecord1, err := app.Dao().FindFirstRecordByData("users", "email", "test@example.com")
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	client := subscriptions.NewDefaultClient()
 	client.Set(apis.ContextAuthRecordKey, authRecord1)
-	testApp.SubscriptionsBroker().Register(client)
+	app.SubscriptionsBroker().Register(client)
 
 	// refetch the authRecord and change its email
-	authRecord2, err := testApp.Dao().FindFirstRecordByData("users", "email", "test@example.com")
+	authRecord2, err := app.Dao().FindFirstRecordByData("users", "email", "test@example.com")
 	if err != nil {
 		t.Fatal(err)
 	}
 	authRecord2.SetEmail("new@example.com")
 
 	e := new(core.ModelEvent)
-	e.Dao = testApp.Dao()
+	e.Dao = app.Dao()
 	e.Model = authRecord2
-	testApp.OnModelAfterUpdate().Trigger(e)
+	app.OnModelAfterUpdate().Trigger(e)
 
 	clientAuthRecord, _ := client.Get(apis.ContextAuthRecordKey).(*models.Record)
 	if clientAuthRecord.Email() != authRecord2.Email() {
@@ -301,57 +303,57 @@ func TestRealtimeAuthRecordUpdateEvent(t *testing.T) {
 	}
 }
 
-func TestRealtimeAdminDeleteEvent(t *testing.T) {
-	testApp, _ := tests.NewTestApp()
-	defer testApp.Cleanup()
+func (suite *RealtimeTestSuite) TestRealtimeAdminDeleteEvent() {
+	t := suite.T()
+	app := suite.App
 
-	apis.InitApi(testApp)
+	apis.InitApi(app)
 
-	admin, err := testApp.Dao().FindAdminByEmail("test@example.com")
+	admin, err := app.Dao().FindAdminByEmail("test@example.com")
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	client := subscriptions.NewDefaultClient()
 	client.Set(apis.ContextAdminKey, admin)
-	testApp.SubscriptionsBroker().Register(client)
+	app.SubscriptionsBroker().Register(client)
 
 	e := new(core.ModelEvent)
-	e.Dao = testApp.Dao()
+	e.Dao = app.Dao()
 	e.Model = admin
-	testApp.OnModelAfterDelete().Trigger(e)
+	app.OnModelAfterDelete().Trigger(e)
 
-	if len(testApp.SubscriptionsBroker().Clients()) != 0 {
+	if len(app.SubscriptionsBroker().Clients()) != 0 {
 		t.Fatalf("Expected no subscription clients, found %d", len(testApp.SubscriptionsBroker().Clients()))
 	}
 }
 
-func TestRealtimeAdminUpdateEvent(t *testing.T) {
-	testApp, _ := tests.NewTestApp()
-	defer testApp.Cleanup()
+func (suite *RealtimeTestSuite) TestRealtimeAdminUpdateEvent() {
+	t := suite.T()
+	app := suite.App
 
-	apis.InitApi(testApp)
+	apis.InitApi(app)
 
-	admin1, err := testApp.Dao().FindAdminByEmail("test@example.com")
+	admin1, err := app.Dao().FindAdminByEmail("test@example.com")
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	client := subscriptions.NewDefaultClient()
 	client.Set(apis.ContextAdminKey, admin1)
-	testApp.SubscriptionsBroker().Register(client)
+	app.SubscriptionsBroker().Register(client)
 
 	// refetch the authRecord and change its email
-	admin2, err := testApp.Dao().FindAdminByEmail("test@example.com")
+	admin2, err := app.Dao().FindAdminByEmail("test@example.com")
 	if err != nil {
 		t.Fatal(err)
 	}
 	admin2.Email = "new@example.com"
 
 	e := new(core.ModelEvent)
-	e.Dao = testApp.Dao()
+	e.Dao = app.Dao()
 	e.Model = admin2
-	testApp.OnModelAfterUpdate().Trigger(e)
+	app.OnModelAfterUpdate().Trigger(e)
 
 	clientAdmin, _ := client.Get(apis.ContextAdminKey).(*models.Admin)
 	if clientAdmin.Email != admin2.Email {
@@ -388,61 +390,61 @@ func findCustomUserByEmail(dao *daos.Dao, email string) (*CustomUser, error) {
 	return model, nil
 }
 
-func TestRealtimeCustomAuthModelDeleteEvent(t *testing.T) {
-	testApp, _ := tests.NewTestApp()
-	defer testApp.Cleanup()
+func (suite *RealtimeTestSuite) TestRealtimeCustomAuthModelDeleteEvent() {
+	t := suite.T()
+	app := suite.App
 
-	apis.InitApi(testApp)
+	apis.InitApi(app)
 
-	authRecord, err := testApp.Dao().FindFirstRecordByData("users", "email", "test@example.com")
+	authRecord, err := app.Dao().FindFirstRecordByData("users", "email", "test@example.com")
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	client := subscriptions.NewDefaultClient()
 	client.Set(apis.ContextAuthRecordKey, authRecord)
-	testApp.SubscriptionsBroker().Register(client)
+	app.SubscriptionsBroker().Register(client)
 
 	// refetch the authRecord as CustomUser
-	customUser, err := findCustomUserByEmail(testApp.Dao(), "test@example.com")
+	customUser, err := findCustomUserByEmail(app.Dao(), "test@example.com")
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	// delete the custom user (should unset the client auth record)
-	if err := testApp.Dao().Delete(customUser); err != nil {
+	if err := app.Dao().Delete(customUser); err != nil {
 		t.Fatal(err)
 	}
 
-	if len(testApp.SubscriptionsBroker().Clients()) != 0 {
-		t.Fatalf("Expected no subscription clients, found %d", len(testApp.SubscriptionsBroker().Clients()))
+	if len(app.SubscriptionsBroker().Clients()) != 0 {
+		t.Fatalf("Expected no subscription clients, found %d", len(app.SubscriptionsBroker().Clients()))
 	}
 }
 
-func TestRealtimeCustomAuthModelUpdateEvent(t *testing.T) {
-	testApp, _ := tests.NewTestApp()
-	defer testApp.Cleanup()
+func (suite *RealtimeTestSuite) TestRealtimeCustomAuthModelUpdateEvent() {
+	t := suite.T()
+	app := suite.App
 
-	apis.InitApi(testApp)
+	apis.InitApi(app)
 
-	authRecord, err := testApp.Dao().FindFirstRecordByData("users", "email", "test@example.com")
+	authRecord, err := app.Dao().FindFirstRecordByData("users", "email", "test@example.com")
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	client := subscriptions.NewDefaultClient()
 	client.Set(apis.ContextAuthRecordKey, authRecord)
-	testApp.SubscriptionsBroker().Register(client)
+	app.SubscriptionsBroker().Register(client)
 
 	// refetch the authRecord as CustomUser
-	customUser, err := findCustomUserByEmail(testApp.Dao(), "test@example.com")
+	customUser, err := findCustomUserByEmail(app.Dao(), "test@example.com")
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	// change its email
 	customUser.Email = "new@example.com"
-	if err := testApp.Dao().Save(customUser); err != nil {
+	if err := app.Dao().Save(customUser); err != nil {
 		t.Fatal(err)
 	}
 
@@ -450,4 +452,24 @@ func TestRealtimeCustomAuthModelUpdateEvent(t *testing.T) {
 	if clientAuthRecord.Email() != customUser.Email {
 		t.Fatalf("Expected authRecord with email %q, got %q", customUser.Email, clientAuthRecord.Email())
 	}
+}
+
+type RealtimeTestSuite struct {
+	suite.Suite
+	App *tests.TestApp
+	Var int
+}
+
+func (suite *RealtimeTestSuite) SetupSuite() {
+	app, _ := tests.NewTestApp()
+	suite.Var = 5
+	suite.App = app
+}
+
+func (suite *RealtimeTestSuite) TearDownSuite() {
+	suite.App.Cleanup()
+}
+
+func TestRealtimeTestSuite(t *testing.T) {
+	suite.Run(t, new(RealtimeTestSuite))
 }

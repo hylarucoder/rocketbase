@@ -14,10 +14,11 @@ import (
 	"github.com/hylarucoder/rocketbase/tools/subscriptions"
 	"github.com/hylarucoder/rocketbase/tools/types"
 	"github.com/labstack/echo/v5"
+	"github.com/stretchr/testify/suite"
 )
 
-func TestRecordAuthMethodsList(t *testing.T) {
-	t.Parallel()
+func (suite *RecordAuthTestSuite) TestRecordAuthMethodsList() {
+	t := suite.T()
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -68,12 +69,12 @@ func TestRecordAuthMethodsList(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t)
+		scenario.Test(t, nil)
 	}
 }
 
-func TestRecordAuthWithPassword(t *testing.T) {
-	t.Parallel()
+func (suite *RecordAuthTestSuite) TestRecordAuthWithPassword() {
+	t := suite.T()
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -355,12 +356,12 @@ func TestRecordAuthWithPassword(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t)
+		scenario.Test(t, nil)
 	}
 }
 
-func TestRecordAuthRefresh(t *testing.T) {
-	t.Parallel()
+func (suite *RecordAuthTestSuite) TestRecordAuthRefresh() {
+	t := suite.T()
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -484,12 +485,12 @@ func TestRecordAuthRefresh(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t)
+		scenario.Test(t, nil)
 	}
 }
 
-func TestRecordAuthRequestPasswordReset(t *testing.T) {
-	t.Parallel()
+func (suite *RecordAuthTestSuite) TestRecordAuthRequestPasswordReset() {
+	t := suite.T()
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -571,12 +572,12 @@ func TestRecordAuthRequestPasswordReset(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t)
+		scenario.Test(t, nil)
 	}
 }
 
-func TestRecordAuthConfirmPasswordReset(t *testing.T) {
-	t.Parallel()
+func (suite *RecordAuthTestSuite) TestRecordAuthConfirmPasswordReset() {
+	t := suite.T()
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -686,12 +687,12 @@ func TestRecordAuthConfirmPasswordReset(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t)
+		scenario.Test(t, nil)
 	}
 }
 
-func TestRecordAuthRequestVerification(t *testing.T) {
-	t.Parallel()
+func (suite *RecordAuthTestSuite) TestRecordAuthRequestVerification() {
+	t := suite.T()
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -781,12 +782,12 @@ func TestRecordAuthRequestVerification(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t)
+		scenario.Test(t, nil)
 	}
 }
 
-func TestRecordAuthConfirmVerification(t *testing.T) {
-	t.Parallel()
+func (suite *RecordAuthTestSuite) TestRecordAuthConfirmVerification() {
+	t := suite.T()
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -911,12 +912,12 @@ func TestRecordAuthConfirmVerification(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t)
+		scenario.Test(t, nil)
 	}
 }
 
-func TestRecordAuthRequestEmailChange(t *testing.T) {
-	t.Parallel()
+func (suite *RecordAuthTestSuite) TestRecordAuthRequestEmailChange() {
+	t := suite.T()
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -1015,12 +1016,12 @@ func TestRecordAuthRequestEmailChange(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t)
+		scenario.Test(t, nil)
 	}
 }
 
-func TestRecordAuthConfirmEmailChange(t *testing.T) {
-	t.Parallel()
+func (suite *RecordAuthTestSuite) TestRecordAuthConfirmEmailChange() {
+	t := suite.T()
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -1137,12 +1138,12 @@ func TestRecordAuthConfirmEmailChange(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t)
+		scenario.Test(t, nil)
 	}
 }
 
-func TestRecordAuthListExternalsAuths(t *testing.T) {
-	t.Parallel()
+func (suite *RecordAuthTestSuite) TestRecordAuthListExternalsAuths() {
+	t := suite.T()
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -1239,12 +1240,12 @@ func TestRecordAuthListExternalsAuths(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t)
+		scenario.Test(t, nil)
 	}
 }
 
-func TestRecordAuthUnlinkExternalsAuth(t *testing.T) {
-	t.Parallel()
+func (suite *RecordAuthTestSuite) TestRecordAuthUnlinkExternalsAuth() {
+	t := suite.T()
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -1370,12 +1371,12 @@ func TestRecordAuthUnlinkExternalsAuth(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t)
+		scenario.Test(t, nil)
 	}
 }
 
-func TestRecordAuthOAuth2Redirect(t *testing.T) {
-	t.Parallel()
+func (suite *RecordAuthTestSuite) TestRecordAuthOAuth2Redirect() {
+	t := suite.T()
 
 	c1 := subscriptions.NewDefaultClient()
 
@@ -1489,6 +1490,26 @@ func TestRecordAuthOAuth2Redirect(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t)
+		scenario.Test(t, nil)
 	}
+}
+
+type RecordAuthTestSuite struct {
+	suite.Suite
+	App *tests.TestApp
+	Var int
+}
+
+func (suite *RecordAuthTestSuite) SetupSuite() {
+	app, _ := tests.NewTestApp()
+	suite.Var = 5
+	suite.App = app
+}
+
+func (suite *RecordAuthTestSuite) TearDownSuite() {
+	suite.App.Cleanup()
+}
+
+func TestRecordAuthTestSuite(t *testing.T) {
+	suite.Run(t, new(RecordAuthTestSuite))
 }

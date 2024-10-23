@@ -5,10 +5,11 @@ import (
 	"testing"
 
 	"github.com/hylarucoder/rocketbase/tests"
+	"github.com/stretchr/testify/suite"
 )
 
-func TestHealthAPI(t *testing.T) {
-	t.Parallel()
+func (suite *HealthTestSuite) TestHealthAPI() {
+	t := suite.T()
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -25,6 +26,26 @@ func TestHealthAPI(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t)
+		scenario.Test(t, nil)
 	}
+}
+
+type HealthTestSuite struct {
+	suite.Suite
+	App *tests.TestApp
+	Var int
+}
+
+func (suite *HealthTestSuite) SetupSuite() {
+	app, _ := tests.NewTestApp()
+	suite.Var = 5
+	suite.App = app
+}
+
+func (suite *HealthTestSuite) TearDownSuite() {
+	suite.App.Cleanup()
+}
+
+func TestHealthTestSuite(t *testing.T) {
+	suite.Run(t, new(HealthTestSuite))
 }

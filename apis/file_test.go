@@ -17,10 +17,11 @@ import (
 	"github.com/hylarucoder/rocketbase/tests"
 	"github.com/hylarucoder/rocketbase/tools/types"
 	"github.com/labstack/echo/v5"
+	"github.com/stretchr/testify/suite"
 )
 
-func TestFileToken(t *testing.T) {
-	t.Parallel()
+func (suite *FileTestSuite) TestFileToken() {
+	t := suite.T()
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -89,12 +90,12 @@ func TestFileToken(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t)
+		scenario.Test(t, nil)
 	}
 }
 
-func TestFileDownload(t *testing.T) {
-	t.Parallel()
+func (suite *FileTestSuite) TestFileDownload() {
+	t := suite.T()
 
 	_, currentFile, _, _ := runtime.Caller(0)
 	dataDirRelPath := "../tests/data/"
@@ -387,21 +388,16 @@ func TestFileDownload(t *testing.T) {
 		head.Method = http.MethodHead
 		head.Name = ("(HEAD) " + scenario.Name)
 		head.ExpectedContent = nil
-		head.Test(t)
+		head.Test(t, nil)
 
 		// regular request test
-		scenario.Test(t)
+		scenario.Test(t, nil)
 	}
 }
 
-func TestConcurrentThumbsGeneration(t *testing.T) {
-	t.Parallel()
-
-	app, err := tests.NewTestApp()
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer app.Cleanup()
+func (suite *FileTestSuite) TestConcurrentThumbsGeneration() {
+	t := suite.T()
+	app := suite.App
 
 	fsys, err := app.NewFilesystem()
 	if err != nil {
@@ -471,4 +467,24 @@ func TestConcurrentThumbsGeneration(t *testing.T) {
 			t.Fatalf("Missing thumb %q: %v", k, err)
 		}
 	}
+}
+
+type FileTestSuite struct {
+	suite.Suite
+	App *tests.TestApp
+	Var int
+}
+
+func (suite *FileTestSuite) SetupSuite() {
+	app, _ := tests.NewTestApp()
+	suite.Var = 5
+	suite.App = app
+}
+
+func (suite *FileTestSuite) TearDownSuite() {
+	suite.App.Cleanup()
+}
+
+func TestFileTestSuite(t *testing.T) {
+	suite.Run(t, new(FileTestSuite))
 }

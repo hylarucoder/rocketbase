@@ -14,10 +14,11 @@ import (
 	"github.com/hylarucoder/rocketbase/tools/types"
 	"github.com/labstack/echo/v5"
 	"github.com/pocketbase/dbx"
+	"github.com/stretchr/testify/suite"
 )
 
-func TestAdminAuthWithPassword(t *testing.T) {
-	t.Parallel()
+func (suite *AdminTestSuite) TestAdminAuthWithPassword() {
+	t := suite.T()
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -120,8 +121,8 @@ func TestAdminAuthWithPassword(t *testing.T) {
 	}
 }
 
-func TestAdminRequestPasswordReset(t *testing.T) {
-	t.Parallel()
+func (suite *AdminTestSuite) TestAdminRequestPasswordReset() {
+	t := suite.T()
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -191,8 +192,8 @@ func TestAdminRequestPasswordReset(t *testing.T) {
 	}
 }
 
-func TestAdminConfirmPasswordReset(t *testing.T) {
-	t.Parallel()
+func (suite *AdminTestSuite) TestAdminConfirmPasswordReset() {
+	t := suite.T()
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -282,8 +283,8 @@ func TestAdminConfirmPasswordReset(t *testing.T) {
 	}
 }
 
-func TestAdminRefresh(t *testing.T) {
-	t.Parallel()
+func (suite *AdminTestSuite) TestAdminRefresh() {
+	t := suite.T()
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -357,8 +358,8 @@ func TestAdminRefresh(t *testing.T) {
 	}
 }
 
-func TestAdminsList(t *testing.T) {
-	t.Parallel()
+func (suite *AdminTestSuite) TestAdminsList() {
+	t := suite.T()
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -462,8 +463,8 @@ func TestAdminsList(t *testing.T) {
 	}
 }
 
-func TestAdminView(t *testing.T) {
-	t.Parallel()
+func (suite *AdminTestSuite) TestAdminView() {
+	t := suite.T()
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -519,8 +520,8 @@ func TestAdminView(t *testing.T) {
 	}
 }
 
-func TestAdminDelete(t *testing.T) {
-	t.Parallel()
+func (suite *AdminTestSuite) TestAdminDelete() {
+	t := suite.T()
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -616,8 +617,8 @@ func TestAdminDelete(t *testing.T) {
 	}
 }
 
-func TestAdminCreate(t *testing.T) {
-	t.Parallel()
+func (suite *AdminTestSuite) TestAdminCreate() {
+	t := suite.T()
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -772,8 +773,8 @@ func TestAdminCreate(t *testing.T) {
 	}
 }
 
-func TestAdminUpdate(t *testing.T) {
-	t.Parallel()
+func (suite *AdminTestSuite) TestAdminUpdate() {
+	t := suite.T()
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -922,4 +923,24 @@ func TestAdminUpdate(t *testing.T) {
 	for _, scenario := range scenarios {
 		scenario.Test(t)
 	}
+}
+
+type AdminTestSuite struct {
+	suite.Suite
+	App *tests.TestApp
+	Var int
+}
+
+func (suite *AdminTestSuite) SetupSuite() {
+	app, _ := tests.NewTestApp()
+	suite.Var = 5
+	suite.App = app
+}
+
+func (suite *AdminTestSuite) TearDownSuite() {
+	suite.App.Cleanup()
+}
+
+func TestAdminTestSuite(t *testing.T) {
+	suite.Run(t, new(AdminTestSuite))
 }

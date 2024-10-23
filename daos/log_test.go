@@ -9,13 +9,12 @@ import (
 	"github.com/hylarucoder/rocketbase/tests"
 	"github.com/hylarucoder/rocketbase/tools/types"
 	"github.com/pocketbase/dbx"
+	"github.com/stretchr/testify/suite"
 )
 
-func TestLogQuery(t *testing.T) {
-	t.Parallel()
-
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
+func (suite *LogTestSuite) TestLogQuery() {
+	t := suite.T()
+	app := suite.App
 
 	expected := "SELECT {{_logs}}.* FROM `_logs`"
 
@@ -25,11 +24,9 @@ func TestLogQuery(t *testing.T) {
 	}
 }
 
-func TestFindLogById(t *testing.T) {
-	t.Parallel()
-
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
+func (suite *LogTestSuite) TestFindLogById() {
+	t := suite.T()
+	app := suite.App
 
 	tests.MockLogsData(app)
 
@@ -57,11 +54,9 @@ func TestFindLogById(t *testing.T) {
 	}
 }
 
-func TestLogsStats(t *testing.T) {
-	t.Parallel()
-
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
+func (suite *LogTestSuite) TestLogsStats() {
+	t := suite.T()
+	app := suite.App
 
 	tests.MockLogsData(app)
 
@@ -80,11 +75,9 @@ func TestLogsStats(t *testing.T) {
 	}
 }
 
-func TestDeleteOldLogs(t *testing.T) {
-	t.Parallel()
-
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
+func (suite *LogTestSuite) TestDeleteOldLogs() {
+	t := suite.T()
+	app := suite.App
 
 	tests.MockLogsData(app)
 
@@ -122,11 +115,10 @@ func TestDeleteOldLogs(t *testing.T) {
 	}
 }
 
-func TestSaveLog(t *testing.T) {
-	t.Parallel()
+func (suite *LogTestSuite) TestSaveLog() {
+	t := suite.T()
 
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
+	app := suite.App
 
 	tests.MockLogsData(app)
 
@@ -155,4 +147,24 @@ func TestSaveLog(t *testing.T) {
 	if existingLog.Level != 4 {
 		t.Fatalf("Expected log level to be %d, got %d", 4, existingLog.Level)
 	}
+}
+
+type LogTestSuite struct {
+	suite.Suite
+	App *tests.TestApp
+	Var int
+}
+
+func (suite *LogTestSuite) SetupSuite() {
+	app, _ := tests.NewTestApp()
+	suite.Var = 5
+	suite.App = app
+}
+
+func (suite *LogTestSuite) TearDownSuite() {
+	suite.App.Cleanup()
+}
+
+func TestLogTestSuite(t *testing.T) {
+	suite.Run(t, new(LogTestSuite))
 }

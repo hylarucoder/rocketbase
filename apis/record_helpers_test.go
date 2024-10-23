@@ -11,10 +11,11 @@ import (
 	"github.com/hylarucoder/rocketbase/models"
 	"github.com/hylarucoder/rocketbase/tests"
 	"github.com/labstack/echo/v5"
+	"github.com/stretchr/testify/suite"
 )
 
-func TestRequestInfo(t *testing.T) {
-	t.Parallel()
+func (suite *RecordHelpersTestSuite) TestRequestInfo() {
+	t := suite.T()
 
 	e := echo.New()
 	req := httptest.NewRequest(http.MethodPost, "/?test=123", strings.NewReader(`{"test":456}`))
@@ -68,11 +69,9 @@ func TestRequestInfo(t *testing.T) {
 	}
 }
 
-func TestRecordAuthResponse(t *testing.T) {
-	t.Parallel()
-
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
+func (suite *RecordHelpersTestSuite) TestRecordAuthResponse() {
+	t := suite.T()
+	app := suite.App
 
 	dummyAdmin := &models.Admin{}
 	dummyAdmin.Id = "id1"
@@ -192,8 +191,9 @@ func TestRecordAuthResponse(t *testing.T) {
 	}
 }
 
-func TestEnrichRecords(t *testing.T) {
-	t.Parallel()
+func (suite *RecordHelpersTestSuite) TestEnrichRecords() {
+	t := suite.T()
+	app := suite.App
 
 	e := echo.New()
 	req := httptest.NewRequest(http.MethodGet, "/?expand=rel_many", nil)
@@ -204,9 +204,6 @@ func TestEnrichRecords(t *testing.T) {
 	dummyAdmin := &models.Admin{}
 	dummyAdmin.Id = "test_id"
 	c.Set(apis.ContextAdminKey, dummyAdmin)
-
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
 
 	records, err := app.Dao().FindRecordsByIds("demo1", []string{"3479947686587667460", "3479947686461838339"})
 	if err != nil {
@@ -233,4 +230,24 @@ func TestEnrichRecords(t *testing.T) {
 			}
 		}
 	}
+}
+
+type RecordHelpersTestSuite struct {
+	suite.Suite
+	App *tests.TestApp
+	Var int
+}
+
+func (suite *RecordHelpersTestSuite) SetupSuite() {
+	app, _ := tests.NewTestApp()
+	suite.Var = 5
+	suite.App = app
+}
+
+func (suite *RecordHelpersTestSuite) TearDownSuite() {
+	suite.App.Cleanup()
+}
+
+func TestRecordHelpersTestSuite(t *testing.T) {
+	suite.Run(t, new(RecordHelpersTestSuite))
 }

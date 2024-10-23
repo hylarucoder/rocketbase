@@ -8,13 +8,12 @@ import (
 	"github.com/hylarucoder/rocketbase/tests"
 	"github.com/hylarucoder/rocketbase/tools/security"
 	"github.com/hylarucoder/rocketbase/tools/types"
+	"github.com/stretchr/testify/suite"
 )
 
-func TestParamQuery(t *testing.T) {
-	t.Parallel()
-
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
+func (suite *ParamTestSuite) TestParamQuery() {
+	t := suite.T()
+	app := suite.App
 
 	expected := "SELECT {{_params}}.* FROM `_params`"
 
@@ -24,11 +23,9 @@ func TestParamQuery(t *testing.T) {
 	}
 }
 
-func TestFindParamByKey(t *testing.T) {
-	t.Parallel()
-
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
+func (suite *ParamTestSuite) TestFindParamByKey() {
+	t := suite.T()
+	app := suite.App
 
 	scenarios := []struct {
 		key         string
@@ -53,11 +50,9 @@ func TestFindParamByKey(t *testing.T) {
 	}
 }
 
-func TestSaveParam(t *testing.T) {
-	t.Parallel()
-
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
+func (suite *ParamTestSuite) TestSaveParam() {
+	t := suite.T()
+	app := suite.App
 
 	scenarios := []struct {
 		key   string
@@ -97,11 +92,9 @@ func TestSaveParam(t *testing.T) {
 	}
 }
 
-func TestSaveParamEncrypted(t *testing.T) {
-	t.Parallel()
-
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
+func (suite *ParamTestSuite) TestSaveParamEncrypted() {
+	t := suite.T()
+	app := suite.App
 
 	encryptionKey := security.RandomString(32)
 	data := map[string]int{"test": 123}
@@ -133,11 +126,9 @@ func TestSaveParamEncrypted(t *testing.T) {
 	}
 }
 
-func TestDeleteParam(t *testing.T) {
-	t.Parallel()
-
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
+func (suite *ParamTestSuite) TestDeleteParam() {
+	t := suite.T()
+	app := suite.App
 
 	// unsaved param
 	err1 := app.Dao().DeleteParam(&models.Param{})
@@ -157,4 +148,24 @@ func TestDeleteParam(t *testing.T) {
 	if paramCheck != nil {
 		t.Fatalf("Expected param to be deleted, got %v", paramCheck)
 	}
+}
+
+type ParamTestSuite struct {
+	suite.Suite
+	App *tests.TestApp
+	Var int
+}
+
+func (suite *ParamTestSuite) SetupSuite() {
+	app, _ := tests.NewTestApp()
+	suite.Var = 5
+	suite.App = app
+}
+
+func (suite *ParamTestSuite) TearDownSuite() {
+	suite.App.Cleanup()
+}
+
+func TestParamTestSuite(t *testing.T) {
+	suite.Run(t, new(ParamTestSuite))
 }

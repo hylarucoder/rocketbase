@@ -14,10 +14,11 @@ import (
 	"github.com/hylarucoder/rocketbase/models"
 	"github.com/hylarucoder/rocketbase/tests"
 	"github.com/labstack/echo/v5"
+	"github.com/stretchr/testify/suite"
 )
 
-func TestRecordCrudList(t *testing.T) {
-	t.Parallel()
+func (suite *RecordCrudTestSuite) TestRecordCrudList() {
+	t := suite.T()
 	// admin auth token
 	adminAuthToken := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzAyMzYxMTQsImlkIjoiMjEwNzk3NzEyNzUyODc1OTI5NiIsInR5cGUiOiJhZG1pbiJ9.ikCEJR-iPIrZwpbsWjtslMdq75suCAEYfaRK7Oz-NZ0"
 
@@ -495,12 +496,12 @@ func TestRecordCrudList(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t)
+		scenario.Test(t, nil)
 	}
 }
 
-func TestRecordCrudView(t *testing.T) {
-	t.Parallel()
+func (suite *RecordCrudTestSuite) TestRecordCrudView() {
+	t := suite.T()
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -776,12 +777,12 @@ func TestRecordCrudView(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t)
+		scenario.Test(t, nil)
 	}
 }
 
-func TestRecordCrudDelete(t *testing.T) {
-	t.Parallel()
+func (suite *RecordCrudTestSuite) TestRecordCrudDelete() {
+	t := suite.T()
 
 	adminAuthToken := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzAyMzYxMTQsImlkIjoiMjEwNzk3NzEyNzUyODc1OTI5NiIsInR5cGUiOiJhZG1pbiJ9.ikCEJR-iPIrZwpbsWjtslMdq75suCAEYfaRK7Oz-NZ0"
 	ensureDeletedFiles := func(app *tests.TestApp, collectionId string, recordId string) {
@@ -1022,12 +1023,12 @@ func TestRecordCrudDelete(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t)
+		scenario.Test(t, nil)
 	}
 }
 
-func TestRecordCrudCreate(t *testing.T) {
-	t.Parallel()
+func (suite *RecordCrudTestSuite) TestRecordCrudCreate() {
+	t := suite.T()
 
 	formData, mp, err := tests.MockMultipartData(map[string]string{
 		"title": "title_test",
@@ -1600,12 +1601,12 @@ func TestRecordCrudCreate(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t)
+		scenario.Test(t, nil)
 	}
 }
 
-func TestRecordCrudUpdate(t *testing.T) {
-	t.Parallel()
+func (suite *RecordCrudTestSuite) TestRecordCrudUpdate() {
+	t := suite.T()
 
 	formData, mp, err := tests.MockMultipartData(map[string]string{
 		"title": "title_test",
@@ -2170,6 +2171,26 @@ func TestRecordCrudUpdate(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t)
+		scenario.Test(t, nil)
 	}
+}
+
+type RecordCrudTestSuite struct {
+	suite.Suite
+	App *tests.TestApp
+	Var int
+}
+
+func (suite *RecordCrudTestSuite) SetupSuite() {
+	app, _ := tests.NewTestApp()
+	suite.Var = 5
+	suite.App = app
+}
+
+func (suite *RecordCrudTestSuite) TearDownSuite() {
+	suite.App.Cleanup()
+}
+
+func TestRecordCrudTestSuite(t *testing.T) {
+	suite.Run(t, new(RecordCrudTestSuite))
 }

@@ -64,7 +64,7 @@ func (scenario *ApiScenario) test(t *testing.T) {
 	if scenario.TestAppFactory != nil {
 		testApp = scenario.TestAppFactory(t)
 		if testApp == nil {
-			t.Fatal("TestAppFactory must return a non-nill app instance")
+			t.Fatal("TestAppFactory must return a non-nil app instance")
 		}
 	} else {
 		var testAppErr error

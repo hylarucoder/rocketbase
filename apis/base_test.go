@@ -12,10 +12,11 @@ import (
 	"github.com/hylarucoder/rocketbase/tests"
 	"github.com/labstack/echo/v5"
 	"github.com/spf13/cast"
+	"github.com/stretchr/testify/suite"
 )
 
-func Test404(t *testing.T) {
-	t.Parallel()
+func (suite *BaseTestSuite) Test404() {
+	t := suite.T()
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -50,12 +51,12 @@ func Test404(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t)
+		scenario.Test(t, nil)
 	}
 }
 
-func TestCustomRoutesAndErrorsHandling(t *testing.T) {
-	t.Parallel()
+func (suite *BaseTestSuite) TestCustomRoutesAndErrorsHandling() {
+	t := suite.T()
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -141,12 +142,12 @@ func TestCustomRoutesAndErrorsHandling(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t)
+		scenario.Test(t, nil)
 	}
 }
 
-func TestRemoveTrailingSlashMiddleware(t *testing.T) {
-	t.Parallel()
+func (suite *BaseTestSuite) TestRemoveTrailingSlashMiddleware() {
+	t := suite.T()
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -216,12 +217,12 @@ func TestRemoveTrailingSlashMiddleware(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t)
+		scenario.Test(t, nil)
 	}
 }
 
-func TestEagerRequestInfoCache(t *testing.T) {
-	t.Parallel()
+func (suite *BaseTestSuite) TestEagerRequestInfoCache() {
+	t := suite.T()
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -319,12 +320,12 @@ func TestEagerRequestInfoCache(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t)
+		scenario.Test(t, nil)
 	}
 }
 
-func TestErrorHandler(t *testing.T) {
-	t.Parallel()
+func (suite *BaseTestSuite) TestErrorHandler() {
+	t := suite.T()
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -406,6 +407,26 @@ func TestErrorHandler(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t)
+		scenario.Test(t, nil)
 	}
+}
+
+type BaseTestSuite struct {
+	suite.Suite
+	App *tests.TestApp
+	Var int
+}
+
+func (suite *BaseTestSuite) SetupSuite() {
+	app, _ := tests.NewTestApp()
+	suite.Var = 5
+	suite.App = app
+}
+
+func (suite *BaseTestSuite) TearDownSuite() {
+	suite.App.Cleanup()
+}
+
+func TestBaseTestSuite(t *testing.T) {
+	suite.Run(t, new(BaseTestSuite))
 }

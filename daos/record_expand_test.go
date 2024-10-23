@@ -11,13 +11,12 @@ import (
 	"github.com/hylarucoder/rocketbase/models/schema"
 	"github.com/hylarucoder/rocketbase/tests"
 	"github.com/hylarucoder/rocketbase/tools/list"
+	"github.com/stretchr/testify/suite"
 )
 
-func TestExpandRecords(t *testing.T) {
-	t.Parallel()
-
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
+func (suite *RecordExpandTestSuite) TestExpandRecords() {
+	t := suite.T()
+	app := suite.App
 
 	scenarios := []struct {
 		testName             string
@@ -223,11 +222,9 @@ func TestExpandRecords(t *testing.T) {
 	}
 }
 
-func TestExpandRecord(t *testing.T) {
-	t.Parallel()
-
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
+func (suite *RecordExpandTestSuite) TestExpandRecord() {
+	t := suite.T()
+	app := suite.App
 
 	scenarios := []struct {
 		testName             string
@@ -375,12 +372,9 @@ func TestExpandRecord(t *testing.T) {
 	}
 }
 
-func TestIndirectExpandSingeVsArrayResult(t *testing.T) {
-	t.Parallel()
-
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
-
+func (suite *RecordExpandTestSuite) TestIndirectExpandSingeVsArrayResult() {
+	t := suite.T()
+	app := suite.App
 	record, err := app.Dao().FindRecordById("demo3", "7nwo8tuiatetxdm")
 	if err != nil {
 		t.Fatal(err)
@@ -429,4 +423,24 @@ func TestIndirectExpandSingeVsArrayResult(t *testing.T) {
 			t.Fatalf("Expected the expanded result to be a single model, got %v", result)
 		}
 	}
+}
+
+type RecordExpandTestSuite struct {
+	suite.Suite
+	App *tests.TestApp
+	Var int
+}
+
+func (suite *RecordExpandTestSuite) SetupSuite() {
+	app, _ := tests.NewTestApp()
+	suite.Var = 5
+	suite.App = app
+}
+
+func (suite *RecordExpandTestSuite) TearDownSuite() {
+	suite.App.Cleanup()
+}
+
+func TestRecordExpandTestSuite(t *testing.T) {
+	suite.Run(t, new(RecordExpandTestSuite))
 }

@@ -3,11 +3,12 @@ package pocketbase
 import (
 	"database/sql"
 	"fmt"
-	"github.com/hylarucoder/rocketbase/tools/test_utils"
 	"log"
 	"os"
 	"path/filepath"
 	"testing"
+
+	"github.com/hylarucoder/rocketbase/tools/test_utils"
 
 	"github.com/spf13/cobra"
 )
@@ -214,7 +215,7 @@ func TestSkipBootstrap(t *testing.T) {
 	}
 }
 
-func setupTestEnvironment() {
+func SetupSuiteEnvironment() {
 	test_utils.LoadTestEnv()
 	// drop all table in test database
 	db, err := sql.Open("postgres", os.Getenv("DATABASE"))
@@ -260,7 +261,7 @@ func setupTestEnvironment() {
 }
 
 func TestMain(m *testing.M) {
-	//setupTestEnvironment()
+	//SetupSuiteEnvironment()
 
 	// 运行所有测试
 	code := m.Run()

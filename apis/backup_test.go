@@ -13,11 +13,12 @@ import (
 	"github.com/hylarucoder/rocketbase/core"
 	"github.com/hylarucoder/rocketbase/tests"
 	"github.com/labstack/echo/v5"
+	"github.com/stretchr/testify/suite"
 	"gocloud.dev/blob"
 )
 
-func TestBackupsList(t *testing.T) {
-	t.Parallel()
+func (suite *BackupTestSuite) TestBackupsList() {
+	t := suite.T()
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -81,12 +82,12 @@ func TestBackupsList(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t)
+		scenario.Test(t, nil)
 	}
 }
 
-func TestBackupsCreate(t *testing.T) {
-	t.Parallel()
+func (suite *BackupTestSuite) TestBackupsCreate() {
+	t := suite.T()
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -197,12 +198,12 @@ func TestBackupsCreate(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t)
+		scenario.Test(t, nil)
 	}
 }
 
-func TestBackupsUpload(t *testing.T) {
-	t.Parallel()
+func (suite *BackupTestSuite) TestBackupsUpload() {
+	t := suite.T()
 
 	// create dummy form data bodies
 	type body struct {
@@ -331,12 +332,12 @@ func TestBackupsUpload(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t)
+		scenario.Test(t, nil)
 	}
 }
 
-func TestBackupsDownload(t *testing.T) {
-	t.Parallel()
+func (suite *BackupTestSuite) TestBackupsDownload() {
+	t := suite.T()
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -488,12 +489,12 @@ func TestBackupsDownload(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t)
+		scenario.Test(t, nil)
 	}
 }
 
-func TestBackupsDelete(t *testing.T) {
-	t.Parallel()
+func (suite *BackupTestSuite) TestBackupsDelete() {
+	t := suite.T()
 
 	noTestBackupFilesChanges := func(t *testing.T, app *tests.TestApp) {
 		files, err := getBackupFiles(app)
@@ -650,12 +651,12 @@ func TestBackupsDelete(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t)
+		scenario.Test(t, nil)
 	}
 }
 
-func TestBackupsRestore(t *testing.T) {
-	t.Parallel()
+func (suite *BackupTestSuite) TestBackupsRestore() {
+	t := suite.T()
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -720,7 +721,7 @@ func TestBackupsRestore(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t)
+		scenario.Test(t, nil)
 	}
 }
 
@@ -767,4 +768,24 @@ func ensureNoBackups(t *testing.T, app *tests.TestApp) {
 	if total := len(files); total != 0 {
 		t.Fatalf("Expected 0 backup files, got %d", total)
 	}
+}
+
+type BackupTestSuite struct {
+	suite.Suite
+	App *tests.TestApp
+	Var int
+}
+
+func (suite *BackupTestSuite) SetupSuite() {
+	app, _ := tests.NewTestApp()
+	suite.Var = 5
+	suite.App = app
+}
+
+func (suite *BackupTestSuite) TearDownSuite() {
+	suite.App.Cleanup()
+}
+
+func TestBackupTestSuite(t *testing.T) {
+	suite.Run(t, new(BackupTestSuite))
 }

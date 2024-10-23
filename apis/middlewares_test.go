@@ -7,10 +7,11 @@ import (
 	"github.com/hylarucoder/rocketbase/apis"
 	"github.com/hylarucoder/rocketbase/tests"
 	"github.com/labstack/echo/v5"
+	"github.com/stretchr/testify/suite"
 )
 
-func TestRequireGuestOnly(t *testing.T) {
-	t.Parallel()
+func (suite *MiddlewaresTestSuite) TestRequireGuestOnly() {
+	t := suite.T()
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -101,12 +102,12 @@ func TestRequireGuestOnly(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t)
+		scenario.Test(t, nil)
 	}
 }
 
-func TestRequireRecordAuth(t *testing.T) {
-	t.Parallel()
+func (suite *MiddlewaresTestSuite) TestRequireRecordAuth() {
+	t := suite.T()
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -241,12 +242,12 @@ func TestRequireRecordAuth(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t)
+		scenario.Test(t, nil)
 	}
 }
 
-func TestRequireSameContextRecordAuth(t *testing.T) {
-	t.Parallel()
+func (suite *MiddlewaresTestSuite) TestRequireSameContextRecordAuth() {
+	t := suite.T()
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -359,12 +360,12 @@ func TestRequireSameContextRecordAuth(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t)
+		scenario.Test(t, nil)
 	}
 }
 
-func TestRequireAdminAuth(t *testing.T) {
-	t.Parallel()
+func (suite *MiddlewaresTestSuite) TestRequireAdminAuth() {
+	t := suite.T()
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -455,12 +456,12 @@ func TestRequireAdminAuth(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t)
+		scenario.Test(t, nil)
 	}
 }
 
-func TestRequireAdminAuthOnlyIfAny(t *testing.T) {
-	t.Parallel()
+func (suite *MiddlewaresTestSuite) TestRequireAdminAuthOnlyIfAny() {
+	t := suite.T()
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -576,12 +577,12 @@ func TestRequireAdminAuthOnlyIfAny(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t)
+		scenario.Test(t, nil)
 	}
 }
 
-func TestRequireAdminOrRecordAuth(t *testing.T) {
-	t.Parallel()
+func (suite *MiddlewaresTestSuite) TestRequireAdminOrRecordAuth() {
+	t := suite.T()
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -738,12 +739,12 @@ func TestRequireAdminOrRecordAuth(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t)
+		scenario.Test(t, nil)
 	}
 }
 
-func TestRequireAdminOrOwnerAuth(t *testing.T) {
-	t.Parallel()
+func (suite *MiddlewaresTestSuite) TestRequireAdminOrOwnerAuth() {
+	t := suite.T()
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -878,12 +879,12 @@ func TestRequireAdminOrOwnerAuth(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t)
+		scenario.Test(t, nil)
 	}
 }
 
-func TestLoadCollectionContext(t *testing.T) {
-	t.Parallel()
+func (suite *MiddlewaresTestSuite) TestLoadCollectionContext() {
+	t := suite.T()
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -1009,6 +1010,26 @@ func TestLoadCollectionContext(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t)
+		scenario.Test(t, nil)
 	}
+}
+
+type MiddlewaresTestSuite struct {
+	suite.Suite
+	App *tests.TestApp
+	Var int
+}
+
+func (suite *MiddlewaresTestSuite) SetupSuite() {
+	app, _ := tests.NewTestApp()
+	suite.Var = 5
+	suite.App = app
+}
+
+func (suite *MiddlewaresTestSuite) TearDownSuite() {
+	suite.App.Cleanup()
+}
+
+func TestMiddlewaresTestSuite(t *testing.T) {
+	suite.Run(t, new(MiddlewaresTestSuite))
 }

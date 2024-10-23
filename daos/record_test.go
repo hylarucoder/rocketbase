@@ -16,13 +16,12 @@ import (
 	"github.com/hylarucoder/rocketbase/tools/list"
 	"github.com/hylarucoder/rocketbase/tools/types"
 	"github.com/pocketbase/dbx"
+	"github.com/stretchr/testify/suite"
 )
 
-func TestRecordQueryWithDifferentCollectionValues(t *testing.T) {
-	t.Parallel()
-
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
+func (suite *RecordTestSuite) TestRecordQueryWithDifferentCollectionValues() {
+	t := suite.T()
+	app := suite.App
 
 	collection, err := app.Dao().FindCollectionByNameOrId("demo1")
 	if err != nil {
@@ -59,11 +58,9 @@ func TestRecordQueryWithDifferentCollectionValues(t *testing.T) {
 	}
 }
 
-func TestRecordQueryOneWithRecord(t *testing.T) {
-	t.Parallel()
-
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
+func (suite *RecordTestSuite) TestRecordQueryOneWithRecord() {
+	t := suite.T()
+	app := suite.App
 
 	collection, err := app.Dao().FindCollectionByNameOrId("demo1")
 	if err != nil {
@@ -85,11 +82,9 @@ func TestRecordQueryOneWithRecord(t *testing.T) {
 	}
 }
 
-func TestRecordQueryAllWithRecordsSlices(t *testing.T) {
-	t.Parallel()
-
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
+func (suite *RecordTestSuite) TestRecordQueryAllWithRecordsSlices() {
+	t := suite.T()
+	app := suite.App
 
 	collection, err := app.Dao().FindCollectionByNameOrId("demo1")
 	if err != nil {
@@ -148,11 +143,9 @@ func TestRecordQueryAllWithRecordsSlices(t *testing.T) {
 	}
 }
 
-func TestFindRecordById(t *testing.T) {
-	t.Parallel()
-
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
+func (suite *RecordTestSuite) TestFindRecordById() {
+	t := suite.T()
+	app := suite.App
 
 	scenarios := []struct {
 		collectionIdOrName string
@@ -210,11 +203,9 @@ func TestFindRecordById(t *testing.T) {
 	}
 }
 
-func TestFindRecordsByIds(t *testing.T) {
-	t.Parallel()
-
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
+func (suite *RecordTestSuite) TestFindRecordsByIds() {
+	t := suite.T()
+	app := suite.App
 
 	scenarios := []struct {
 		collectionIdOrName string
@@ -303,11 +294,9 @@ func TestFindRecordsByIds(t *testing.T) {
 	}
 }
 
-func TestFindRecordsByExpr(t *testing.T) {
-	t.Parallel()
-
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
+func (suite *RecordTestSuite) TestFindRecordsByExpr() {
+	t := suite.T()
+	app := suite.App
 
 	scenarios := []struct {
 		collectionIdOrName string
@@ -375,11 +364,9 @@ func TestFindRecordsByExpr(t *testing.T) {
 	}
 }
 
-func TestFindFirstRecordByData(t *testing.T) {
-	t.Parallel()
-
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
+func (suite *RecordTestSuite) TestFindFirstRecordByData() {
+	t := suite.T()
+	app := suite.App
 
 	scenarios := []struct {
 		collectionIdOrName string
@@ -440,12 +427,9 @@ func TestFindFirstRecordByData(t *testing.T) {
 	}
 }
 
-func TestFindRecordsByFilter(t *testing.T) {
-	t.Parallel()
-
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
-
+func (suite *RecordTestSuite) TestFindRecordsByFilter() {
+	t := suite.T()
+	app := suite.App
 	scenarios := []struct {
 		name               string
 		collectionIdOrName string
@@ -594,11 +578,9 @@ func TestFindRecordsByFilter(t *testing.T) {
 	}
 }
 
-func TestFindFirstRecordByFilter(t *testing.T) {
-	t.Parallel()
-
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
+func (suite *RecordTestSuite) TestFindFirstRecordByFilter() {
+	t := suite.T()
+	app := suite.App
 
 	scenarios := []struct {
 		name               string
@@ -677,11 +659,9 @@ func TestFindFirstRecordByFilter(t *testing.T) {
 	}
 }
 
-func TestCanAccessRecord(t *testing.T) {
-	t.Parallel()
-
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
+func (suite *RecordTestSuite) TestCanAccessRecord() {
+	t := suite.T()
+	app := suite.App
 
 	admin, err := app.Dao().FindAdminByEmail("test@example.com")
 	if err != nil {
@@ -846,11 +826,9 @@ func TestCanAccessRecord(t *testing.T) {
 	}
 }
 
-func TestIsRecordValueUnique(t *testing.T) {
-	t.Parallel()
-
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
+func (suite *RecordTestSuite) TestIsRecordValueUnique() {
+	t := suite.T()
+	app := suite.App
 
 	testManyRelsId1 := "bgs820n361vj1qd"
 	testManyRelsId2 := "2107977397063122944"
@@ -897,11 +875,9 @@ func TestIsRecordValueUnique(t *testing.T) {
 	}
 }
 
-func TestFindAuthRecordByToken(t *testing.T) {
-	t.Parallel()
-
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
+func (suite *RecordTestSuite) TestFindAuthRecordByToken() {
+	t := suite.T()
+	app := suite.App
 
 	scenarios := []struct {
 		token         string
@@ -961,11 +937,9 @@ func TestFindAuthRecordByToken(t *testing.T) {
 	}
 }
 
-func TestFindAuthRecordByEmail(t *testing.T) {
-	t.Parallel()
-
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
+func (suite *RecordTestSuite) TestFindAuthRecordByEmail() {
+	t := suite.T()
+	app := suite.App
 
 	scenarios := []struct {
 		collectionIdOrName string
@@ -994,11 +968,9 @@ func TestFindAuthRecordByEmail(t *testing.T) {
 	}
 }
 
-func TestFindAuthRecordByUsername(t *testing.T) {
-	t.Parallel()
-
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
+func (suite *RecordTestSuite) TestFindAuthRecordByUsername() {
+	t := suite.T()
+	app := suite.App
 
 	scenarios := []struct {
 		collectionIdOrName string
@@ -1028,11 +1000,9 @@ func TestFindAuthRecordByUsername(t *testing.T) {
 	}
 }
 
-func TestSuggestUniqueAuthRecordUsername(t *testing.T) {
-	t.Parallel()
-
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
+func (suite *RecordTestSuite) TestSuggestUniqueAuthRecordUsername() {
+	t := suite.T()
+	app := suite.App
 
 	scenarios := []struct {
 		collectionIdOrName string
@@ -1067,11 +1037,9 @@ func TestSuggestUniqueAuthRecordUsername(t *testing.T) {
 	}
 }
 
-func TestSaveRecord(t *testing.T) {
-	t.Parallel()
-
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
+func (suite *RecordTestSuite) TestSaveRecord() {
+	t := suite.T()
+	app := suite.App
 
 	collection, _ := app.Dao().FindCollectionByNameOrId("demo2")
 
@@ -1102,11 +1070,9 @@ func TestSaveRecord(t *testing.T) {
 	}
 }
 
-func TestSaveRecordWithIdFromOtherCollection(t *testing.T) {
-	t.Parallel()
-
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
+func (suite *RecordTestSuite) TestSaveRecordWithIdFromOtherCollection() {
+	t := suite.T()
+	app := suite.App
 
 	baseCollection, _ := app.Dao().FindCollectionByNameOrId("demo2")
 	authCollection, _ := app.Dao().FindCollectionByNameOrId("nologin")
@@ -1136,11 +1102,9 @@ func TestSaveRecordWithIdFromOtherCollection(t *testing.T) {
 	}
 }
 
-func TestDeleteRecord(t *testing.T) {
-	t.Parallel()
-
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
+func (suite *RecordTestSuite) TestDeleteRecord() {
+	t := suite.T()
+	app := suite.App
 
 	demoCollection, _ := app.Dao().FindCollectionByNameOrId("demo2")
 
@@ -1215,11 +1179,9 @@ func TestDeleteRecord(t *testing.T) {
 	}
 }
 
-func TestDeleteRecordBatchProcessing(t *testing.T) {
-	t.Parallel()
-
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
+func (suite *RecordTestSuite) TestDeleteRecordBatchProcessing() {
+	app := suite.App
+	t := suite.T()
 
 	if err := createMockBatchProcessingData(app.Dao()); err != nil {
 		t.Fatal(err)
@@ -1365,4 +1327,24 @@ func createMockBatchProcessingData(dao *daos.Dao) error {
 	}
 
 	return nil
+}
+
+type RecordTestSuite struct {
+	suite.Suite
+	App *tests.TestApp
+	Var int
+}
+
+func (suite *RecordTestSuite) SetupSuite() {
+	app, _ := tests.NewTestApp()
+	suite.Var = 5
+	suite.App = app
+}
+
+func (suite *RecordTestSuite) TearDownSuite() {
+	suite.App.Cleanup()
+}
+
+func TestRecordTestSuite(t *testing.T) {
+	suite.Run(t, new(RecordTestSuite))
 }

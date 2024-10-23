@@ -8,13 +8,12 @@ import (
 	"github.com/hylarucoder/rocketbase/forms"
 	"github.com/hylarucoder/rocketbase/models"
 	"github.com/hylarucoder/rocketbase/tests"
+	"github.com/stretchr/testify/suite"
 )
 
-func TestCollectionsImportValidate(t *testing.T) {
-	t.Parallel()
-
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
+func (suite *CollectionsImportTestSuite) TestCollectionsImportValidate() {
+	t := suite.T()
+	app := suite.App
 
 	form := forms.NewCollectionsImport(app)
 
@@ -39,8 +38,8 @@ func TestCollectionsImportValidate(t *testing.T) {
 	}
 }
 
-func TestCollectionsImportSubmit(t *testing.T) {
-	t.Parallel()
+func (suite *CollectionsImportTestSuite) TestCollectionsImportSubmit() {
+	t := suite.T()
 
 	totalCollections := 11
 
@@ -422,9 +421,9 @@ func TestCollectionsImportSubmit(t *testing.T) {
 	}
 
 	for _, s := range scenarios {
+		// TODO: sync?
 		t.Run(s.name, func(t *testing.T) {
-			testApp, _ := tests.NewTestApp()
-			defer testApp.Cleanup()
+			testApp := suite.App
 
 			form := forms.NewCollectionsImport(testApp)
 
@@ -464,11 +463,9 @@ func TestCollectionsImportSubmit(t *testing.T) {
 	}
 }
 
-func TestCollectionsImportSubmitInterceptors(t *testing.T) {
-	t.Parallel()
-
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
+func (suite *CollectionsImportTestSuite) TestCollectionsImportSubmitInterceptors() {
+	t := suite.T()
+	app := suite.App
 
 	collections := []*models.Collection{}
 	if err := app.Dao().CollectionQuery().All(&collections); err != nil {
@@ -508,4 +505,24 @@ func TestCollectionsImportSubmitInterceptors(t *testing.T) {
 	if !interceptor2Called {
 		t.Fatalf("Expected interceptor2 to be called")
 	}
+}
+
+type CollectionsImportTestSuite struct {
+	suite.Suite
+	App *tests.TestApp
+	Var int
+}
+
+func (suite *CollectionsImportTestSuite) SetupSuite() {
+	app, _ := tests.NewTestApp()
+	suite.Var = 5
+	suite.App = app
+}
+
+func (suite *CollectionsImportTestSuite) TearDownSuite() {
+	suite.App.Cleanup()
+}
+
+func TestCollectionsImportTestSuite(t *testing.T) {
+	suite.Run(t, new(CollectionsImportTestSuite))
 }

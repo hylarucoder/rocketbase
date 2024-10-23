@@ -13,13 +13,12 @@ import (
 	"github.com/hylarucoder/rocketbase/tools/dbutils"
 	"github.com/hylarucoder/rocketbase/tools/security"
 	"github.com/spf13/cast"
+	"github.com/stretchr/testify/suite"
 )
 
-func TestNewCollectionUpsert(t *testing.T) {
-	t.Parallel()
-
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
+func (suite *CollectionUpsertTestSuite) TestNewCollectionUpsert() {
+	t := suite.T()
+	app := suite.App
 
 	collection := &models.Collection{}
 	collection.Name = "test_name"
@@ -89,11 +88,9 @@ func TestNewCollectionUpsert(t *testing.T) {
 	}
 }
 
-func TestCollectionUpsertValidateAndSubmit(t *testing.T) {
-	t.Parallel()
-
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
+func (suite *CollectionUpsertTestSuite) TestCollectionUpsertValidateAndSubmit() {
+	t := suite.T()
+	app := suite.App
 
 	scenarios := []struct {
 		testName       string
@@ -657,11 +654,9 @@ func TestCollectionUpsertValidateAndSubmit(t *testing.T) {
 	}
 }
 
-func TestCollectionUpsertSubmitInterceptors(t *testing.T) {
-	t.Parallel()
-
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
+func (suite *CollectionUpsertTestSuite) TestCollectionUpsertSubmitInterceptors() {
+	t := suite.T()
+	app := suite.App
 
 	collection, err := app.Dao().FindCollectionByNameOrId("demo2")
 	if err != nil {
@@ -709,11 +704,9 @@ func TestCollectionUpsertSubmitInterceptors(t *testing.T) {
 	}
 }
 
-func TestCollectionUpsertWithCustomId(t *testing.T) {
-	t.Parallel()
-
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
+func (suite *CollectionUpsertTestSuite) TestCollectionUpsertWithCustomId() {
+	t := suite.T()
+	app := suite.App
 
 	existingCollection, err := app.Dao().FindCollectionByNameOrId("demo2")
 	if err != nil {
@@ -813,4 +806,24 @@ func TestCollectionUpsertWithCustomId(t *testing.T) {
 			}
 		}
 	}
+}
+
+type CollectionUpsertTestSuite struct {
+	suite.Suite
+	App *tests.TestApp
+	Var int
+}
+
+func (suite *CollectionUpsertTestSuite) SetupSuite() {
+	app, _ := tests.NewTestApp()
+	suite.Var = 5
+	suite.App = app
+}
+
+func (suite *CollectionUpsertTestSuite) TearDownSuite() {
+	suite.App.Cleanup()
+}
+
+func TestCollectionUpsertTestSuite(t *testing.T) {
+	suite.Run(t, new(CollectionUpsertTestSuite))
 }
