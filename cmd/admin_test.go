@@ -1,6 +1,8 @@
 package cmd_test
 
 import (
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/suite"
 	"testing"
 
 	"github.com/hylarucoder/rocketbase/cmd"
@@ -218,4 +220,22 @@ func TestAdminDeleteCommand(t *testing.T) {
 			t.Errorf("[%s] Expected the admin account to be deleted", s.name)
 		}
 	}
+}
+
+type ExampleTestSuite struct {
+	suite.Suite
+	VariableThatShouldStartAtFive int
+}
+
+func (suite *ExampleTestSuite) SetupTest() {
+	suite.VariableThatShouldStartAtFive = 5
+}
+
+func (suite *ExampleTestSuite) TestExample() {
+	assert.Equal(suite.T(), 5, suite.VariableThatShouldStartAtFive)
+	suite.Equal(5, suite.VariableThatShouldStartAtFive)
+}
+
+func TestExampleTestSuite(t *testing.T) {
+	suite.Run(t, new(ExampleTestSuite))
 }

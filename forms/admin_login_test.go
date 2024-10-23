@@ -2,19 +2,18 @@ package forms_test
 
 import (
 	"errors"
+	"fmt"
 	"testing"
 
 	"github.com/hylarucoder/rocketbase/forms"
 	"github.com/hylarucoder/rocketbase/models"
 	"github.com/hylarucoder/rocketbase/tests"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/suite"
 )
 
-func TestAdminLoginValidateAndSubmit(t *testing.T) {
-	t.Parallel()
-
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
-
+func (s *AdminLoginTestSuite) TestAdminLoginValidateAndSubmit() {
+	app := s.App
 	form := forms.NewAdminLogin(app)
 
 	scenarios := []struct {
@@ -31,33 +30,21 @@ func TestAdminLoginValidateAndSubmit(t *testing.T) {
 		{"test@example.com", "1234567890", false},
 	}
 
-	for i, s := range scenarios {
-		form.Identity = s.email
-		form.Password = s.password
+	for _, scenario := range scenarios {
+		form.Identity = scenario.email
+		form.Password = scenario.password
 
 		admin, err := form.Submit()
 
 		hasErr := err != nil
-		if hasErr != s.expectError {
-			t.Errorf("(%d) Expected hasErr to be %v, got %v (%v)", i, s.expectError, hasErr, err)
-		}
-
-		if !s.expectError && admin == nil {
-			t.Errorf("(%d) Expected admin model to be returned, got nil", i)
-		}
-
-		if admin != nil && admin.Email != s.email {
-			t.Errorf("(%d) Expected admin with email %s to be returned, got %v", i, s.email, admin)
-		}
+		assert.Equal(s.T(), scenario.expectError, hasErr)
+		assert.Equal(s.T(), scenario.expectError, admin == nil)
+		assert.Equal(s.T(), scenario.email, admin.Email)
 	}
 }
 
-func TestAdminLoginInterceptors(t *testing.T) {
-	t.Parallel()
-
-	testApp, _ := tests.NewTestApp()
-	defer testApp.Cleanup()
-
+func (s *AdminLoginTestSuite) TestAdminLoginInterceptors() {
+	testApp := s.App
 	form := forms.NewAdminLogin(testApp)
 	form.Identity = "test@example.com"
 	form.Password = "123456"
@@ -82,19 +69,38 @@ func TestAdminLoginInterceptors(t *testing.T) {
 	}
 
 	_, submitErr := form.Submit(interceptor1, interceptor2)
-	if submitErr != testErr {
-		t.Fatalf("Expected submitError %v, got %v", testErr, submitErr)
-	}
+	assert.Equal(s.T(), testErr, submitErr)
 
-	if !interceptor1Called {
-		t.Fatalf("Expected interceptor1 to be called")
-	}
+	assert.True(s.T(), interceptor1Called)
+	assert.True(s.T(), interceptor2Called)
 
-	if !interceptor2Called {
-		t.Fatalf("Expected interceptor2 to be called")
-	}
+	assert.Equal(s.T(), form.Identity, interceptorAdmin.Email)
+}
 
-	if interceptorAdmin == nil || interceptorAdmin.Email != form.Identity {
-		t.Fatalf("Expected Admin model with email %s, got %v", form.Identity, interceptorAdmin)
-	}
+type AdminLoginTestSuite struct {
+	suite.Suite
+	App *tests.TestApp
+	Var int
+}
+
+func (s *AdminLoginTestSuite) SetupTest() {
+	app, _ := tests.NewTestApp()
+	s.Var = 5
+	s.App = app
+}
+
+func (s *AdminLoginTestSuite) TearDownTest() {
+	s.App.Cleanup()
+}
+
+func (s *AdminLoginTestSuite) SetupSuite() {
+	fmt.Println("setup suite")
+}
+
+func (s *AdminLoginTestSuite) TearDownSuite() {
+	fmt.Println("teardown suite")
+}
+
+func TestAdminLoginTestSuite(t *testing.T) {
+	suite.Run(t, new(AdminLoginTestSuite))
 }

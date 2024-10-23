@@ -3,6 +3,7 @@ package daos_test
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"strings"
 	"testing"
 
@@ -13,27 +14,20 @@ import (
 	"github.com/hylarucoder/rocketbase/tools/list"
 	"github.com/hylarucoder/rocketbase/tools/types"
 	"github.com/pocketbase/dbx"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/suite"
 )
 
-func TestCollectionQuery(t *testing.T) {
-	t.Parallel()
-
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
-
+func (suite *CollectionTestSuite) TestCollectionQuery() {
+	app := suite.App
 	expected := "SELECT {{_collections}}.* FROM \"_collections\""
 
 	sql := app.Dao().CollectionQuery().Build().SQL()
-	if sql != expected {
-		t.Errorf("Expected sql %s, got %s", expected, sql)
-	}
+	assert.Equal(suite.T(), expected, sql)
 }
 
-func TestFindCollectionsByType(t *testing.T) {
-	t.Parallel()
-
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
+func (suite *CollectionTestSuite) TestFindCollectionsByType() {
+	app := suite.App
 
 	scenarios := []struct {
 		collectionType string
@@ -49,28 +43,18 @@ func TestFindCollectionsByType(t *testing.T) {
 	for i, scenario := range scenarios {
 		collections, err := app.Dao().FindCollectionsByType(scenario.collectionType)
 
-		hasErr := err != nil
-		if hasErr != scenario.expectError {
-			t.Errorf("[%d] Expected hasErr to be %v, got %v (%v)", i, scenario.expectError, hasErr, err)
-		}
+		assert.Equal(suite.T(), scenario.expectError, err != nil, "[%d] Expected hasErr to be %v, got %v (%v)", i, scenario.expectError, err != nil, err)
 
-		if len(collections) != scenario.expectTotal {
-			t.Errorf("[%d] Expected %d collections, got %d", i, scenario.expectTotal, len(collections))
-		}
+		assert.Equal(suite.T(), scenario.expectTotal, len(collections), "[%d] Expected %d collections, got %d", i, scenario.expectTotal, len(collections))
 
 		for _, c := range collections {
-			if c.Type != scenario.collectionType {
-				t.Errorf("[%d] Expected collection with type %s, got %s: \n%v", i, scenario.collectionType, c.Type, c)
-			}
+			assert.Equal(suite.T(), scenario.collectionType, c.Type, "[%d] Expected collection with type %s, got %s: \n%v", i, scenario.collectionType, c.Type, c)
 		}
 	}
 }
 
-func TestFindCollectionByNameOrId(t *testing.T) {
-	t.Parallel()
-
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
+func (suite *CollectionTestSuite) TestFindCollectionByNameOrId() {
+	app := suite.App
 
 	scenarios := []struct {
 		nameOrId    string
@@ -87,22 +71,16 @@ func TestFindCollectionByNameOrId(t *testing.T) {
 		model, err := app.Dao().FindCollectionByNameOrId(scenario.nameOrId)
 
 		hasErr := err != nil
-		if hasErr != scenario.expectError {
-			t.Errorf("[%d] Expected hasErr to be %v, got %v (%v)", i, scenario.expectError, hasErr, err)
-		}
+		assert.Equal(suite.T(), scenario.expectError, hasErr, "[%d] Expected hasErr to be %v, got %v (%v)", i, scenario.expectError, hasErr, err)
 
 		if model != nil && model.Id != scenario.nameOrId && !strings.EqualFold(model.Name, scenario.nameOrId) {
-			t.Errorf("[%d] Expected model with identifier %s, got %v", i, scenario.nameOrId, model)
+			suite.T().Errorf("[%d] Expected model with identifier %s, got %v", i, scenario.nameOrId, model)
 		}
 	}
 }
 
-func TestIsCollectionNameUnique(t *testing.T) {
-	t.Parallel()
-
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
-
+func (suite *CollectionTestSuite) TestIsCollectionNameUnique() {
+	app := suite.App
 	scenarios := []struct {
 		name      string
 		excludeId string
@@ -117,22 +95,15 @@ func TestIsCollectionNameUnique(t *testing.T) {
 
 	for i, scenario := range scenarios {
 		result := app.Dao().IsCollectionNameUnique(scenario.name, scenario.excludeId)
-		if result != scenario.expected {
-			t.Errorf("[%d] Expected %v, got %v", i, scenario.expected, result)
-		}
+		assert.Equal(suite.T(), scenario.expected, result, "[%d] Expected %v, got %v", i, scenario.expected, result)
 	}
 }
 
-func TestFindCollectionReferences(t *testing.T) {
-	t.Parallel()
-
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
+func (suite *CollectionTestSuite) TestFindCollectionReferences() {
+	app := suite.App
 
 	collection, err := app.Dao().FindCollectionByNameOrId("demo3")
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.Nil(suite.T(), err)
 
 	result, err := app.Dao().FindCollectionReferences(
 		collection,
@@ -141,13 +112,9 @@ func TestFindCollectionReferences(t *testing.T) {
 		"",
 		"",
 	)
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.Nil(suite.T(), err)
 
-	if len(result) != 1 {
-		t.Fatalf("Expected 1 collection, got %d: %v", len(result), result)
-	}
+	assert.Equal(suite.T(), 1, len(result))
 
 	expectedFields := []string{
 		"rel_one_no_cascade",
@@ -159,61 +126,39 @@ func TestFindCollectionReferences(t *testing.T) {
 	}
 
 	for col, fields := range result {
-		if col.Name != "demo4" {
-			t.Fatalf("Expected collection demo4, got %s", col.Name)
-		}
-		if len(fields) != len(expectedFields) {
-			t.Fatalf("Expected fields %v, got %v", expectedFields, fields)
-		}
+		assert.Equal(suite.T(), "demo4", col.Name)
+
+		assert.Equal(suite.T(), len(fields), len(expectedFields))
 		for i, f := range fields {
-			if !list.ExistInSlice(f.Name, expectedFields) {
-				t.Fatalf("[%d] Didn't expect field %v", i, f)
-			}
+			assert.True(suite.T(), list.ExistInSlice(f.Name, expectedFields), "[%d] Didn't expect field %v", i, f)
 		}
 	}
 }
 
-func TestDeleteCollection(t *testing.T) {
-	t.Parallel()
-
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
+func (suite *CollectionTestSuite) TestDeleteCollection() {
+	app := suite.App
 
 	colUnsaved := &models.Collection{}
 
 	colAuth, err := app.Dao().FindCollectionByNameOrId("users")
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.Nil(suite.T(), err)
 
 	colReferenced, err := app.Dao().FindCollectionByNameOrId("demo2")
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.Nil(suite.T(), err)
 
 	colSystem, err := app.Dao().FindCollectionByNameOrId("demo3")
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.Nil(suite.T(), err)
 	colSystem.System = true
-	if err := app.Dao().Save(colSystem); err != nil {
-		t.Fatal(err)
-	}
+	assert.Nil(suite.T(), app.Dao().Save(colSystem))
 
 	colBase, err := app.Dao().FindCollectionByNameOrId("demo1")
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.Nil(suite.T(), err)
 
 	colView1, err := app.Dao().FindCollectionByNameOrId("view1")
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.Nil(suite.T(), err)
 
 	colView2, err := app.Dao().FindCollectionByNameOrId("view2")
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.Nil(suite.T(), err)
 
 	scenarios := []struct {
 		model       *models.Collection
@@ -234,8 +179,9 @@ func TestDeleteCollection(t *testing.T) {
 		err := app.Dao().DeleteCollection(s.model)
 
 		hasErr := err != nil
+
 		if hasErr != s.expectError {
-			t.Errorf("[%d] Expected hasErr %v, got %v (%v)", i, s.expectError, hasErr, err)
+			suite.T().Errorf("[%d] Expected hasErr %v, got %v (%v)", i, s.expectError, hasErr, err)
 			continue
 		}
 
@@ -244,7 +190,7 @@ func TestDeleteCollection(t *testing.T) {
 		}
 
 		if app.Dao().HasTable(s.model.Name) {
-			t.Errorf("[%d] Expected table/view %s to be deleted", i, s.model.Name)
+			suite.T().Errorf("[%d] Expected table/view %s to be deleted", i, s.model.Name)
 		}
 
 		// check if the external auths were deleted
@@ -256,18 +202,14 @@ func TestDeleteCollection(t *testing.T) {
 				Row(&total)
 
 			if err != nil || total > 0 {
-				t.Fatalf("[%d] Expected external auths to be deleted, got %v (%v)", i, total, err)
+				suite.T().Fatalf("[%d] Expected external auths to be deleted, got %v (%v)", i, total, err)
 			}
 		}
 	}
 }
 
-func TestSaveCollectionCreate(t *testing.T) {
-	t.Parallel()
-
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
-
+func (suite *CollectionTestSuite) TestSaveCollectionCreate() {
+	app := suite.App
 	collection := &models.Collection{
 		Name: "new_test",
 		Type: models.CollectionTypeBase,
@@ -280,46 +222,27 @@ func TestSaveCollectionCreate(t *testing.T) {
 	}
 
 	err := app.Dao().SaveCollection(collection)
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.Nil(suite.T(), err)
 
-	if collection.Id == "" {
-		t.Fatal("Expected collection id to be set")
-	}
+	assert.NotEmpty(suite.T(), collection.Id, "Expected collection id to be set")
 
 	// check if the records table was created
 	hasTable := app.Dao().HasTable(collection.Name)
-	if !hasTable {
-		t.Fatalf("Expected records table %s to be created", collection.Name)
-	}
-
+	assert.True(suite.T(), hasTable, "Expected records table %s to be created", collection.Name)
 	// check if the records table has the schema fields
 	columns, err := app.Dao().TableColumns(collection.Name)
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.Nil(suite.T(), err)
 	expectedColumns := []string{"id", "created", "updated", "test"}
-	if len(columns) != len(expectedColumns) {
-		t.Fatalf("Expected columns %v, got %v", expectedColumns, columns)
-	}
+	assert.Equal(suite.T(), len(expectedColumns), len(columns))
 	for i, c := range columns {
-		if !list.ExistInSlice(c, expectedColumns) {
-			t.Fatalf("[%d] Didn't expect record column %s", i, c)
-		}
+		assert.True(suite.T(), list.ExistInSlice(c, expectedColumns), "[%d] Didn't expect record column %s", i, c)
 	}
 }
 
-func TestSaveCollectionUpdate(t *testing.T) {
-	t.Parallel()
-
-	app, _ := tests.NewTestApp()
-	defer app.Cleanup()
-
+func (suite *CollectionTestSuite) TestSaveCollectionUpdate() {
+	app := suite.App
 	collection, err := app.Dao().FindCollectionByNameOrId("demo3")
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.Nil(suite.T(), err)
 
 	// rename an existing schema field and add a new one
 	oldField := collection.Schema.GetFieldByName("title")
@@ -329,38 +252,26 @@ func TestSaveCollectionUpdate(t *testing.T) {
 		Name: "test",
 	})
 
-	saveErr := app.Dao().SaveCollection(collection)
-	if saveErr != nil {
-		t.Fatal(saveErr)
-	}
+	assert.Nil(suite.T(), app.Dao().SaveCollection(collection))
 
 	// check if the records table has the schema fields
 	expectedColumns := []string{"id", "created", "updated", "title_update", "test", "files"}
 	columns, err := app.Dao().TableColumns(collection.Name)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if len(columns) != len(expectedColumns) {
-		t.Fatalf("Expected columns %v, got %v", expectedColumns, columns)
-	}
+	assert.Nil(suite.T(), err)
+	assert.Equal(suite.T(), len(expectedColumns), len(columns))
 	for i, c := range columns {
-		if !list.ExistInSlice(c, expectedColumns) {
-			t.Fatalf("[%d] Didn't expect record column %s", i, c)
-		}
+		assert.True(suite.T(), list.ExistInSlice(c, expectedColumns), "[%d] Didn't expect record column %s", i, c)
 	}
 }
 
 // indirect update of a field used in view should cause view(s) update
-func TestSaveCollectionIndirectViewsUpdate(t *testing.T) {
-	t.Parallel()
+func (suite *CollectionTestSuite) TestSaveCollectionIndirectViewsUpdate() {
 
 	app, _ := tests.NewTestApp()
 	defer app.Cleanup()
 
-	collection, err := app.Dao().FindCollectionByNameOrId("demo1")
-	if err != nil {
-		t.Fatal(err)
-	}
+	collection, err := suite.App.Dao().FindCollectionByNameOrId("demo1")
+	assert.Nil(suite.T(), err)
 
 	// update MaxSelect fields
 	{
@@ -371,50 +282,35 @@ func TestSaveCollectionIndirectViewsUpdate(t *testing.T) {
 		fileOne := collection.Schema.GetFieldByName("file_one")
 		fileOneOpt := fileOne.Options.(*schema.FileOptions)
 		fileOneOpt.MaxSelect = 10
-
-		if err := app.Dao().SaveCollection(collection); err != nil {
-			t.Fatal(err)
-		}
+		assert.Nil(suite.T(), suite.App.Dao().SaveCollection(collection))
 	}
 
 	// check view1 schema
 	{
-		view1, err := app.Dao().FindCollectionByNameOrId("view1")
-		if err != nil {
-			t.Fatal(err)
-		}
+		view1, err := suite.App.Dao().FindCollectionByNameOrId("view1")
+		assert.Nil(suite.T(), err)
 
 		relMany := view1.Schema.GetFieldByName("rel_many")
 		relManyOpt := relMany.Options.(*schema.RelationOptions)
-		if relManyOpt.MaxSelect == nil || *relManyOpt.MaxSelect != 1 {
-			t.Fatalf("Expected view1.rel_many MaxSelect to be %d, got %v", 1, relManyOpt.MaxSelect)
-		}
+		assert.Equal(suite.T(), 1, *relManyOpt.MaxSelect)
 
 		fileOne := view1.Schema.GetFieldByName("file_one")
 		fileOneOpt := fileOne.Options.(*schema.FileOptions)
-		if fileOneOpt.MaxSelect != 10 {
-			t.Fatalf("Expected view1.file_one MaxSelect to be %d, got %v", 10, fileOneOpt.MaxSelect)
-		}
+		assert.Equal(suite.T(), 10, fileOneOpt.MaxSelect)
 	}
 
 	// check view2 schema
 	{
-		view2, err := app.Dao().FindCollectionByNameOrId("view2")
-		if err != nil {
-			t.Fatal(err)
-		}
+		view2, err := suite.App.Dao().FindCollectionByNameOrId("view2")
+		assert.Nil(suite.T(), err)
 
 		relMany := view2.Schema.GetFieldByName("rel_many")
 		relManyOpt := relMany.Options.(*schema.RelationOptions)
-		if relManyOpt.MaxSelect == nil || *relManyOpt.MaxSelect != 1 {
-			t.Fatalf("Expected view2.rel_many MaxSelect to be %d, got %v", 1, relManyOpt.MaxSelect)
-		}
+		assert.Equal(suite.T(), 1, *relManyOpt.MaxSelect)
 	}
 }
 
-func TestSaveCollectionViewWrapping(t *testing.T) {
-	t.Parallel()
-
+func (suite *CollectionTestSuite) TestSaveCollectionViewWrapping() {
 	viewName := "test_wrapping"
 
 	scenarios := []struct {
@@ -490,42 +386,30 @@ func TestSaveCollectionViewWrapping(t *testing.T) {
 	}
 
 	for _, s := range scenarios {
-		t.Run(s.name, func(t *testing.T) {
-			app, _ := tests.NewTestApp()
-			defer app.Cleanup()
+		app := suite.App
 
-			collection := &models.Collection{
-				Name: viewName,
-				Type: models.CollectionTypeView,
-				Options: types.JsonMap{
-					"query": s.query,
-				},
-			}
+		collection := &models.Collection{
+			Name: viewName,
+			Type: models.CollectionTypeView,
+			Options: types.JsonMap{
+				"query": s.query,
+			},
+		}
 
-			err := app.Dao().SaveCollection(collection)
-			if err != nil {
-				t.Fatal(err)
-			}
+		err := app.Dao().SaveCollection(collection)
+		assert.Nil(suite.T(), err)
 
-			var sql string
+		var sql string
 
-			rowErr := app.Dao().DB().NewQuery("SELECT sql FROM sqlite_master WHERE type='view' AND name={:name}").
-				Bind(dbx.Params{"name": viewName}).
-				Row(&sql)
-			if rowErr != nil {
-				t.Fatalf("Failed to retrieve view sql: %v", rowErr)
-			}
-
-			if sql != s.expected {
-				t.Fatalf("Expected query \n%v, \ngot \n%v", s.expected, sql)
-			}
-		})
+		rowErr := app.Dao().DB().NewQuery("SELECT sql FROM sqlite_master WHERE type='view' AND name={:name}").
+			Bind(dbx.Params{"name": viewName}).
+			Row(&sql)
+		assert.Nil(suite.T(), rowErr)
+		assert.Equal(suite.T(), s.expected, sql)
 	}
 }
 
-func TestImportCollections(t *testing.T) {
-	t.Parallel()
-
+func (suite *CollectionTestSuite) TestImportCollections() {
 	totalCollections := 11
 
 	scenarios := []struct {
@@ -762,49 +646,62 @@ func TestImportCollections(t *testing.T) {
 				}
 				for name, expectedCount := range expectedCollectionFields {
 					collection, err := testApp.Dao().FindCollectionByNameOrId(name)
-					if err != nil {
-						t.Fatal(err)
-					}
-
-					if totalFields := len(collection.Schema.Fields()); totalFields != expectedCount {
-						t.Errorf("Expected %d %q fields, got %d", expectedCount, collection.Name, totalFields)
-					}
+					assert.Nil(suite.T(), err)
+					assert.Equal(suite.T(), expectedCount, len(collection.Schema.Fields()))
 				}
 			},
 		},
 	}
 
 	for _, scenario := range scenarios {
-		testApp, _ := tests.NewTestApp()
-		defer testApp.Cleanup()
+		testApp := suite.App
 
 		importedCollections := []*models.Collection{}
 
 		// load data
 		loadErr := json.Unmarshal([]byte(scenario.jsonData), &importedCollections)
-		if loadErr != nil {
-			t.Fatalf("[%s] Failed to load  data: %v", scenario.name, loadErr)
-			continue
-		}
+		assert.Nil(suite.T(), loadErr)
 
 		err := testApp.Dao().ImportCollections(importedCollections, scenario.deleteMissing, scenario.beforeRecordsSync)
 
 		hasErr := err != nil
-		if hasErr != scenario.expectError {
-			t.Errorf("[%s] Expected hasErr to be %v, got %v (%v)", scenario.name, scenario.expectError, hasErr, err)
-		}
+		assert.Equal(suite.T(), scenario.expectError, hasErr)
 
 		// check collections count
 		collections := []*models.Collection{}
-		if err := testApp.Dao().CollectionQuery().All(&collections); err != nil {
-			t.Fatal(err)
-		}
-		if len(collections) != scenario.expectCollectionsCount {
-			t.Errorf("[%s] Expected %d collections, got %d", scenario.name, scenario.expectCollectionsCount, len(collections))
-		}
+		assert.Nil(suite.T(), testApp.Dao().CollectionQuery().All(&collections))
+		assert.Equal(suite.T(), scenario.expectCollectionsCount, len(collections))
 
 		if scenario.afterTestFunc != nil {
 			scenario.afterTestFunc(testApp, collections)
 		}
 	}
+}
+
+type CollectionTestSuite struct {
+	suite.Suite
+	App *tests.TestApp
+	Var int
+}
+
+func (suite *CollectionTestSuite) SetupTest() {
+	app, _ := tests.NewTestApp()
+	suite.Var = 5
+	suite.App = app
+}
+
+func (suite *CollectionTestSuite) TearDownTest() {
+	suite.App.Cleanup()
+}
+
+func (suite *CollectionTestSuite) SetupSuite() {
+	fmt.Println("setup suite")
+}
+
+func (suite *CollectionTestSuite) TearDownSuite() {
+	fmt.Println("teardown suite")
+}
+
+func TestCollectionTestSuite(t *testing.T) {
+	suite.Run(t, new(CollectionTestSuite))
 }
