@@ -203,6 +203,7 @@ func (dao *Dao) FindRecordByViewFile(
 	if opt, ok := qf.original.Options.(schema.MultiValuer); !ok || !opt.IsMultiple() {
 		query.AndWhere(dbx.HashExp{cleanFieldName: filename})
 	} else {
+		// json each
 		query.InnerJoin(fmt.Sprintf(
 			`json_each(CASE WHEN json_valid([[%s]]) THEN [[%s]] ELSE json_array([[%s]]) END) as {{_je_file}}`,
 			cleanFieldName, cleanFieldName, cleanFieldName,

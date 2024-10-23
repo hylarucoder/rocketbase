@@ -537,7 +537,7 @@ func TestFindRecordByViewFile(t *testing.T) {
 
 	fileOneName := "test_d61b33QdDU.txt"
 	fileManyName := "test_QZFjKjXchk.txt"
-	expectedRecordId := "84nmscqy84lsi1t"
+	expectedRecordId := "3479947686461838339"
 
 	scenarios := []struct {
 		name               string

@@ -893,7 +893,7 @@ func TestFilesystemBinds(t *testing.T) {
 
 	vm := goja.New()
 	vm.Set("mh", &multipart.FileHeader{Filename: "test"})
-	vm.Set("testFile", filepath.Join(app.DataDir(), "data.db"))
+	vm.Set("testFile", filepath.Join(app.DataDir(), "empty.file"))
 	baseBinds(vm)
 	filesystemBinds(vm)
 
@@ -908,7 +908,7 @@ func TestFilesystemBinds(t *testing.T) {
 
 		file, _ := v.Export().(*filesystem.File)
 
-		if file == nil || file.OriginalName != "data.db" {
+		if file == nil || file.OriginalName != "empty.file" {
 			t.Fatalf("[fileFromPath] Expected file with name %q, got %v", file.OriginalName, file)
 		}
 	}
@@ -1037,7 +1037,7 @@ func TestLoadingDynamicModel(t *testing.T) {
 		$app.dao().db()
 			.select("text", "bool", "number", "select_many", "json", "('{\"test\": 1}') as obj")
 			.from("demo1")
-			.where($dbx.hashExp({"id": "84nmscqy84lsi1t"}))
+			.where($dbx.hashExp({"id": "3479947686461838339"}))
 			.limit(1)
 			.one(result)
 
@@ -1053,8 +1053,8 @@ func TestLoadingDynamicModel(t *testing.T) {
 			throw new Error('Expected number 123456, got ' + result.number);
 		}
 
-		if (result.select_many.length != 2 || result.select_many[0] != "optionB" || result.select_many[1] != "optionC") {
-			throw new Error('Expected select_many ["optionB", "optionC"], got ' + result.select_many);
+		if (result.select_many.length != 3 || result.select_many[0] != "optionB" || result.select_many[1] != "OptionA") {
+			throw new Error('Expected select_many ["OptionB", "OptionC"], got ' + result.select_many);
 		}
 
 		if (result.json.length != 3 || result.json[0] != 1 || result.json[1] != 2 || result.json[2] != 3) {
@@ -1089,7 +1089,7 @@ func TestLoadingArrayOf(t *testing.T) {
 		$app.dao().db()
 			.select("id", "text")
 			.from("demo1")
-			.where($dbx.exp("id='84nmscqy84lsi1t' OR id='al1h9ijdeojtsjy'"))
+			.where($dbx.exp("id='3479947686461838339' OR id='3479947686587667460'"))
 			.limit(2)
 			.orderBy("text ASC")
 			.all(result)
@@ -1098,15 +1098,15 @@ func TestLoadingArrayOf(t *testing.T) {
 			throw new Error('Expected 2 list items, got ' + result.length);
 		}
 
-		if (result[0].id != "84nmscqy84lsi1t") {
-			throw new Error('Expected 0.id "84nmscqy84lsi1t", got ' + result[0].id);
+		if (result[0].id != "3479947686461838339") {
+			throw new Error('Expected 0.id "3479947686461838339", got ' + result[0].id);
 		}
 		if (result[0].text != "test") {
 			throw new Error('Expected 0.text "test", got ' + result[0].text);
 		}
 
-		if (result[1].id != "al1h9ijdeojtsjy") {
-			throw new Error('Expected 1.id "al1h9ijdeojtsjy", got ' + result[1].id);
+		if (result[1].id != "3479947686587667460") {
+			throw new Error('Expected 1.id "3479947686587667460", got ' + result[1].id);
 		}
 		if (result[1].text != "test2") {
 			throw new Error('Expected 1.text "test2", got ' + result[1].text);

@@ -33,7 +33,7 @@ func TestFindAllExternalAuthsByRecord(t *testing.T) {
 		expectedCount int
 	}{
 		{"oap640cot4yru2s", 0},
-		{"4q1xlclmfloku33", 2},
+		{"2107977397063122944", 2},
 	}
 
 	for i, s := range scenarios {
@@ -106,8 +106,8 @@ func TestFindExternalAuthByRecordAndProvider(t *testing.T) {
 		expectedId string
 	}{
 		{"bgs820n361vj1qd", "google", ""},
-		{"4q1xlclmfloku33", "google", "clmflokuq1xl341"},
-		{"4q1xlclmfloku33", "gitlab", "dlmflokuq1xl342"},
+		{"2107977397063122944", "google", "clmflokuq1xl341"},
+		{"2107977397063122944", "gitlab", "dlmflokuq1xl342"},
 	}
 
 	for i, s := range scenarios {
@@ -176,7 +176,7 @@ func TestDeleteExternalAuth(t *testing.T) {
 	app, _ := tests.NewTestApp()
 	defer app.Cleanup()
 
-	record, err := app.Dao().FindRecordById("users", "4q1xlclmfloku33")
+	record, err := app.Dao().FindRecordById("users", "2107977397063122944")
 	if err != nil {
 		t.Fatal(err)
 	}

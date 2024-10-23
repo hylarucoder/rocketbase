@@ -78,7 +78,7 @@ func TestFindCollectionByNameOrId(t *testing.T) {
 	}{
 		{"", true},
 		{"missing", true},
-		{"wsmn24bux7wo113", false},
+		{"2108348993330216960", false},
 		{"demo1", false},
 		{"DEMO1", false}, // case insensitive check
 	}
@@ -112,7 +112,7 @@ func TestIsCollectionNameUnique(t *testing.T) {
 		{"demo1", "", false},
 		{"Demo1", "", false},
 		{"new", "", true},
-		{"demo1", "wsmn24bux7wo113", true},
+		{"demo1", "2108348993330216960", true},
 	}
 
 	for i, scenario := range scenarios {
@@ -582,7 +582,7 @@ func TestImportCollections(t *testing.T) {
 			name: "new + update + delete system collection",
 			jsonData: `[
 				{
-					"id":"wsmn24bux7wo113",
+					"id":"2108348993330216960",
 					"name":"demo",
 					"schema":[
 						{
@@ -654,7 +654,7 @@ func TestImportCollections(t *testing.T) {
 					]
 				},
 				{
-					"id":"wsmn24bux7wo113",
+					"id":"2108348993330216960",
 					"name":"demo1_rename",
 					"schema":[
 						{
@@ -700,7 +700,7 @@ func TestImportCollections(t *testing.T) {
 			name: "test with deleteMissing: false",
 			jsonData: `[
 				{
-					"id":"wsmn24bux7wo113",
+					"id":"2108348993330216960",
 					"name":"demo1",
 					"schema":[
 						{

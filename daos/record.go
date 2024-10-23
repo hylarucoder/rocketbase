@@ -690,10 +690,11 @@ func (dao *Dao) cascadeRecordDelete(mainRecord *models.Record, refs map[*models.
 			if opt, ok := field.Options.(schema.MultiValuer); !ok || !opt.IsMultiple() {
 				query.AndWhere(dbx.HashExp{prefixedFieldName: mainRecord.Id})
 			} else {
+				// Use PostgreSQL's jsonb_array_elements function for JSON array handling
 				query.InnerJoin(fmt.Sprintf(
-					`json_each(CASE WHEN json_valid([[%s]]) THEN [[%s]] ELSE json_array([[%s]]) END) as {{%s}}`,
+					`json_array_elements(CASE WHEN json_typeof([[%s]]) = 'array' THEN [[%s]]::json ELSE json_build_array([[%s]]) END) as {{%s}}`,
 					prefixedFieldName, prefixedFieldName, prefixedFieldName, uniqueJsonEachAlias,
-				), dbx.HashExp{uniqueJsonEachAlias + ".value": mainRecord.Id})
+				), dbx.HashExp{uniqueJsonEachAlias + "": mainRecord.Id})
 			}
 
 			if refCollection.Id == mainRecord.Collection().Id {

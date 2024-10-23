@@ -228,16 +228,18 @@ func TestProviderExecEmptyQuery(t *testing.T) {
 }
 
 func TestProviderExecNonEmptyQuery(t *testing.T) {
-	testDB, err := createTestDB()
+	tb := "test_tb_2"
+	testDB, err := createTestDB(tb)
 	if err != nil {
 		t.Fatal(err)
 	}
 	defer testDB.Close()
 
 	query := testDB.Select("*").
-		From("test").
+		From(tb).
 		Where(dbx.Not(dbx.HashExp{"test1": nil})).
 		OrderBy("test1 ASC")
+	// fmt.Println(query.Build().SQL())
 
 	scenarios := []struct {
 		name          string
@@ -260,8 +262,8 @@ func TestProviderExecNonEmptyQuery(t *testing.T) {
 			false,
 			`{"page":1,"perPage":10,"totalItems":2,"totalPages":1,"items":[{"test1":1,"test2":"test2.1","test3":""},{"test1":2,"test2":"test2.2","test3":""}]}`,
 			[]string{
-				"SELECT COUNT(DISTINCT [[test.id]]) FROM \"test\" WHERE NOT (\"test1\" IS NULL)",
-				"SELECT * FROM \"test\" WHERE NOT (\"test1\" IS NULL) ORDER BY \"test1\" ASC LIMIT 10",
+				"SELECT COUNT(DISTINCT [[" + tb + ".id]]) FROM \"" + tb + "\" WHERE NOT (\"test1\" IS NULL)",
+				"SELECT * FROM \"" + tb + "\" WHERE NOT (\"test1\" IS NULL) ORDER BY \"test1\" ASC LIMIT 10",
 			},
 		},
 		{
@@ -274,8 +276,8 @@ func TestProviderExecNonEmptyQuery(t *testing.T) {
 			false,
 			`{"page":10,"perPage":30,"totalItems":2,"totalPages":1,"items":[]}`,
 			[]string{
-				"SELECT COUNT(DISTINCT [[test.id]]) FROM \"test\" WHERE NOT (\"test1\" IS NULL)",
-				"SELECT * FROM \"test\" WHERE NOT (\"test1\" IS NULL) ORDER BY \"test1\" ASC LIMIT 30 OFFSET 270",
+				"SELECT COUNT(DISTINCT [[" + tb + ".id]]) FROM \"" + tb + "\" WHERE NOT (\"test1\" IS NULL)",
+				"SELECT * FROM \"" + tb + "\" WHERE NOT (\"test1\" IS NULL) ORDER BY \"test1\" ASC LIMIT 30 OFFSET 270",
 			},
 		},
 		{
@@ -310,8 +312,8 @@ func TestProviderExecNonEmptyQuery(t *testing.T) {
 			false,
 			`{"page":1,"perPage":` + fmt.Sprint(MaxPerPage) + `,"totalItems":1,"totalPages":1,"items":[{"test1":2,"test2":"test2.2","test3":""}]}`,
 			[]string{
-				"SELECT COUNT(DISTINCT [[test.id]]) FROM \"test\" WHERE ((NOT (\"test1\" IS NULL)) AND (((test2 != '' AND test2 IS NOT NULL)))) AND (test1 >= 2)",
-				"SELECT * FROM \"test\" WHERE ((NOT (\"test1\" IS NULL)) AND (((test2 != '' AND test2 IS NOT NULL)))) AND (test1 >= 2) ORDER BY \"test1\" ASC, \"test2\" DESC LIMIT " + fmt.Sprint(MaxPerPage),
+				"SELECT COUNT(DISTINCT [[" + tb + ".id]]) FROM \"" + tb + "\" WHERE ((NOT (\"test1\" IS NULL)) AND (((test2 != '' AND test2 IS NOT NULL)))) AND (test1 >= 2)",
+				"SELECT * FROM \"" + tb + "\" WHERE ((NOT (\"test1\" IS NULL)) AND (((test2 != '' AND test2 IS NOT NULL)))) AND (test1 >= 2) ORDER BY \"test1\" ASC, \"test2\" DESC LIMIT " + fmt.Sprint(MaxPerPage),
 			},
 		},
 		{
@@ -324,7 +326,7 @@ func TestProviderExecNonEmptyQuery(t *testing.T) {
 			false,
 			`{"page":1,"perPage":` + fmt.Sprint(MaxPerPage) + `,"totalItems":-1,"totalPages":-1,"items":[{"test1":2,"test2":"test2.2","test3":""}]}`,
 			[]string{
-				"SELECT * FROM \"test\" WHERE ((NOT (\"test1\" IS NULL)) AND (((test2 != '' AND test2 IS NOT NULL)))) AND (test1 >= 2) ORDER BY \"test1\" ASC, \"test2\" DESC LIMIT " + fmt.Sprint(MaxPerPage),
+				"SELECT * FROM \"" + tb + "\" WHERE ((NOT (\"test1\" IS NULL)) AND (((test2 != '' AND test2 IS NOT NULL)))) AND (test1 >= 2) ORDER BY \"test1\" ASC, \"test2\" DESC LIMIT " + fmt.Sprint(MaxPerPage),
 			},
 		},
 		{
@@ -337,8 +339,8 @@ func TestProviderExecNonEmptyQuery(t *testing.T) {
 			false,
 			`{"page":1,"perPage":10,"totalItems":0,"totalPages":0,"items":[]}`,
 			[]string{
-				"SELECT COUNT(DISTINCT [[test.id]]) FROM \"test\" WHERE (NOT (\"test1\" IS NULL)) AND (((test3 != '' AND test3 IS NOT NULL)))",
-				"SELECT * FROM \"test\" WHERE (NOT (\"test1\" IS NULL)) AND (((test3 != '' AND test3 IS NOT NULL))) ORDER BY \"test1\" ASC, \"test3\" ASC LIMIT 10",
+				"SELECT COUNT(DISTINCT [[" + tb + ".id]]) FROM \"" + tb + "\" WHERE (NOT (\"test1\" IS NULL)) AND (((test3 != '' AND test3 IS NOT NULL)))",
+				"SELECT * FROM \"" + tb + "\" WHERE (NOT (\"test1\" IS NULL)) AND (((test3 != '' AND test3 IS NOT NULL))) ORDER BY \"test1\" ASC, \"test3\" ASC LIMIT 10",
 			},
 		},
 		{
@@ -351,7 +353,7 @@ func TestProviderExecNonEmptyQuery(t *testing.T) {
 			false,
 			`{"page":1,"perPage":10,"totalItems":-1,"totalPages":-1,"items":[]}`,
 			[]string{
-				"SELECT * FROM \"test\" WHERE (NOT (\"test1\" IS NULL)) AND (((test3 != '' AND test3 IS NOT NULL))) ORDER BY \"test1\" ASC, \"test3\" ASC LIMIT 10",
+				"SELECT * FROM \"" + tb + "\" WHERE (NOT (\"test1\" IS NULL)) AND (((test3 != '' AND test3 IS NOT NULL))) ORDER BY \"test1\" ASC, \"test3\" ASC LIMIT 10",
 			},
 		},
 		{
@@ -364,8 +366,8 @@ func TestProviderExecNonEmptyQuery(t *testing.T) {
 			false,
 			`{"page":2,"perPage":1,"totalItems":2,"totalPages":2,"items":[{"test1":2,"test2":"test2.2","test3":""}]}`,
 			[]string{
-				"SELECT COUNT(DISTINCT [[test.id]]) FROM \"test\" WHERE NOT (\"test1\" IS NULL)",
-				"SELECT * FROM \"test\" WHERE NOT (\"test1\" IS NULL) ORDER BY \"test1\" ASC LIMIT 1 OFFSET 1",
+				"SELECT COUNT(DISTINCT [[" + tb + ".id]]) FROM \"" + tb + "\" WHERE NOT (\"test1\" IS NULL)",
+				"SELECT * FROM \"" + tb + "\" WHERE NOT (\"test1\" IS NULL) ORDER BY \"test1\" ASC LIMIT 1 OFFSET 1",
 			},
 		},
 		{
@@ -378,7 +380,7 @@ func TestProviderExecNonEmptyQuery(t *testing.T) {
 			false,
 			`{"page":2,"perPage":1,"totalItems":-1,"totalPages":-1,"items":[{"test1":2,"test2":"test2.2","test3":""}]}`,
 			[]string{
-				"SELECT * FROM \"test\" WHERE NOT (\"test1\" IS NULL) ORDER BY \"test1\" ASC LIMIT 1 OFFSET 1",
+				"SELECT * FROM \"" + tb + "\" WHERE NOT (\"test1\" IS NULL) ORDER BY \"test1\" ASC LIMIT 1 OFFSET 1",
 			},
 		},
 	}
@@ -386,6 +388,7 @@ func TestProviderExecNonEmptyQuery(t *testing.T) {
 	for _, s := range scenarios {
 		t.Run(s.name, func(t *testing.T) {
 			testDB.CalledQueries = []string{} // reset
+			// fmt.Println("--->", s.name)
 
 			testResolver := &testFieldResolver{}
 			p := NewProvider(testResolver).
@@ -397,6 +400,9 @@ func TestProviderExecNonEmptyQuery(t *testing.T) {
 				Filter(s.filter)
 
 			result, err := p.Exec(&[]testTableStruct{})
+			// fmt.Println("--->", p.query.Build().SQL())
+			// fmt.Println("--->", s.name, testDB.CalledQueries)
+			//fmt.Println(s.name, result.Items, s.expectResult)
 
 			hasErr := err != nil
 			if hasErr != s.expectError {
@@ -430,14 +436,15 @@ func TestProviderExecNonEmptyQuery(t *testing.T) {
 }
 
 func TestProviderParseAndExec(t *testing.T) {
-	testDB, err := createTestDB()
+	tb := "test_tb_1"
+	testDB, err := createTestDB(tb)
 	if err != nil {
 		t.Fatal(err)
 	}
 	defer testDB.Close()
 
 	query := testDB.Select("*").
-		From("test").
+		From(tb).
 		Where(dbx.Not(dbx.HashExp{"test1": nil})).
 		OrderBy("test1 ASC")
 
@@ -557,6 +564,7 @@ func TestProviderParseAndExec(t *testing.T) {
 // -------------------------------------------------------------------
 
 type testTableStruct struct {
+	//Id    int    `db:"id" json:"id"`
 	Test1 int    `db:"test1" json:"test1"`
 	Test2 string `db:"test2" json:"test2"`
 	Test3 string `db:"test3" json:"test3"`
@@ -568,20 +576,25 @@ type testDB struct {
 }
 
 // NB! Don't forget to call `db.Close()` at the end of the test.
-func createTestDB() (*testDB, error) {
+func createTestDB(tb string) (*testDB, error) {
 	test_utils.LoadTestEnv()
-	// using a shared cache to allow multiple connections access to
-	// the same in memory database https://www.sqlite.org/inmemorydb.html
 	dbDSN := os.Getenv("DATABASE")
+	fmt.Println(dbDSN)
+	//sqlDB, err := sql.Open("sqlite", "file::memory:?cache=shared")
 	sqlDB, err := sql.Open("postgres", dbDSN)
 	if err != nil {
 		return nil, err
 	}
 
 	db := testDB{DB: dbx.NewFromDB(sqlDB, "postgres")}
-	db.CreateTable("test", map[string]string{"id": "int default 0", "test1": "int default 0", "test2": "text default ''", "test3": "text default ''"}).Execute()
-	db.Insert("test", dbx.Params{"id": 1, "test1": 1, "test2": "test2.1"}).Execute()
-	db.Insert("test", dbx.Params{"id": 2, "test1": 2, "test2": "test2.2"}).Execute()
+	db.CreateTable(tb, map[string]string{
+		"id":    "int primary key",
+		"test1": "int default 0",
+		"test2": "text default ''",
+		"test3": "text default ''",
+	}).Execute()
+	db.Insert(tb, dbx.Params{"id": 1, "test1": 1, "test2": "test2.1"}).Execute()
+	db.Insert(tb, dbx.Params{"id": 2, "test1": 2, "test2": "test2.2"}).Execute()
 	db.QueryLogFunc = func(ctx context.Context, t time.Duration, sql string, rows *sql.Rows, err error) {
 		db.CalledQueries = append(db.CalledQueries, sql)
 	}

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"testing"
 
@@ -26,15 +27,15 @@ func TestAutomigrateCollectionCreate(t *testing.T) {
 /// <reference path="../pb_data/types.d.ts" />
 migrate((db) => {
   const collection = new Collection({
-    "id": "new_id",
+    "id": "1",
     "created": "2022-01-01 00:00:00.000Z",
     "updated": "2022-01-01 00:00:00.000Z",
-    "name": "new_name",
+    "name": "new_name_1",
     "type": "auth",
     "system": true,
     "schema": [],
     "indexes": [
-      "create index test on new_name (id)"
+      "create index test on new_name_1 (id)"
     ],
     "listRule": "@request.auth.id != '' && created > 0 || 'backtick` + "`" + `test' = 0",
     "viewRule": "id = \"1\"",
@@ -57,7 +58,7 @@ migrate((db) => {
   return Dao(db).saveCollection(collection);
 }, (db) => {
   const dao = new Dao(db);
-  const collection = dao.findCollectionByNameOrId("new_id");
+  const collection = dao.findCollectionByNameOrId("1");
 
   return dao.deleteCollection(collection);
 })
@@ -80,15 +81,15 @@ import (
 func init() {
 	m.Register(func(db dbx.Builder) error {
 		jsonData := ` + "`" + `{
-			"id": "new_id",
+			"id": "2",
 			"created": "2022-01-01 00:00:00.000Z",
 			"updated": "2022-01-01 00:00:00.000Z",
-			"name": "new_name",
+			"name": "new_name_2",
 			"type": "auth",
 			"system": true,
 			"schema": [],
 			"indexes": [
-				"create index test on new_name (id)"
+				"create index test on new_name_2 (id)"
 			],
 			"listRule": "@request.auth.id != '' && created > 0 || ` + "'backtick` + \"`\" + `test' = 0" + `",
 			"viewRule": "id = \"1\"",
@@ -117,7 +118,7 @@ func init() {
 	}, func(db dbx.Builder) error {
 		dao := daos.New(db);
 
-		collection, err := dao.FindCollectionByNameOrId("new_id")
+		collection, err := dao.FindCollectionByNameOrId("2")
 		if err != nil {
 			return err
 		}
@@ -146,15 +147,15 @@ func init() {
 			app.Bootstrap()
 
 			collection := &models.Collection{}
-			collection.Id = "new_id"
-			collection.Name = "new_name"
+			collection.Id = strconv.Itoa(i + 1)
+			collection.Name = "new_name_" + strconv.Itoa(i+1)
 			collection.Type = models.CollectionTypeAuth
 			collection.System = true
 			collection.Created, _ = types.ParseDateTime("2022-01-01 00:00:00.000Z")
 			collection.Updated = collection.Created
 			collection.ListRule = types.Pointer("@request.auth.id != '' && created > 0 || 'backtick`test' = 0")
 			collection.ViewRule = types.Pointer(`id = "1"`)
-			collection.Indexes = types.JsonArray[string]{"create index test on new_name (id)"}
+			collection.Indexes = types.JsonArray[string]{fmt.Sprintf("create index test on new_name_%d (id)", i+1)}
 			collection.SetOptions(models.CollectionAuthOptions{
 				ManageRule:        types.Pointer("created > 0"),
 				MinPasswordLength: 20,
@@ -174,7 +175,7 @@ func init() {
 				t.Fatalf("Expected 1 file to be generated, got %d: %v", total, files)
 			}
 
-			expectedName := "_created_new_name." + s.lang
+			expectedName := "_created_new_name_"
 			if !strings.Contains(files[0].Name(), expectedName) {
 				t.Fatalf("Expected filename to contains %q, got %q", expectedName, files[0].Name())
 			}

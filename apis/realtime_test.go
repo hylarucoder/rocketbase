@@ -180,7 +180,7 @@ func TestRealtimeSubscribe(t *testing.T) {
 				app.SubscriptionsBroker().Register(client)
 			},
 			AfterTestFunc: func(t *testing.T, app *tests.TestApp, res *http.Response) {
-				admin, err := client.Get(apis.ContextAdminKey).(*models.Admin)
+				admin, _ := client.Get(apis.ContextAdminKey).(*models.Admin)
 				if admin == nil {
 					t.Errorf("Expected admin auth model, got nil")
 				}

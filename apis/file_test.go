@@ -100,13 +100,13 @@ func TestFileDownload(t *testing.T) {
 	dataDirRelPath := "../tests/data/"
 
 	testFilePath := filepath.Join(path.Dir(currentFile), dataDirRelPath, "storage/_pb_users_auth_/oap640cot4yru2s/test_kfd2wYLxkz.txt")
-	testImgPath := filepath.Join(path.Dir(currentFile), dataDirRelPath, "storage/_pb_users_auth_/4q1xlclmfloku33/300_1SEi6Q6U72.png")
-	testThumbCropCenterPath := filepath.Join(path.Dir(currentFile), dataDirRelPath, "storage/_pb_users_auth_/4q1xlclmfloku33/thumbs_300_1SEi6Q6U72.png/70x50_300_1SEi6Q6U72.png")
-	testThumbCropTopPath := filepath.Join(path.Dir(currentFile), dataDirRelPath, "storage/_pb_users_auth_/4q1xlclmfloku33/thumbs_300_1SEi6Q6U72.png/70x50t_300_1SEi6Q6U72.png")
-	testThumbCropBottomPath := filepath.Join(path.Dir(currentFile), dataDirRelPath, "storage/_pb_users_auth_/4q1xlclmfloku33/thumbs_300_1SEi6Q6U72.png/70x50b_300_1SEi6Q6U72.png")
-	testThumbFitPath := filepath.Join(path.Dir(currentFile), dataDirRelPath, "storage/_pb_users_auth_/4q1xlclmfloku33/thumbs_300_1SEi6Q6U72.png/70x50f_300_1SEi6Q6U72.png")
-	testThumbZeroWidthPath := filepath.Join(path.Dir(currentFile), dataDirRelPath, "storage/_pb_users_auth_/4q1xlclmfloku33/thumbs_300_1SEi6Q6U72.png/0x50_300_1SEi6Q6U72.png")
-	testThumbZeroHeightPath := filepath.Join(path.Dir(currentFile), dataDirRelPath, "storage/_pb_users_auth_/4q1xlclmfloku33/thumbs_300_1SEi6Q6U72.png/70x0_300_1SEi6Q6U72.png")
+	testImgPath := filepath.Join(path.Dir(currentFile), dataDirRelPath, "storage/_pb_users_auth_/2107977397063122944/300_1SEi6Q6U72.png")
+	testThumbCropCenterPath := filepath.Join(path.Dir(currentFile), dataDirRelPath, "storage/_pb_users_auth_/2107977397063122944/thumbs_300_1SEi6Q6U72.png/70x50_300_1SEi6Q6U72.png")
+	testThumbCropTopPath := filepath.Join(path.Dir(currentFile), dataDirRelPath, "storage/_pb_users_auth_/2107977397063122944/thumbs_300_1SEi6Q6U72.png/70x50t_300_1SEi6Q6U72.png")
+	testThumbCropBottomPath := filepath.Join(path.Dir(currentFile), dataDirRelPath, "storage/_pb_users_auth_/2107977397063122944/thumbs_300_1SEi6Q6U72.png/70x50b_300_1SEi6Q6U72.png")
+	testThumbFitPath := filepath.Join(path.Dir(currentFile), dataDirRelPath, "storage/_pb_users_auth_/2107977397063122944/thumbs_300_1SEi6Q6U72.png/70x50f_300_1SEi6Q6U72.png")
+	testThumbZeroWidthPath := filepath.Join(path.Dir(currentFile), dataDirRelPath, "storage/_pb_users_auth_/2107977397063122944/thumbs_300_1SEi6Q6U72.png/0x50_300_1SEi6Q6U72.png")
+	testThumbZeroHeightPath := filepath.Join(path.Dir(currentFile), dataDirRelPath, "storage/_pb_users_auth_/2107977397063122944/thumbs_300_1SEi6Q6U72.png/70x0_300_1SEi6Q6U72.png")
 
 	testFile, fileErr := os.ReadFile(testFilePath)
 	if fileErr != nil {
@@ -152,7 +152,7 @@ func TestFileDownload(t *testing.T) {
 		{
 			Name:            "missing collection",
 			Method:          http.MethodGet,
-			Url:             "/api/files/missing/4q1xlclmfloku33/300_1SEi6Q6U72.png",
+			Url:             "/api/files/missing/2107977397063122944/300_1SEi6Q6U72.png",
 			ExpectedStatus:  404,
 			ExpectedContent: []string{`"data":{}`},
 		},
@@ -166,14 +166,14 @@ func TestFileDownload(t *testing.T) {
 		{
 			Name:            "missing file",
 			Method:          http.MethodGet,
-			Url:             "/api/files/_pb_users_auth_/4q1xlclmfloku33/missing.png",
+			Url:             "/api/files/_pb_users_auth_/2107977397063122944/missing.png",
 			ExpectedStatus:  404,
 			ExpectedContent: []string{`"data":{}`},
 		},
 		{
 			Name:            "existing image",
 			Method:          http.MethodGet,
-			Url:             "/api/files/_pb_users_auth_/4q1xlclmfloku33/300_1SEi6Q6U72.png",
+			Url:             "/api/files/_pb_users_auth_/2107977397063122944/300_1SEi6Q6U72.png",
 			ExpectedStatus:  200,
 			ExpectedContent: []string{string(testImg)},
 			ExpectedEvents: map[string]int{
@@ -183,7 +183,7 @@ func TestFileDownload(t *testing.T) {
 		{
 			Name:            "existing image - missing thumb (should fallback to the original)",
 			Method:          http.MethodGet,
-			Url:             "/api/files/_pb_users_auth_/4q1xlclmfloku33/300_1SEi6Q6U72.png?thumb=999x999",
+			Url:             "/api/files/_pb_users_auth_/2107977397063122944/300_1SEi6Q6U72.png?thumb=999x999",
 			ExpectedStatus:  200,
 			ExpectedContent: []string{string(testImg)},
 			ExpectedEvents: map[string]int{
@@ -193,7 +193,7 @@ func TestFileDownload(t *testing.T) {
 		{
 			Name:            "existing image - existing thumb (crop center)",
 			Method:          http.MethodGet,
-			Url:             "/api/files/_pb_users_auth_/4q1xlclmfloku33/300_1SEi6Q6U72.png?thumb=70x50",
+			Url:             "/api/files/_pb_users_auth_/2107977397063122944/300_1SEi6Q6U72.png?thumb=70x50",
 			ExpectedStatus:  200,
 			ExpectedContent: []string{string(testThumbCropCenter)},
 			ExpectedEvents: map[string]int{
@@ -203,7 +203,7 @@ func TestFileDownload(t *testing.T) {
 		{
 			Name:            "existing image - existing thumb (crop top)",
 			Method:          http.MethodGet,
-			Url:             "/api/files/_pb_users_auth_/4q1xlclmfloku33/300_1SEi6Q6U72.png?thumb=70x50t",
+			Url:             "/api/files/_pb_users_auth_/2107977397063122944/300_1SEi6Q6U72.png?thumb=70x50t",
 			ExpectedStatus:  200,
 			ExpectedContent: []string{string(testThumbCropTop)},
 			ExpectedEvents: map[string]int{
@@ -213,7 +213,7 @@ func TestFileDownload(t *testing.T) {
 		{
 			Name:            "existing image - existing thumb (crop bottom)",
 			Method:          http.MethodGet,
-			Url:             "/api/files/_pb_users_auth_/4q1xlclmfloku33/300_1SEi6Q6U72.png?thumb=70x50b",
+			Url:             "/api/files/_pb_users_auth_/2107977397063122944/300_1SEi6Q6U72.png?thumb=70x50b",
 			ExpectedStatus:  200,
 			ExpectedContent: []string{string(testThumbCropBottom)},
 			ExpectedEvents: map[string]int{
@@ -223,7 +223,7 @@ func TestFileDownload(t *testing.T) {
 		{
 			Name:            "existing image - existing thumb (fit)",
 			Method:          http.MethodGet,
-			Url:             "/api/files/_pb_users_auth_/4q1xlclmfloku33/300_1SEi6Q6U72.png?thumb=70x50f",
+			Url:             "/api/files/_pb_users_auth_/2107977397063122944/300_1SEi6Q6U72.png?thumb=70x50f",
 			ExpectedStatus:  200,
 			ExpectedContent: []string{string(testThumbFit)},
 			ExpectedEvents: map[string]int{
@@ -233,7 +233,7 @@ func TestFileDownload(t *testing.T) {
 		{
 			Name:            "existing image - existing thumb (zero width)",
 			Method:          http.MethodGet,
-			Url:             "/api/files/_pb_users_auth_/4q1xlclmfloku33/300_1SEi6Q6U72.png?thumb=0x50",
+			Url:             "/api/files/_pb_users_auth_/2107977397063122944/300_1SEi6Q6U72.png?thumb=0x50",
 			ExpectedStatus:  200,
 			ExpectedContent: []string{string(testThumbZeroWidth)},
 			ExpectedEvents: map[string]int{
@@ -243,7 +243,7 @@ func TestFileDownload(t *testing.T) {
 		{
 			Name:            "existing image - existing thumb (zero height)",
 			Method:          http.MethodGet,
-			Url:             "/api/files/_pb_users_auth_/4q1xlclmfloku33/300_1SEi6Q6U72.png?thumb=70x0",
+			Url:             "/api/files/_pb_users_auth_/2107977397063122944/300_1SEi6Q6U72.png?thumb=70x0",
 			ExpectedStatus:  200,
 			ExpectedContent: []string{string(testThumbZeroHeight)},
 			ExpectedEvents: map[string]int{
@@ -275,14 +275,14 @@ func TestFileDownload(t *testing.T) {
 		{
 			Name:            "protected file - admin with expired file token",
 			Method:          http.MethodGet,
-			Url:             "/api/files/demo1/al1h9ijdeojtsjy/300_Jsjq7RdBgA.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsImV4cCI6MTY0MDk5MTY2MSwidHlwZSI6ImFkbWluIn0.g7Q_3UX6H--JWJ7yt1Hoe-1ugTX1KpbKzdt0zjGSe-E",
+			Url:             "/api/files/demo1/3479947686587667460/300_Jsjq7RdBgA.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsImV4cCI6MTY0MDk5MTY2MSwidHlwZSI6ImFkbWluIn0.g7Q_3UX6H--JWJ7yt1Hoe-1ugTX1KpbKzdt0zjGSe-E",
 			ExpectedStatus:  403,
 			ExpectedContent: []string{`"data":{}`},
 		},
 		{
 			Name:            "protected file - admin with valid file token",
 			Method:          http.MethodGet,
-			Url:             "/api/files/demo1/al1h9ijdeojtsjy/300_Jsjq7RdBgA.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsImV4cCI6MTg5MzQ1MjQ2MSwidHlwZSI6ImFkbWluIn0.LyAMpSfaHVsuUqIlqqEbhDQSdFzoPz_EIDcb2VJMBsU",
+			Url:             "/api/files/demo1/3479947686587667460/300_Jsjq7RdBgA.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsImV4cCI6MTg5MzQ1MjQ2MSwidHlwZSI6ImFkbWluIn0.LyAMpSfaHVsuUqIlqqEbhDQSdFzoPz_EIDcb2VJMBsU",
 			ExpectedStatus:  200,
 			ExpectedContent: []string{"PNG"},
 			ExpectedEvents: map[string]int{
@@ -292,14 +292,14 @@ func TestFileDownload(t *testing.T) {
 		{
 			Name:            "protected file - guest without view access",
 			Method:          http.MethodGet,
-			Url:             "/api/files/demo1/al1h9ijdeojtsjy/300_Jsjq7RdBgA.png",
+			Url:             "/api/files/demo1/3479947686587667460/300_Jsjq7RdBgA.png",
 			ExpectedStatus:  403,
 			ExpectedContent: []string{`"data":{}`},
 		},
 		{
 			Name:   "protected file - guest with view access",
 			Method: http.MethodGet,
-			Url:    "/api/files/demo1/al1h9ijdeojtsjy/300_Jsjq7RdBgA.png",
+			Url:    "/api/files/demo1/3479947686587667460/300_Jsjq7RdBgA.png",
 			BeforeTestFunc: func(t *testing.T, app *tests.TestApp, e *echo.Echo) {
 				dao := daos.New(app.Dao().DB())
 
@@ -322,7 +322,7 @@ func TestFileDownload(t *testing.T) {
 		{
 			Name:   "protected file - auth record without view access",
 			Method: http.MethodGet,
-			Url:    "/api/files/demo1/al1h9ijdeojtsjy/300_Jsjq7RdBgA.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsImV4cCI6MTg5MzQ1MjQ2MSwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwidHlwZSI6ImF1dGhSZWNvcmQifQ.0d_0EO6kfn9ijZIQWAqgRi8Bo1z7MKcg1LQpXhQsEPk",
+			Url:    "/api/files/demo1/3479947686587667460/300_Jsjq7RdBgA.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsImV4cCI6MTg5MzQ1MjQ2MSwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwidHlwZSI6ImF1dGhSZWNvcmQifQ.0d_0EO6kfn9ijZIQWAqgRi8Bo1z7MKcg1LQpXhQsEPk",
 			BeforeTestFunc: func(t *testing.T, app *tests.TestApp, e *echo.Echo) {
 				dao := daos.New(app.Dao().DB())
 
@@ -342,7 +342,7 @@ func TestFileDownload(t *testing.T) {
 		{
 			Name:   "protected file - auth record with view access",
 			Method: http.MethodGet,
-			Url:    "/api/files/demo1/al1h9ijdeojtsjy/300_Jsjq7RdBgA.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsImV4cCI6MTg5MzQ1MjQ2MSwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwidHlwZSI6ImF1dGhSZWNvcmQifQ.0d_0EO6kfn9ijZIQWAqgRi8Bo1z7MKcg1LQpXhQsEPk",
+			Url:    "/api/files/demo1/3479947686587667460/300_Jsjq7RdBgA.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsImV4cCI6MTg5MzQ1MjQ2MSwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwidHlwZSI6ImF1dGhSZWNvcmQifQ.0d_0EO6kfn9ijZIQWAqgRi8Bo1z7MKcg1LQpXhQsEPk",
 			BeforeTestFunc: func(t *testing.T, app *tests.TestApp, e *echo.Echo) {
 				dao := daos.New(app.Dao().DB())
 
@@ -365,14 +365,14 @@ func TestFileDownload(t *testing.T) {
 		{
 			Name:            "protected file in view (view's View API rule failure)",
 			Method:          http.MethodGet,
-			Url:             "/api/files/view1/al1h9ijdeojtsjy/300_Jsjq7RdBgA.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsImV4cCI6MTg5MzQ1MjQ2MSwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwidHlwZSI6ImF1dGhSZWNvcmQifQ.0d_0EO6kfn9ijZIQWAqgRi8Bo1z7MKcg1LQpXhQsEPk",
+			Url:             "/api/files/view1/3479947686587667460/300_Jsjq7RdBgA.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsImV4cCI6MTg5MzQ1MjQ2MSwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwidHlwZSI6ImF1dGhSZWNvcmQifQ.0d_0EO6kfn9ijZIQWAqgRi8Bo1z7MKcg1LQpXhQsEPk",
 			ExpectedStatus:  403,
 			ExpectedContent: []string{`"data":{}`},
 		},
 		{
 			Name:            "protected file in view (view's View API rule success)",
 			Method:          http.MethodGet,
-			Url:             "/api/files/view1/84nmscqy84lsi1t/test_d61b33QdDU.txt?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsImV4cCI6MTg5MzQ1MjQ2MSwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwidHlwZSI6ImF1dGhSZWNvcmQifQ.0d_0EO6kfn9ijZIQWAqgRi8Bo1z7MKcg1LQpXhQsEPk",
+			Url:             "/api/files/view1/3479947686461838339/test_d61b33QdDU.txt?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsImV4cCI6MTg5MzQ1MjQ2MSwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwidHlwZSI6ImF1dGhSZWNvcmQifQ.0d_0EO6kfn9ijZIQWAqgRi8Bo1z7MKcg1LQpXhQsEPk",
 			ExpectedStatus:  200,
 			ExpectedContent: []string{"test"},
 			ExpectedEvents: map[string]int{
@@ -427,7 +427,7 @@ func TestConcurrentThumbsGeneration(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	fileKey := "wsmn24bux7wo113/al1h9ijdeojtsjy/300_Jsjq7RdBgA.png"
+	fileKey := "2108348993330216960/3479947686587667460/300_Jsjq7RdBgA.png"
 
 	e, err := apis.InitApi(app)
 	if err != nil {
@@ -462,9 +462,9 @@ func TestConcurrentThumbsGeneration(t *testing.T) {
 
 	// ensure that all new requested thumbs were created
 	thumbKeys := []string{
-		"wsmn24bux7wo113/al1h9ijdeojtsjy/thumbs_300_Jsjq7RdBgA.png/111x111_" + filepath.Base(fileKey),
-		"wsmn24bux7wo113/al1h9ijdeojtsjy/thumbs_300_Jsjq7RdBgA.png/111x222_" + filepath.Base(fileKey),
-		"wsmn24bux7wo113/al1h9ijdeojtsjy/thumbs_300_Jsjq7RdBgA.png/111x333_" + filepath.Base(fileKey),
+		"2108348993330216960/3479947686587667460/thumbs_300_Jsjq7RdBgA.png/111x111_" + filepath.Base(fileKey),
+		"2108348993330216960/3479947686587667460/thumbs_300_Jsjq7RdBgA.png/111x222_" + filepath.Base(fileKey),
+		"2108348993330216960/3479947686587667460/thumbs_300_Jsjq7RdBgA.png/111x333_" + filepath.Base(fileKey),
 	}
 	for _, k := range thumbKeys {
 		if exists, _ := fsys.Exists(k); !exists {

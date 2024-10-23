@@ -749,7 +749,7 @@ func TestRequireAdminOrOwnerAuth(t *testing.T) {
 		{
 			Name:   "guest",
 			Method: http.MethodGet,
-			Url:    "/my/test/4q1xlclmfloku33",
+			Url:    "/my/test/2107977397063122944",
 			BeforeTestFunc: func(t *testing.T, app *tests.TestApp, e *echo.Echo) {
 				e.AddRoute(echo.Route{
 					Method: http.MethodGet,
@@ -768,7 +768,7 @@ func TestRequireAdminOrOwnerAuth(t *testing.T) {
 		{
 			Name:   "expired/invalid token",
 			Method: http.MethodGet,
-			Url:    "/my/test/4q1xlclmfloku33",
+			Url:    "/my/test/2107977397063122944",
 			RequestHeaders: map[string]string{
 				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoxNjQwOTkxNjYxfQ.HqvpCpM0RAk3Qu9PfCMuZsk_DKh9UYuzFLwXBMTZd1w",
 			},
@@ -790,7 +790,7 @@ func TestRequireAdminOrOwnerAuth(t *testing.T) {
 		{
 			Name:   "valid record token (different user)",
 			Method: http.MethodGet,
-			Url:    "/my/test/4q1xlclmfloku33",
+			Url:    "/my/test/2107977397063122944",
 			RequestHeaders: map[string]string{
 				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6ImJnczgyMG4zNjF2ajFxZCIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.tW4NZWZ0mHBgvSZsQ0OOQhWajpUNFPCvNrOF9aCZLZs",
 			},
@@ -812,7 +812,7 @@ func TestRequireAdminOrOwnerAuth(t *testing.T) {
 		{
 			Name:   "valid record token (different collection)",
 			Method: http.MethodGet,
-			Url:    "/my/test/4q1xlclmfloku33",
+			Url:    "/my/test/2107977397063122944",
 			RequestHeaders: map[string]string{
 				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6ImdrMzkwcWVnczR5NDd3biIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoidjg1MXE0cjc5MHJoa25sIiwiZXhwIjoyMjA4OTg1MjYxfQ.q34IWXrRWsjLvbbVNRfAs_J4SoTHloNBfdGEiLmy-D8",
 			},
@@ -834,7 +834,7 @@ func TestRequireAdminOrOwnerAuth(t *testing.T) {
 		{
 			Name:   "valid record token (owner)",
 			Method: http.MethodGet,
-			Url:    "/my/test/4q1xlclmfloku33",
+			Url:    "/my/test/2107977397063122944",
 			RequestHeaders: map[string]string{
 				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.UwD8JvkbQtXpymT09d7J6fdA0aP9g4FJ1GPh_ggEkzc",
 			},
@@ -856,7 +856,7 @@ func TestRequireAdminOrOwnerAuth(t *testing.T) {
 		{
 			Name:   "valid admin token",
 			Method: http.MethodGet,
-			Url:    "/my/test/4q1xlclmfloku33",
+			Url:    "/my/test/2107977397063122944",
 			RequestHeaders: map[string]string{
 				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
 			},
