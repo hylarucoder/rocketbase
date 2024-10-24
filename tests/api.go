@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/stretchr/testify/assert"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -61,21 +62,10 @@ func (scenario *ApiScenario) Test(t *testing.T) {
 
 func (scenario *ApiScenario) test(t *testing.T) {
 	var testApp *TestApp
-	if scenario.TestAppFactory != nil {
-		testApp = scenario.TestAppFactory(t)
-		if testApp == nil {
-			t.Fatal("TestAppFactory must return a non-nil app instance")
-		}
-		testApp.ResetEventCalls()
-		//testApp.ResetBootstrapState()
-	} else {
-		var testAppErr error
-		testApp, testAppErr = NewTestApp()
-		if testAppErr != nil {
-			t.Fatalf("Failed to initialize the test app instance: %v", testAppErr)
-		}
-		defer testApp.Cleanup()
-	}
+	testApp = scenario.TestAppFactory(t)
+	assert.NotNil(t, testApp)
+	testApp.ResetEventCalls()
+	//testApp.ResetBootstrapState()
 
 	e, err := apis.InitApi(testApp)
 	if err != nil {

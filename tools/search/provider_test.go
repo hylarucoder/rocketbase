@@ -579,8 +579,6 @@ type testDB struct {
 func createTestDB(tb string) (*testDB, error) {
 	test_utils.LoadTestEnv()
 	dbDSN := os.Getenv("DATABASE")
-	fmt.Println(dbDSN)
-	//sqlDB, err := sql.Open("sqlite", "file::memory:?cache=shared")
 	sqlDB, err := sql.Open("postgres", dbDSN)
 	if err != nil {
 		return nil, err
