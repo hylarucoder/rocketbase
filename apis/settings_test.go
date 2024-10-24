@@ -18,8 +18,8 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
-func TestSettingsList(t *testing.T) {
-	t.Parallel()
+func (suite *SettingsTestSuite) TestList() {
+	t := suite.T()
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -28,6 +28,9 @@ func TestSettingsList(t *testing.T) {
 			Url:             "/api/settings",
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "authorized as auth record",
@@ -38,6 +41,9 @@ func TestSettingsList(t *testing.T) {
 			},
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "authorized as admin",
@@ -91,6 +97,9 @@ func TestSettingsList(t *testing.T) {
 			ExpectedEvents: map[string]int{
 				"OnSettingsListRequest": 1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 	}
 
@@ -99,8 +108,8 @@ func TestSettingsList(t *testing.T) {
 	}
 }
 
-func TestSettingsSet(t *testing.T) {
-	t.Parallel()
+func (suite *SettingsTestSuite) TestSet() {
+	t := suite.T()
 
 	validData := `{"meta":{"appName":"update_test"}}`
 
@@ -112,6 +121,9 @@ func TestSettingsSet(t *testing.T) {
 			Body:            strings.NewReader(validData),
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "authorized as auth record",
@@ -123,6 +135,9 @@ func TestSettingsSet(t *testing.T) {
 			},
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "authorized as admin submitting empty data",
@@ -180,6 +195,9 @@ func TestSettingsSet(t *testing.T) {
 				"OnSettingsBeforeUpdateRequest": 1,
 				"OnSettingsAfterUpdateRequest":  1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "authorized as admin submitting invalid data",
@@ -193,6 +211,9 @@ func TestSettingsSet(t *testing.T) {
 			ExpectedContent: []string{
 				`"data":{`,
 				`"meta":{"appName":{"code":"validation_required"`,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
 			},
 		},
 		{
@@ -252,6 +273,9 @@ func TestSettingsSet(t *testing.T) {
 				"OnSettingsBeforeUpdateRequest": 1,
 				"OnSettingsAfterUpdateRequest":  1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "OnSettingsAfterUpdateRequest error response",
@@ -274,6 +298,9 @@ func TestSettingsSet(t *testing.T) {
 				"OnSettingsBeforeUpdateRequest": 1,
 				"OnSettingsAfterUpdateRequest":  1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 	}
 
@@ -282,8 +309,8 @@ func TestSettingsSet(t *testing.T) {
 	}
 }
 
-func TestSettingsTestS3(t *testing.T) {
-	t.Parallel()
+func (suite *SettingsTestSuite) TestTestS3() {
+	t := suite.T()
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -292,6 +319,9 @@ func TestSettingsTestS3(t *testing.T) {
 			Url:             "/api/settings/test/s3",
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "authorized as auth record",
@@ -302,6 +332,9 @@ func TestSettingsTestS3(t *testing.T) {
 			},
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "authorized as admin (missing body + no s3)",
@@ -314,6 +347,9 @@ func TestSettingsTestS3(t *testing.T) {
 			ExpectedContent: []string{
 				`"data":{`,
 				`"filesystem":{`,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
 			},
 		},
 		{
@@ -329,6 +365,9 @@ func TestSettingsTestS3(t *testing.T) {
 				`"data":{`,
 				`"filesystem":{`,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "authorized as admin (valid filesystem and no s3)",
@@ -342,6 +381,9 @@ func TestSettingsTestS3(t *testing.T) {
 			ExpectedContent: []string{
 				`"data":{}`,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 	}
 
@@ -350,8 +392,8 @@ func TestSettingsTestS3(t *testing.T) {
 	}
 }
 
-func TestSettingsTestEmail(t *testing.T) {
-	t.Parallel()
+func (suite *SettingsTestSuite) TestEmail() {
+	t := suite.T()
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -364,6 +406,9 @@ func TestSettingsTestEmail(t *testing.T) {
 			}`),
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "authorized as auth record",
@@ -378,6 +423,9 @@ func TestSettingsTestEmail(t *testing.T) {
 			},
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "authorized as admin (invalid body)",
@@ -389,6 +437,9 @@ func TestSettingsTestEmail(t *testing.T) {
 			},
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "authorized as admin (empty json)",
@@ -402,6 +453,9 @@ func TestSettingsTestEmail(t *testing.T) {
 			ExpectedContent: []string{
 				`"email":{"code":"validation_required"`,
 				`"template":{"code":"validation_required"`,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
 			},
 		},
 		{
@@ -438,6 +492,9 @@ func TestSettingsTestEmail(t *testing.T) {
 				"OnMailerBeforeRecordVerificationSend": 1,
 				"OnMailerAfterRecordVerificationSend":  1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "authorized as admin (password reset template)",
@@ -472,6 +529,9 @@ func TestSettingsTestEmail(t *testing.T) {
 			ExpectedEvents: map[string]int{
 				"OnMailerBeforeRecordResetPasswordSend": 1,
 				"OnMailerAfterRecordResetPasswordSend":  1,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
 			},
 		},
 		{
@@ -508,6 +568,9 @@ func TestSettingsTestEmail(t *testing.T) {
 				"OnMailerBeforeRecordChangeEmailSend": 1,
 				"OnMailerAfterRecordChangeEmailSend":  1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 	}
 
@@ -516,8 +579,8 @@ func TestSettingsTestEmail(t *testing.T) {
 	}
 }
 
-func TestGenerateAppleClientSecret(t *testing.T) {
-	t.Parallel()
+func (suite *SettingsTestSuite) TestGenerateAppleClientSecret() {
+	t := suite.T()
 
 	key, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
 	if err != nil {
@@ -543,6 +606,9 @@ func TestGenerateAppleClientSecret(t *testing.T) {
 			Url:             "/api/settings/apple/generate-client-secret",
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "authorized as auth record",
@@ -553,6 +619,9 @@ func TestGenerateAppleClientSecret(t *testing.T) {
 			},
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "authorized as admin (invalid body)",
@@ -564,6 +633,9 @@ func TestGenerateAppleClientSecret(t *testing.T) {
 			},
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "authorized as admin (empty json)",
@@ -580,6 +652,9 @@ func TestGenerateAppleClientSecret(t *testing.T) {
 				`"keyId":{"code":"validation_required"`,
 				`"privateKey":{"code":"validation_required"`,
 				`"duration":{"code":"validation_required"`,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
 			},
 		},
 		{
@@ -604,6 +679,9 @@ func TestGenerateAppleClientSecret(t *testing.T) {
 				`"privateKey":{"code":"validation_match_invalid"`,
 				`"duration":{"code":"validation_min_greater_equal_than_required"`,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "authorized as admin (valid data)",
@@ -623,6 +701,9 @@ func TestGenerateAppleClientSecret(t *testing.T) {
 			ExpectedContent: []string{
 				`"secret":"`,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 	}
 
@@ -633,13 +714,15 @@ func TestGenerateAppleClientSecret(t *testing.T) {
 
 type SettingsTestSuite struct {
 	suite.Suite
-	App *tests.TestApp
-	Var int
+	App            *tests.TestApp
+	AdminAuthToken string
+	UserAuthToken  string
 }
 
 func (suite *SettingsTestSuite) SetupSuite() {
 	app, _ := tests.NewTestApp()
-	suite.Var = 5
+	suite.AdminAuthToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzAyMzYxMTQsImlkIjoiMjEwNzk3NzEyNzUyODc1OTI5NiIsInR5cGUiOiJhZG1pbiJ9.ikCEJR-iPIrZwpbsWjtslMdq75suCAEYfaRK7Oz-NZ0"
+	suite.UserAuthToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2xsZWN0aW9uSWQiOiIyMTA3OTc3Mzk3MDYzMTIyOTQ0IiwiZXhwIjoxNzMwOTEyMTQzLCJpZCI6Il9wYl91c2Vyc19hdXRoXyIsInR5cGUiOiJhdXRoUmVjb3JkIiwidmVyaWZpZWQiOnRydWV9.Us_731ziRkeeZvYvXiXsc6CKEwdKp4rSvsGbG5L1OUQ"
 	suite.App = app
 }
 

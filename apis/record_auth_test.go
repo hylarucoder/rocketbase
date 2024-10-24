@@ -27,6 +27,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthMethodsList() {
 			Url:             "/api/collections/missing/auth-methods",
 			ExpectedStatus:  404,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:            "non auth collection",
@@ -34,6 +37,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthMethodsList() {
 			Url:             "/api/collections/demo1/auth-methods",
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:           "auth collection with all auth methods allowed",
@@ -53,6 +59,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthMethodsList() {
 				`"authUrl":`,
 				`redirect_uri="`, // ensures that the redirect_uri is the last url param
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:           "auth collection with only email/password auth allowed",
@@ -64,6 +73,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthMethodsList() {
 				`"emailPassword":true`,
 				`"onlyVerified":true`,
 				`"authProviders":[]`,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
 			},
 		},
 	}
@@ -84,6 +96,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthWithPassword() {
 			Body:            strings.NewReader(`{"identity`),
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:           "empty body params",
@@ -95,6 +110,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthWithPassword() {
 				`"data":{`,
 				`"identity":{`,
 				`"password":{`,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
 			},
 		},
 
@@ -114,6 +132,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthWithPassword() {
 			ExpectedEvents: map[string]int{
 				"OnRecordBeforeAuthWithPasswordRequest": 1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "valid username and invalid password",
@@ -130,6 +151,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthWithPassword() {
 			ExpectedEvents: map[string]int{
 				"OnRecordBeforeAuthWithPasswordRequest": 1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "valid username and valid password in restricted collection",
@@ -145,6 +169,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthWithPassword() {
 			},
 			ExpectedEvents: map[string]int{
 				"OnRecordBeforeAuthWithPasswordRequest": 1,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
 			},
 		},
 		{
@@ -167,6 +194,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthWithPassword() {
 				"OnRecordAfterAuthWithPasswordRequest":  1,
 				"OnRecordAuthRequest":                   1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 
 		// email
@@ -185,6 +215,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthWithPassword() {
 			ExpectedEvents: map[string]int{
 				"OnRecordBeforeAuthWithPasswordRequest": 1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "valid email and invalid password",
@@ -201,6 +234,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthWithPassword() {
 			ExpectedEvents: map[string]int{
 				"OnRecordBeforeAuthWithPasswordRequest": 1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "valid email and valid password in restricted collection",
@@ -216,6 +252,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthWithPassword() {
 			},
 			ExpectedEvents: map[string]int{
 				"OnRecordBeforeAuthWithPasswordRequest": 1,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
 			},
 		},
 		{
@@ -239,6 +278,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthWithPassword() {
 				"OnRecordAfterAuthWithPasswordRequest":  1,
 				"OnRecordAuthRequest":                   1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 
 		// onlyVerified collection check
@@ -257,6 +299,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthWithPassword() {
 			ExpectedEvents: map[string]int{
 				"OnRecordBeforeAuthWithPasswordRequest": 1,
 				"OnRecordAfterAuthWithPasswordRequest":  1,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
 			},
 		},
 		{
@@ -279,6 +324,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthWithPassword() {
 				"OnRecordBeforeAuthWithPasswordRequest": 1,
 				"OnRecordAfterAuthWithPasswordRequest":  1,
 				"OnRecordAuthRequest":                   1,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
 			},
 		},
 
@@ -306,6 +354,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthWithPassword() {
 				"OnRecordAfterAuthWithPasswordRequest":  1,
 				"OnRecordAuthRequest":                   1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "authenticated admin",
@@ -330,6 +381,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthWithPassword() {
 				"OnRecordAfterAuthWithPasswordRequest":  1,
 				"OnRecordAuthRequest":                   1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 
 		// after hooks error checks
@@ -352,6 +406,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthWithPassword() {
 				"OnRecordBeforeAuthWithPasswordRequest": 1,
 				"OnRecordAfterAuthWithPasswordRequest":  1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 	}
 
@@ -370,6 +427,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthRefresh() {
 			Url:             "/api/collections/users/auth-refresh",
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "admin",
@@ -380,6 +440,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthRefresh() {
 			},
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "auth record + not an auth collection",
@@ -390,6 +453,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthRefresh() {
 			},
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "auth record + different auth collection",
@@ -400,6 +466,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthRefresh() {
 			},
 			ExpectedStatus:  403,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "auth record + same auth collection as the token",
@@ -427,6 +496,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthRefresh() {
 				"OnRecordAuthRequest":              1,
 				"OnRecordAfterAuthRefreshRequest":  1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "unverified auth record in onlyVerified collection",
@@ -440,6 +512,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthRefresh() {
 			ExpectedEvents: map[string]int{
 				"OnRecordBeforeAuthRefreshRequest": 1,
 				"OnRecordAfterAuthRefreshRequest":  1,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
 			},
 		},
 		{
@@ -462,6 +537,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthRefresh() {
 				"OnRecordAuthRequest":              1,
 				"OnRecordAfterAuthRefreshRequest":  1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "OnRecordAfterAuthRefreshRequest error response",
@@ -480,6 +558,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthRefresh() {
 			ExpectedEvents: map[string]int{
 				"OnRecordBeforeAuthRefreshRequest": 1,
 				"OnRecordAfterAuthRefreshRequest":  1,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
 			},
 		},
 	}
@@ -500,6 +581,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthRequestPasswordReset() {
 			Body:            strings.NewReader(``),
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:            "empty data",
@@ -508,6 +592,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthRequestPasswordReset() {
 			Body:            strings.NewReader(``),
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{"email":{"code":"validation_required","message":"Cannot be blank."}}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:            "invalid data",
@@ -516,6 +603,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthRequestPasswordReset() {
 			Body:            strings.NewReader(`{"email`),
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:           "missing auth record",
@@ -524,6 +614,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthRequestPasswordReset() {
 			Body:           strings.NewReader(`{"email":"missing@example.com"}`),
 			Delay:          100 * time.Millisecond,
 			ExpectedStatus: 204,
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:           "existing auth record",
@@ -539,6 +632,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthRequestPasswordReset() {
 				"OnRecordAfterRequestPasswordResetRequest":  1,
 				"OnMailerBeforeRecordResetPasswordSend":     1,
 				"OnMailerAfterRecordResetPasswordSend":      1,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
 			},
 		},
 		{
@@ -560,6 +656,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthRequestPasswordReset() {
 					t.Fatal(err)
 				}
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:            "existing auth record in a collection with disabled password login",
@@ -568,6 +667,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthRequestPasswordReset() {
 			Body:            strings.NewReader(`{"email":"test@example.com"}`),
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 	}
 
@@ -592,6 +694,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthConfirmPasswordReset() {
 				`"passwordConfirm":{"code":"validation_required"`,
 				`"token":{"code":"validation_required"`,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:            "invalid data format",
@@ -600,6 +705,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthConfirmPasswordReset() {
 			Body:            strings.NewReader(`{"password`),
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "expired token and invalid password",
@@ -617,6 +725,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthConfirmPasswordReset() {
 				`"password":{"code":"validation_length_out_of_range"`,
 				`"passwordConfirm":{"code":"validation_values_mismatch"`,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "non auth collection",
@@ -629,6 +740,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthConfirmPasswordReset() {
 			}`),
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "different auth collection",
@@ -642,6 +756,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthConfirmPasswordReset() {
 			ExpectedStatus: 400,
 			ExpectedContent: []string{
 				`"data":{"token":{"code":"validation_token_collection_mismatch"`,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
 			},
 		},
 		{
@@ -659,6 +776,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthConfirmPasswordReset() {
 				"OnModelBeforeUpdate":                       1,
 				"OnRecordBeforeConfirmPasswordResetRequest": 1,
 				"OnRecordAfterConfirmPasswordResetRequest":  1,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
 			},
 		},
 		{
@@ -682,6 +802,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthConfirmPasswordReset() {
 				"OnModelBeforeUpdate":                       1,
 				"OnRecordBeforeConfirmPasswordResetRequest": 1,
 				"OnRecordAfterConfirmPasswordResetRequest":  1,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
 			},
 		},
 	}
@@ -778,6 +901,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthRequestVerification() {
 					t.Fatal(err)
 				}
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 	}
 
@@ -800,6 +926,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthConfirmVerification() {
 				`"data":{`,
 				`"token":{"code":"validation_required"`,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:            "invalid data format",
@@ -808,6 +937,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthConfirmVerification() {
 			Body:            strings.NewReader(`{"password`),
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "expired token",
@@ -821,6 +953,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthConfirmVerification() {
 				`"data":{`,
 				`"token":{"code":"validation_invalid_token"`,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "non auth collection",
@@ -831,6 +966,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthConfirmVerification() {
 			}`),
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "different auth collection",
@@ -842,6 +980,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthConfirmVerification() {
 			ExpectedStatus: 400,
 			ExpectedContent: []string{
 				`"data":{"token":{"code":"validation_token_collection_mismatch"`,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
 			},
 		},
 		{
@@ -858,6 +999,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthConfirmVerification() {
 				"OnRecordBeforeConfirmVerificationRequest": 1,
 				"OnRecordAfterConfirmVerificationRequest":  1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "valid token (already verified)",
@@ -870,6 +1014,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthConfirmVerification() {
 			ExpectedEvents: map[string]int{
 				"OnRecordBeforeConfirmVerificationRequest": 1,
 				"OnRecordAfterConfirmVerificationRequest":  1,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
 			},
 		},
 		{
@@ -886,6 +1033,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthConfirmVerification() {
 				"OnModelBeforeUpdate":                      1,
 				"OnRecordBeforeConfirmVerificationRequest": 1,
 				"OnRecordAfterConfirmVerificationRequest":  1,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
 			},
 		},
 		{
@@ -908,6 +1058,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthConfirmVerification() {
 				"OnRecordBeforeConfirmVerificationRequest": 1,
 				"OnRecordAfterConfirmVerificationRequest":  1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 	}
 
@@ -927,6 +1080,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthRequestEmailChange() {
 			Body:            strings.NewReader(`{"newEmail":"change@example.com"}`),
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:            "not an auth collection",
@@ -935,6 +1091,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthRequestEmailChange() {
 			Body:            strings.NewReader(`{"newEmail":"change@example.com"}`),
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "admin authentication",
@@ -946,6 +1105,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthRequestEmailChange() {
 			},
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "record authentication but from different auth collection",
@@ -957,6 +1119,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthRequestEmailChange() {
 			},
 			ExpectedStatus:  403,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "invalid data",
@@ -968,6 +1133,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthRequestEmailChange() {
 			},
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "empty data",
@@ -982,6 +1150,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthRequestEmailChange() {
 				`"data":`,
 				`"newEmail":{"code":"validation_required"`,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "valid data (existing email)",
@@ -995,6 +1166,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthRequestEmailChange() {
 			ExpectedContent: []string{
 				`"data":`,
 				`"newEmail":{"code":"validation_record_email_invalid"`,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
 			},
 		},
 		{
@@ -1011,6 +1185,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthRequestEmailChange() {
 				"OnMailerAfterRecordChangeEmailSend":      1,
 				"OnRecordBeforeRequestEmailChangeRequest": 1,
 				"OnRecordAfterRequestEmailChangeRequest":  1,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
 			},
 		},
 	}
@@ -1032,6 +1209,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthConfirmEmailChange() {
 			ExpectedContent: []string{
 				`"data":{}`,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:           "empty data",
@@ -1044,6 +1224,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthConfirmEmailChange() {
 				`"token":{"code":"validation_required"`,
 				`"password":{"code":"validation_required"`,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:            "invalid data",
@@ -1052,6 +1235,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthConfirmEmailChange() {
 			Body:            strings.NewReader(`{"token`),
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "expired token and correct password",
@@ -1067,6 +1253,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthConfirmEmailChange() {
 				`"token":{`,
 				`"code":"validation_invalid_token"`,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "valid token and incorrect password",
@@ -1081,6 +1270,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthConfirmEmailChange() {
 				`"data":{`,
 				`"password":{`,
 				`"code":"validation_invalid_password"`,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
 			},
 		},
 		{
@@ -1098,6 +1290,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthConfirmEmailChange() {
 				"OnRecordBeforeConfirmEmailChangeRequest": 1,
 				"OnRecordAfterConfirmEmailChangeRequest":  1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "valid token and correct password in different auth collection",
@@ -1111,6 +1306,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthConfirmEmailChange() {
 			ExpectedContent: []string{
 				`"data":{`,
 				`"token":{"code":"validation_token_collection_mismatch"`,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
 			},
 		},
 		{
@@ -1134,6 +1332,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthConfirmEmailChange() {
 				"OnRecordBeforeConfirmEmailChangeRequest": 1,
 				"OnRecordAfterConfirmEmailChangeRequest":  1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 	}
 
@@ -1152,6 +1353,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthListExternalsAuths() {
 			Url:             "/api/collections/users/records/2107977397063122944/external-auths",
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "admin + nonexisting record id",
@@ -1162,6 +1366,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthListExternalsAuths() {
 			},
 			ExpectedStatus:  404,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "admin + existing record id and no external auths",
@@ -1173,6 +1380,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthListExternalsAuths() {
 			ExpectedStatus:  200,
 			ExpectedContent: []string{`[]`},
 			ExpectedEvents:  map[string]int{"OnRecordListExternalAuthsRequest": 1},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "admin + existing user id and 2 external auths",
@@ -1189,6 +1399,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthListExternalsAuths() {
 				`"collectionId":"_pb_users_auth_"`,
 			},
 			ExpectedEvents: map[string]int{"OnRecordListExternalAuthsRequest": 1},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "auth record + trying to list another user external auths",
@@ -1199,6 +1412,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthListExternalsAuths() {
 			},
 			ExpectedStatus:  403,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "auth record + trying to list another user external auths from different collection",
@@ -1209,6 +1425,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthListExternalsAuths() {
 			},
 			ExpectedStatus:  403,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "auth record + owner without external auths",
@@ -1220,6 +1439,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthListExternalsAuths() {
 			ExpectedStatus:  200,
 			ExpectedContent: []string{`[]`},
 			ExpectedEvents:  map[string]int{"OnRecordListExternalAuthsRequest": 1},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "authorized as user - owner with 2 external auths",
@@ -1236,6 +1458,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthListExternalsAuths() {
 				`"collectionId":"_pb_users_auth_"`,
 			},
 			ExpectedEvents: map[string]int{"OnRecordListExternalAuthsRequest": 1},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 	}
 
@@ -1254,6 +1479,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthUnlinkExternalsAuth() {
 			Url:             "/api/collections/users/records/2107977397063122944/external-auths/google",
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "admin - nonexisting recod id",
@@ -1264,6 +1492,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthUnlinkExternalsAuth() {
 			},
 			ExpectedStatus:  404,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "admin - nonlinked provider",
@@ -1274,6 +1505,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthUnlinkExternalsAuth() {
 			},
 			ExpectedStatus:  404,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "admin - linked provider",
@@ -1300,6 +1534,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthUnlinkExternalsAuth() {
 					t.Fatalf("Expected the google ExternalAuth to be deleted, got got \n%v", auth)
 				}
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "auth record - trying to unlink another user external auth",
@@ -1310,6 +1547,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthUnlinkExternalsAuth() {
 			},
 			ExpectedStatus:  403,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "auth record - trying to unlink another user external auth from different collection",
@@ -1320,6 +1560,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthUnlinkExternalsAuth() {
 			},
 			ExpectedStatus:  403,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "auth record - owner with existing external auth",
@@ -1346,6 +1589,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthUnlinkExternalsAuth() {
 					t.Fatalf("Expected the google ExternalAuth to be deleted, got got \n%v", auth)
 				}
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "OnRecordBeforeUnlinkExternalAuthRequest error response",
@@ -1366,6 +1612,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthUnlinkExternalsAuth() {
 				"OnModelBeforeDelete":                     1,
 				"OnRecordAfterUnlinkExternalAuthRequest":  1,
 				"OnRecordBeforeUnlinkExternalAuthRequest": 1,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
 			},
 		},
 	}
@@ -1408,6 +1657,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthOAuth2Redirect() {
 			Url:             "/api/oauth2-redirect?code=123",
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:            "no code query param",
@@ -1415,6 +1667,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthOAuth2Redirect() {
 			Url:             "/api/oauth2-redirect?state=" + c3.Id(),
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:            "missing client",
@@ -1422,6 +1677,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthOAuth2Redirect() {
 			Url:             "/api/oauth2-redirect?code=123&state=missing",
 			ExpectedStatus:  404,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:            "discarded client with @oauth2 subscription",
@@ -1430,6 +1688,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthOAuth2Redirect() {
 			BeforeTestFunc:  beforeTestFunc,
 			ExpectedStatus:  404,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:            "client without @oauth2 subscription",
@@ -1438,6 +1699,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthOAuth2Redirect() {
 			BeforeTestFunc:  beforeTestFunc,
 			ExpectedStatus:  404,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "client with @oauth2 subscription",
@@ -1486,6 +1750,9 @@ func (suite *RecordAuthTestSuite) TestRecordAuthOAuth2Redirect() {
 				}()
 			},
 			ExpectedStatus: http.StatusTemporaryRedirect,
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 	}
 
@@ -1496,13 +1763,15 @@ func (suite *RecordAuthTestSuite) TestRecordAuthOAuth2Redirect() {
 
 type RecordAuthTestSuite struct {
 	suite.Suite
-	App *tests.TestApp
-	Var int
+	App            *tests.TestApp
+	AdminAuthToken string
+	UserAuthToken  string
 }
 
 func (suite *RecordAuthTestSuite) SetupSuite() {
 	app, _ := tests.NewTestApp()
-	suite.Var = 5
+	suite.AdminAuthToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzAyMzYxMTQsImlkIjoiMjEwNzk3NzEyNzUyODc1OTI5NiIsInR5cGUiOiJhZG1pbiJ9.ikCEJR-iPIrZwpbsWjtslMdq75suCAEYfaRK7Oz-NZ0"
+	suite.UserAuthToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2xsZWN0aW9uSWQiOiIyMTA3OTc3Mzk3MDYzMTIyOTQ0IiwiZXhwIjoxNzMwOTEyMTQzLCJpZCI6Il9wYl91c2Vyc19hdXRoXyIsInR5cGUiOiJhdXRoUmVjb3JkIiwidmVyaWZpZWQiOnRydWV9.Us_731ziRkeeZvYvXiXsc6CKEwdKp4rSvsGbG5L1OUQ"
 	suite.App = app
 }
 

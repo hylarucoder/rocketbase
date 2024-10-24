@@ -66,6 +66,8 @@ func (scenario *ApiScenario) test(t *testing.T) {
 		if testApp == nil {
 			t.Fatal("TestAppFactory must return a non-nil app instance")
 		}
+		testApp.ResetEventCalls()
+		//testApp.ResetBootstrapState()
 	} else {
 		var testAppErr error
 		testApp, testAppErr = NewTestApp()

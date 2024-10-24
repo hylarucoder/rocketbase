@@ -19,9 +19,6 @@ import (
 
 func (suite *RecordCrudTestSuite) TestRecordCrudList() {
 	t := suite.T()
-	// admin auth token
-	adminAuthToken := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzAyMzYxMTQsImlkIjoiMjEwNzk3NzEyNzUyODc1OTI5NiIsInR5cGUiOiJhZG1pbiJ9.ikCEJR-iPIrZwpbsWjtslMdq75suCAEYfaRK7Oz-NZ0"
-
 	scenarios := []tests.ApiScenario{
 		{
 			Name:            "missing collection",
@@ -29,6 +26,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudList() {
 			Url:             "/api/collections/missing/records",
 			ExpectedStatus:  404,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:            "unauthenticated trying to access nil rule collection (aka. need admin auth)",
@@ -36,16 +36,22 @@ func (suite *RecordCrudTestSuite) TestRecordCrudList() {
 			Url:             "/api/collections/demo1/records",
 			ExpectedStatus:  403,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "authenticated record trying to access nil rule collection (aka. need admin auth)",
 			Method: http.MethodGet,
 			Url:    "/api/collections/demo1/records",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.UwD8JvkbQtXpymT09d7J6fdA0aP9g4FJ1GPh_ggEkzc",
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus:  403,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:            "public collection but with admin only filter param (aka. @collection, @request, etc.)",
@@ -53,6 +59,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudList() {
 			Url:             "/api/collections/demo2/records?filter=%40collection.demo2.title='test1'",
 			ExpectedStatus:  403,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:            "public collection but with admin only sort param (aka. @collection, @request, etc.)",
@@ -60,6 +69,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudList() {
 			Url:             "/api/collections/demo2/records?sort=@request.auth.title",
 			ExpectedStatus:  403,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:            "public collection but with ENCODED admin only filter/sort (aka. @collection)",
@@ -67,6 +79,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudList() {
 			Url:             "/api/collections/demo2/records?filter=%40collection.demo2.title%3D%27test1%27",
 			ExpectedStatus:  403,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:           "public collection",
@@ -84,6 +99,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudList() {
 				`"id":"3479948460562584584"`,
 			},
 			ExpectedEvents: map[string]int{"OnRecordsListRequest": 1},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:           "public collection (using the collection id)",
@@ -101,13 +119,16 @@ func (suite *RecordCrudTestSuite) TestRecordCrudList() {
 				`"id":"3479948460562584584"`,
 			},
 			ExpectedEvents: map[string]int{"OnRecordsListRequest": 1},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "authorized as admin trying to access nil rule collection (aka. need admin auth)",
 			Method: http.MethodGet,
 			Url:    "/api/collections/demo1/records",
 			RequestHeaders: map[string]string{
-				"Authorization": adminAuthToken,
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -121,13 +142,16 @@ func (suite *RecordCrudTestSuite) TestRecordCrudList() {
 				`"id":"3479947686461838339"`,
 			},
 			ExpectedEvents: map[string]int{"OnRecordsListRequest": 1},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "valid query params",
 			Method: http.MethodGet,
 			Url:    "/api/collections/demo1/records?filter=text~'test'&sort=-bool",
 			RequestHeaders: map[string]string{
-				"Authorization": adminAuthToken,
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -139,16 +163,22 @@ func (suite *RecordCrudTestSuite) TestRecordCrudList() {
 				`"id":"3479947686461838339"`,
 			},
 			ExpectedEvents: map[string]int{"OnRecordsListRequest": 1},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "invalid filter",
 			Method: http.MethodGet,
 			Url:    "/api/collections/demo1/records?filter=invalid~'test'",
 			RequestHeaders: map[string]string{
-				"Authorization": adminAuthToken,
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			// TODO: admin fix
@@ -156,7 +186,7 @@ func (suite *RecordCrudTestSuite) TestRecordCrudList() {
 			Method: http.MethodGet,
 			Url:    "/api/collections/demo1/records?expand=rel_one,rel_many.rel,missing&perPage=2&sort=created",
 			RequestHeaders: map[string]string{
-				"Authorization": adminAuthToken,
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -186,15 +216,17 @@ func (suite *RecordCrudTestSuite) TestRecordCrudList() {
 				`"email":"test3@example.com"`,
 			},
 			ExpectedEvents: map[string]int{"OnRecordsListRequest": 1},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "authenticated record model that DOESN'T match the collection list rule",
 			Method: http.MethodGet,
 			Url:    "/api/collections/demo3/records",
 			RequestHeaders: map[string]string{
-				// users, test@example.com
-				// TODO: ?? 有点问题似乎
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2xsZWN0aW9uSWQiOiIyMTA3OTc3Mzk3MDYzMTIyOTQ0IiwiZXhwIjoxNzMwMzIxNDM3LCJpZCI6Il9wYl91c2Vyc19hdXRoXyIsInR5cGUiOiJhdXRoUmVjb3JkIiwidmVyaWZpZWQiOnRydWV9.v6JU2VuFu2EXcwmCq2l4AK7_DpC5pcKdA9sdwKzk6t4",
+				// TODO: confirm users, test@example.com
+				"Authorization": suite.UserAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -204,14 +236,17 @@ func (suite *RecordCrudTestSuite) TestRecordCrudList() {
 				`"items":[]`,
 			},
 			ExpectedEvents: map[string]int{"OnRecordsListRequest": 1},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "authenticated record that matches the collection list rule",
 			Method: http.MethodGet,
 			Url:    "/api/collections/demo3/records",
 			RequestHeaders: map[string]string{
-				// clients, test@example.com
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2xsZWN0aW9uSWQiOiIzNDc5OTQ2MzI5MTI2MzQzNjgxIiwiZXhwIjoxNzMwMzIxNTU5LCJpZCI6IjIxMDg2NDM1MTU5NzcxNzA5NDQiLCJ0eXBlIjoiYXV0aFJlY29yZCIsInZlcmlmaWVkIjp0cnVlfQ.Fy2L5a7PA9qPSJbW7heZwgnEncxt4kr9XVVlpL_M2tw",
+				// TODO: clients, test@example.com
+				"Authorization": suite.UserAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -226,6 +261,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudList() {
 				`"id":"3479958939368428559"`,
 			},
 			ExpectedEvents: map[string]int{"OnRecordsListRequest": 1},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   ":rule modifer",
@@ -242,6 +280,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudList() {
 				`"id":"3479953184028365833"`,
 			},
 			ExpectedEvents: map[string]int{"OnRecordsListRequest": 1},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:           "multi-match - at least one of",
@@ -257,6 +298,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudList() {
 				`"id":"qzaqccwrmva4o1n"`,
 			},
 			ExpectedEvents: map[string]int{"OnRecordsListRequest": 1},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:           "multi-match - all",
@@ -271,6 +315,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudList() {
 				`"items":[]`,
 			},
 			ExpectedEvents: map[string]int{"OnRecordsListRequest": 1},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 
 		// auth collection
@@ -300,6 +347,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudList() {
 				`"email":"test3@example.com"`,
 			},
 			ExpectedEvents: map[string]int{"OnRecordsListRequest": 1},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "check email visibility as any authenticated record",
@@ -330,6 +380,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudList() {
 				`"email":"test3@example.com"`,
 			},
 			ExpectedEvents: map[string]int{"OnRecordsListRequest": 1},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "check email visibility as manage auth record",
@@ -337,7 +390,7 @@ func (suite *RecordCrudTestSuite) TestRecordCrudList() {
 			Url:    "/api/collections/nologin/records",
 			RequestHeaders: map[string]string{
 				// users, test@example.com
-				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.UwD8JvkbQtXpymT09d7J6fdA0aP9g4FJ1GPh_ggEkzc",
+				"Authorization": suite.UserAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -360,13 +413,17 @@ func (suite *RecordCrudTestSuite) TestRecordCrudList() {
 				`"passwordHash"`,
 			},
 			ExpectedEvents: map[string]int{"OnRecordsListRequest": 1},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "check email visibility as admin",
 			Method: http.MethodGet,
 			Url:    "/api/collections/nologin/records",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				// admin, test@example.com
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -389,6 +446,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudList() {
 				`"passwordHash"`,
 			},
 			ExpectedEvents: map[string]int{"OnRecordsListRequest": 1},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "check self email visibility resolver",
@@ -396,7 +456,7 @@ func (suite *RecordCrudTestSuite) TestRecordCrudList() {
 			Url:    "/api/collections/nologin/records",
 			RequestHeaders: map[string]string{
 				// nologin, test@example.com
-				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6ImRjNDlrNmpnZWpuNDBoMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoia3B2NzA5c2sybHFicWs4IiwiZXhwIjoyMjA4OTg1MjYxfQ.DOYSon3x1-C0hJbwjEU6dp2-6oLeEa8bOlkyP1CinyM",
+				"Authorization": suite.UserAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -419,6 +479,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudList() {
 				`"email":"test3@example.com"`,
 			},
 			ExpectedEvents: map[string]int{"OnRecordsListRequest": 1},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 
 		// view collection
@@ -442,6 +505,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudList() {
 				`"updated"`,
 			},
 			ExpectedEvents: map[string]int{"OnRecordsListRequest": 1},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:           "guest that doesn't match the view collection list rule",
@@ -456,6 +522,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudList() {
 				`"items":[]`,
 			},
 			ExpectedEvents: map[string]int{"OnRecordsListRequest": 1},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "authenticated record that matches the view collection list rule",
@@ -463,7 +532,7 @@ func (suite *RecordCrudTestSuite) TestRecordCrudList() {
 			Url:    "/api/collections/view1/records",
 			RequestHeaders: map[string]string{
 				// users, test@example.com
-				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.UwD8JvkbQtXpymT09d7J6fdA0aP9g4FJ1GPh_ggEkzc",
+				"Authorization": suite.UserAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -476,6 +545,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudList() {
 				`"bool":true`,
 			},
 			ExpectedEvents: map[string]int{"OnRecordsListRequest": 1},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:           "view collection with numeric ids",
@@ -492,6 +564,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudList() {
 				`"id":"2"`,
 			},
 			ExpectedEvents: map[string]int{"OnRecordsListRequest": 1},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 	}
 
@@ -510,6 +585,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudView() {
 			Url:             "/api/collections/missing/records/3479948460419978246",
 			ExpectedStatus:  404,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:            "missing record",
@@ -517,6 +595,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudView() {
 			Url:             "/api/collections/demo2/records/missing",
 			ExpectedStatus:  404,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:            "unauthenticated trying to access nil rule collection (aka. need admin auth)",
@@ -524,6 +605,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudView() {
 			Url:             "/api/collections/demo1/records/3479947686587667460",
 			ExpectedStatus:  403,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "authenticated record trying to access nil rule collection (aka. need admin auth)",
@@ -531,10 +615,13 @@ func (suite *RecordCrudTestSuite) TestRecordCrudView() {
 			Url:    "/api/collections/demo1/records/3479947686587667460",
 			RequestHeaders: map[string]string{
 				// users, test@example.com
-				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.UwD8JvkbQtXpymT09d7J6fdA0aP9g4FJ1GPh_ggEkzc",
+				"Authorization": suite.UserAuthToken,
 			},
 			ExpectedStatus:  403,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "authenticated record that doesn't match the collection view rule",
@@ -542,10 +629,13 @@ func (suite *RecordCrudTestSuite) TestRecordCrudView() {
 			Url:    "/api/collections/users/records/bgs820n361vj1qd",
 			RequestHeaders: map[string]string{
 				// users, test@example.com
-				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.UwD8JvkbQtXpymT09d7J6fdA0aP9g4FJ1GPh_ggEkzc",
+				"Authorization": suite.UserAuthToken,
 			},
 			ExpectedStatus:  404,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:           "public collection view",
@@ -557,6 +647,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudView() {
 				`"collectionName":"demo2"`,
 			},
 			ExpectedEvents: map[string]int{"OnRecordViewRequest": 1},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:           "public collection view (using the collection id)",
@@ -568,13 +661,16 @@ func (suite *RecordCrudTestSuite) TestRecordCrudView() {
 				`"collectionName":"demo2"`,
 			},
 			ExpectedEvents: map[string]int{"OnRecordViewRequest": 1},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "authorized as admin trying to access nil rule collection view (aka. need admin auth)",
 			Method: http.MethodGet,
 			Url:    "/api/collections/demo1/records/3479947686587667460",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -582,6 +678,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudView() {
 				`"collectionName":"demo1"`,
 			},
 			ExpectedEvents: map[string]int{"OnRecordViewRequest": 1},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "authenticated record that does match the collection view rule",
@@ -589,7 +688,7 @@ func (suite *RecordCrudTestSuite) TestRecordCrudView() {
 			Url:    "/api/collections/users/records/2107977397063122944",
 			RequestHeaders: map[string]string{
 				// users, test@example.com
-				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.UwD8JvkbQtXpymT09d7J6fdA0aP9g4FJ1GPh_ggEkzc",
+				"Authorization": suite.UserAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -600,13 +699,16 @@ func (suite *RecordCrudTestSuite) TestRecordCrudView() {
 				`"email":"test@example.com"`,
 			},
 			ExpectedEvents: map[string]int{"OnRecordViewRequest": 1},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "expand relations",
 			Method: http.MethodGet,
 			Url:    "/api/collections/demo1/records/3479947686461838339?expand=rel_one,rel_many.rel,missing&perPage=2&sort=created",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -621,6 +723,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudView() {
 				`"collectionName":"demo2"`,
 			},
 			ExpectedEvents: map[string]int{"OnRecordViewRequest": 1},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 
 		// auth collection
@@ -641,6 +746,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudView() {
 				`"email":"test3@example.com"`,
 			},
 			ExpectedEvents: map[string]int{"OnRecordViewRequest": 1},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "check email visibility as any authenticated record",
@@ -648,7 +756,7 @@ func (suite *RecordCrudTestSuite) TestRecordCrudView() {
 			Url:    "/api/collections/nologin/records/3480271880374457364",
 			RequestHeaders: map[string]string{
 				// clients, test@example.com
-				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6ImdrMzkwcWVnczR5NDd3biIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoidjg1MXE0cjc5MHJoa25sIiwiZXhwIjoyMjA4OTg1MjYxfQ.q34IWXrRWsjLvbbVNRfAs_J4SoTHloNBfdGEiLmy-D8",
+				"Authorization": suite.UserAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -662,6 +770,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudView() {
 				`"email":"test3@example.com"`,
 			},
 			ExpectedEvents: map[string]int{"OnRecordViewRequest": 1},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "check email visibility as manage auth record",
@@ -669,7 +780,7 @@ func (suite *RecordCrudTestSuite) TestRecordCrudView() {
 			Url:    "/api/collections/nologin/records/3480271880374457364",
 			RequestHeaders: map[string]string{
 				// users, test@example.com
-				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.UwD8JvkbQtXpymT09d7J6fdA0aP9g4FJ1GPh_ggEkzc",
+				"Authorization": suite.UserAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -679,13 +790,16 @@ func (suite *RecordCrudTestSuite) TestRecordCrudView() {
 				`"verified":true`,
 			},
 			ExpectedEvents: map[string]int{"OnRecordViewRequest": 1},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "check email visibility as admin",
 			Method: http.MethodGet,
 			Url:    "/api/collections/nologin/records/3480271880374457364",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -699,6 +813,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudView() {
 				`"passwordHash"`,
 			},
 			ExpectedEvents: map[string]int{"OnRecordViewRequest": 1},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "check self email visibility resolver",
@@ -706,7 +823,7 @@ func (suite *RecordCrudTestSuite) TestRecordCrudView() {
 			Url:    "/api/collections/nologin/records/3480271880273794066",
 			RequestHeaders: map[string]string{
 				// nologin, test@example.com
-				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6ImRjNDlrNmpnZWpuNDBoMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoia3B2NzA5c2sybHFicWs4IiwiZXhwIjoyMjA4OTg1MjYxfQ.DOYSon3x1-C0hJbwjEU6dp2-6oLeEa8bOlkyP1CinyM",
+				"Authorization": suite.UserAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -720,6 +837,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudView() {
 				`"passwordHash"`,
 			},
 			ExpectedEvents: map[string]int{"OnRecordViewRequest": 1},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 
 		// view collection
@@ -740,6 +860,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudView() {
 				`"updated"`,
 			},
 			ExpectedEvents: map[string]int{"OnRecordViewRequest": 1},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:            "guest that doesn't match the view collection view rule",
@@ -754,7 +877,7 @@ func (suite *RecordCrudTestSuite) TestRecordCrudView() {
 			Url:    "/api/collections/view1/records/3479947686461838339",
 			RequestHeaders: map[string]string{
 				// users, test@example.com
-				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.UwD8JvkbQtXpymT09d7J6fdA0aP9g4FJ1GPh_ggEkzc",
+				"Authorization": suite.UserAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -763,6 +886,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudView() {
 				`"text":"`,
 			},
 			ExpectedEvents: map[string]int{"OnRecordViewRequest": 1},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:           "view record with numeric id",
@@ -773,6 +899,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudView() {
 				`"id":"1"`,
 			},
 			ExpectedEvents: map[string]int{"OnRecordViewRequest": 1},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 	}
 
@@ -784,7 +913,6 @@ func (suite *RecordCrudTestSuite) TestRecordCrudView() {
 func (suite *RecordCrudTestSuite) TestRecordCrudDelete() {
 	t := suite.T()
 
-	adminAuthToken := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzAyMzYxMTQsImlkIjoiMjEwNzk3NzEyNzUyODc1OTI5NiIsInR5cGUiOiJhZG1pbiJ9.ikCEJR-iPIrZwpbsWjtslMdq75suCAEYfaRK7Oz-NZ0"
 	ensureDeletedFiles := func(app *tests.TestApp, collectionId string, recordId string) {
 		storageDir := filepath.Join(app.DataDir(), "storage", collectionId, recordId)
 
@@ -801,6 +929,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudDelete() {
 			Url:             "/api/collections/missing/records/3479948460419978246",
 			ExpectedStatus:  404,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:            "missing record",
@@ -808,6 +939,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudDelete() {
 			Url:             "/api/collections/demo2/records/missing",
 			ExpectedStatus:  404,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:            "unauthenticated trying to delete nil rule collection (aka. need admin auth)",
@@ -815,6 +949,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudDelete() {
 			Url:             "/api/collections/demo1/records/3479947686587667460",
 			ExpectedStatus:  403,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "authenticated record trying to delete nil rule collection (aka. need admin auth)",
@@ -822,10 +959,13 @@ func (suite *RecordCrudTestSuite) TestRecordCrudDelete() {
 			Url:    "/api/collections/demo1/records/3479947686587667460",
 			RequestHeaders: map[string]string{
 				// users, test@example.com
-				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.UwD8JvkbQtXpymT09d7J6fdA0aP9g4FJ1GPh_ggEkzc",
+				"Authorization": suite.UserAuthToken,
 			},
 			ExpectedStatus:  403,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "authenticated record that doesn't match the collection delete rule",
@@ -833,10 +973,13 @@ func (suite *RecordCrudTestSuite) TestRecordCrudDelete() {
 			Url:    "/api/collections/users/records/bgs820n361vj1qd",
 			RequestHeaders: map[string]string{
 				// users, test@example.com
-				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.UwD8JvkbQtXpymT09d7J6fdA0aP9g4FJ1GPh_ggEkzc",
+				"Authorization": suite.UserAuthToken,
 			},
 			ExpectedStatus:  404,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:            "trying to delete a view collection record",
@@ -844,6 +987,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudDelete() {
 			Url:             "/api/collections/view1/records/3479947686587667460",
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:           "public collection record delete",
@@ -855,6 +1001,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudDelete() {
 				"OnModelBeforeDelete":         1,
 				"OnRecordAfterDeleteRequest":  1,
 				"OnRecordBeforeDeleteRequest": 1,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
 			},
 		},
 		{
@@ -868,13 +1017,16 @@ func (suite *RecordCrudTestSuite) TestRecordCrudDelete() {
 				"OnRecordAfterDeleteRequest":  1,
 				"OnRecordBeforeDeleteRequest": 1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "authorized as admin trying to delete nil rule collection view (aka. need admin auth)",
 			Method: http.MethodDelete,
 			Url:    "/api/collections/clients/records/3479946329210229762",
 			RequestHeaders: map[string]string{
-				"Authorization": adminAuthToken,
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 204,
 			ExpectedEvents: map[string]int{
@@ -883,13 +1035,16 @@ func (suite *RecordCrudTestSuite) TestRecordCrudDelete() {
 				"OnRecordAfterDeleteRequest":  1,
 				"OnRecordBeforeDeleteRequest": 1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "OnRecordAfterDeleteRequest error response",
 			Method: http.MethodDelete,
 			Url:    "/api/collections/clients/records/3479946329210229762",
 			RequestHeaders: map[string]string{
-				"Authorization": adminAuthToken,
+				"Authorization": suite.AdminAuthToken,
 			},
 			BeforeTestFunc: func(t *testing.T, app *tests.TestApp, e *echo.Echo) {
 				app.OnRecordAfterDeleteRequest().Add(func(e *core.RecordDeleteEvent) error {
@@ -904,6 +1059,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudDelete() {
 				"OnRecordAfterDeleteRequest":  1,
 				"OnRecordBeforeDeleteRequest": 1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "authenticated record that match the collection delete rule",
@@ -911,7 +1069,7 @@ func (suite *RecordCrudTestSuite) TestRecordCrudDelete() {
 			Url:    "/api/collections/users/records/2107977397063122944",
 			RequestHeaders: map[string]string{
 				// users, test@example.com
-				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.UwD8JvkbQtXpymT09d7J6fdA0aP9g4FJ1GPh_ggEkzc",
+				"Authorization": suite.UserAuthToken,
 			},
 			Delay:          100 * time.Millisecond,
 			ExpectedStatus: 204,
@@ -938,6 +1096,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudDelete() {
 					t.Errorf("Expected the linked external auths to be deleted, got %d", len(externalAuths))
 				}
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:            "@request :isset (rule failure check)",
@@ -957,6 +1118,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudDelete() {
 				"OnRecordAfterDeleteRequest":  1,
 				"OnRecordBeforeDeleteRequest": 1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 
 		// cascade delete checks
@@ -966,7 +1130,7 @@ func (suite *RecordCrudTestSuite) TestRecordCrudDelete() {
 			Method: http.MethodDelete,
 			Url:    "/api/collections/demo3/records/7nwo8tuiatetxdm",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{}`},
@@ -975,13 +1139,16 @@ func (suite *RecordCrudTestSuite) TestRecordCrudDelete() {
 				"OnModelBeforeUpdate":         2, // self_rel_many update of test1 record + rel_one_cascade demo4 cascaded in demo5
 				"OnModelBeforeDelete":         2, // the record itself + rel_one_cascade of test1 record
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "delete a record with non-cascade references",
 			Method: http.MethodDelete,
 			Url:    "/api/collections/demo3/records/1tmknxy2868d869",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 204,
 			ExpectedEvents: map[string]int{
@@ -992,13 +1159,16 @@ func (suite *RecordCrudTestSuite) TestRecordCrudDelete() {
 				"OnRecordBeforeDeleteRequest": 1,
 				"OnRecordAfterDeleteRequest":  1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "delete a record with cascade references",
 			Method: http.MethodDelete,
 			Url:    "/api/collections/users/records/2108356222582259712",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": suite.AdminAuthToken,
 			},
 			Delay:          100 * time.Millisecond,
 			ExpectedStatus: 204,
@@ -1018,6 +1188,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudDelete() {
 				}
 				ensureDeletedFiles(app, "2108348993330216960", recId)
 				ensureDeletedFiles(app, "_pb_users_auth_", "2108356222582259712")
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
 			},
 		},
 	}
@@ -1044,6 +1217,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudCreate() {
 			Url:             "/api/collections/missing/records",
 			ExpectedStatus:  404,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:            "guest trying to access nil-rule collection",
@@ -1051,6 +1227,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudCreate() {
 			Url:             "/api/collections/demo1/records",
 			ExpectedStatus:  403,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "auth record trying to access nil-rule collection",
@@ -1058,10 +1237,13 @@ func (suite *RecordCrudTestSuite) TestRecordCrudCreate() {
 			Url:    "/api/collections/demo1/records",
 			RequestHeaders: map[string]string{
 				// users, test@example.com
-				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.UwD8JvkbQtXpymT09d7J6fdA0aP9g4FJ1GPh_ggEkzc",
+				"Authorization": suite.UserAuthToken,
 			},
 			ExpectedStatus:  403,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:            "trying to create a new view collection record",
@@ -1070,6 +1252,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudCreate() {
 			Body:            strings.NewReader(`{"text":"new"}`),
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:            "submit nil body",
@@ -1078,6 +1263,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudCreate() {
 			Body:            nil,
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:            "submit invalid format",
@@ -1086,6 +1274,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudCreate() {
 			Body:            strings.NewReader(`{"`),
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:           "submit empty json body",
@@ -1098,6 +1289,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudCreate() {
 				`"email":{"code":"validation_required"`,
 				`"password":{"code":"validation_required"`,
 				`"passwordConfirm":{"code":"validation_required"`,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
 			},
 		},
 		{
@@ -1117,6 +1311,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudCreate() {
 				"OnModelBeforeCreate":         1,
 				"OnModelAfterCreate":          1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:            "guest trying to submit in restricted collection",
@@ -1125,6 +1322,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudCreate() {
 			Body:            strings.NewReader(`{"title":"test123"}`),
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "auth record submit in restricted collection (rule failure check)",
@@ -1137,6 +1337,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudCreate() {
 			},
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "auth record submit in restricted collection (rule pass check) + expand relations",
@@ -1153,7 +1356,7 @@ func (suite *RecordCrudTestSuite) TestRecordCrudCreate() {
 			}`),
 			RequestHeaders: map[string]string{
 				// users, test@example.com
-				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.UwD8JvkbQtXpymT09d7J6fdA0aP9g4FJ1GPh_ggEkzc",
+				"Authorization": suite.UserAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -1179,6 +1382,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudCreate() {
 				"OnRecordAfterCreateRequest":  1,
 				"OnModelBeforeCreate":         1,
 				"OnModelAfterCreate":          1,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
 			},
 		},
 		{
@@ -1221,6 +1427,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudCreate() {
 				"OnModelBeforeCreate":         1,
 				"OnModelAfterCreate":          1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "submit via multipart form data",
@@ -1229,7 +1438,7 @@ func (suite *RecordCrudTestSuite) TestRecordCrudCreate() {
 			Body:   formData,
 			RequestHeaders: map[string]string{
 				"Content-Type":  mp.FormDataContentType(),
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -1242,6 +1451,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudCreate() {
 				"OnRecordAfterCreateRequest":  1,
 				"OnModelBeforeCreate":         1,
 				"OnModelAfterCreate":          1,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
 			},
 		},
 		{
@@ -1256,6 +1468,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudCreate() {
 				`"data":{`,
 				`"title":{`,
 				`"code":"validation_not_unique"`,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
 			},
 		},
 		{
@@ -1276,6 +1491,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudCreate() {
 				"OnModelBeforeCreate":         1,
 				"OnModelAfterCreate":          1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 
 		// ID checks
@@ -1289,11 +1507,14 @@ func (suite *RecordCrudTestSuite) TestRecordCrudCreate() {
 				"title": "test"
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 400,
 			ExpectedContent: []string{
 				`"id":{"code":"validation_length_invalid"`,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
 			},
 		},
 		{
@@ -1305,11 +1526,14 @@ func (suite *RecordCrudTestSuite) TestRecordCrudCreate() {
 				"title": "test"
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 400,
 			ExpectedContent: []string{
 				`"id":{"code":"validation_length_invalid"`,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
 			},
 		},
 		{
@@ -1321,7 +1545,7 @@ func (suite *RecordCrudTestSuite) TestRecordCrudCreate() {
 				"title": "test"
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -1334,6 +1558,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudCreate() {
 				"OnModelBeforeCreate":         1,
 				"OnModelAfterCreate":          1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "valid custom insertion id existing in another non-auth collection",
@@ -1344,7 +1571,7 @@ func (suite *RecordCrudTestSuite) TestRecordCrudCreate() {
 				"title": "test"
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -1356,6 +1583,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudCreate() {
 				"OnRecordAfterCreateRequest":  1,
 				"OnModelBeforeCreate":         1,
 				"OnModelAfterCreate":          1,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
 			},
 		},
 		{
@@ -1369,12 +1599,15 @@ func (suite *RecordCrudTestSuite) TestRecordCrudCreate() {
 				"passwordConfirm":"1234567890"
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{}`},
 			ExpectedEvents: map[string]int{
 				"OnRecordBeforeCreateRequest": 1,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
 			},
 		},
 
@@ -1385,7 +1618,7 @@ func (suite *RecordCrudTestSuite) TestRecordCrudCreate() {
 			Method: http.MethodDelete,
 			Url:    "/api/collections/demo3/records/7nwo8tuiatetxdm",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{}`},
@@ -1393,6 +1626,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudCreate() {
 				"OnRecordBeforeDeleteRequest": 1,
 				"OnModelBeforeUpdate":         2, // self_rel_many update of test1 record + rel_one_cascade demo4 cascaded in demo5
 				"OnModelBeforeDelete":         2, // the record itself + rel_one_cascade of test1 record
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
 			},
 		},
 
@@ -1410,6 +1646,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudCreate() {
 			ExpectedStatus: 400,
 			ExpectedContent: []string{
 				`"data":{}`,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
 			},
 		},
 		{
@@ -1433,6 +1672,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudCreate() {
 				"OnRecordAfterCreateRequest":  1,
 				"OnRecordBeforeCreateRequest": 1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 
 		// auth records
@@ -1449,7 +1691,7 @@ func (suite *RecordCrudTestSuite) TestRecordCrudCreate() {
 				"passwordConfirm":"1234560"
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 400,
 			ExpectedContent: []string{
@@ -1464,6 +1706,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudCreate() {
 				// schema fields are not checked if the base fields has errors
 				`"rel":{"code":`,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "auth record with valid base fields but invalid schema data",
@@ -1475,12 +1720,15 @@ func (suite *RecordCrudTestSuite) TestRecordCrudCreate() {
 				"rel":"invalid"
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 400,
 			ExpectedContent: []string{
 				`"data":{`,
 				`"rel":{"code":`,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
 			},
 		},
 		{
@@ -1497,6 +1745,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudCreate() {
 				`"data":{`,
 				`"verified":{"code":`,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "auth record with valid data and explicitly verified state by random user",
@@ -1504,7 +1755,7 @@ func (suite *RecordCrudTestSuite) TestRecordCrudCreate() {
 			Url:    "/api/collections/users/records",
 			RequestHeaders: map[string]string{
 				// users, test@example.com
-				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.UwD8JvkbQtXpymT09d7J6fdA0aP9g4FJ1GPh_ggEkzc",
+				"Authorization": suite.UserAuthToken,
 			},
 			Body: strings.NewReader(`{
 				"password":"12345678",
@@ -1519,6 +1770,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudCreate() {
 			},
 			NotExpectedContent: []string{
 				`"emailVisibility":{"code":`,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
 			},
 		},
 		{
@@ -1536,7 +1790,7 @@ func (suite *RecordCrudTestSuite) TestRecordCrudCreate() {
 				"verified":true
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -1559,6 +1813,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudCreate() {
 				"OnRecordAfterCreateRequest":  1,
 				"OnRecordBeforeCreateRequest": 1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "auth record with valid data by auth record with manage access",
@@ -1574,7 +1831,7 @@ func (suite *RecordCrudTestSuite) TestRecordCrudCreate() {
 			}`),
 			RequestHeaders: map[string]string{
 				// users, test@example.com
-				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.UwD8JvkbQtXpymT09d7J6fdA0aP9g4FJ1GPh_ggEkzc",
+				"Authorization": suite.UserAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -1596,6 +1853,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudCreate() {
 				"OnModelBeforeCreate":         1,
 				"OnRecordAfterCreateRequest":  1,
 				"OnRecordBeforeCreateRequest": 1,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
 			},
 		},
 	}
@@ -1622,6 +1882,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudUpdate() {
 			Url:             "/api/collections/missing/records/3479948460419978246",
 			ExpectedStatus:  404,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:            "guest trying to access nil-rule collection record",
@@ -1629,6 +1892,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudUpdate() {
 			Url:             "/api/collections/demo1/records/3479947686587667460",
 			ExpectedStatus:  403,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "auth record trying to access nil-rule collection",
@@ -1636,10 +1902,13 @@ func (suite *RecordCrudTestSuite) TestRecordCrudUpdate() {
 			Url:    "/api/collections/demo1/records/3479947686587667460",
 			RequestHeaders: map[string]string{
 				// users, test@example.com
-				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.UwD8JvkbQtXpymT09d7J6fdA0aP9g4FJ1GPh_ggEkzc",
+				"Authorization": suite.UserAuthToken,
 			},
 			ExpectedStatus:  403,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:            "submit invalid body",
@@ -1648,6 +1917,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudUpdate() {
 			Body:            strings.NewReader(`{"`),
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:            "trying to update a view collection record",
@@ -1656,6 +1928,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudUpdate() {
 			Body:            strings.NewReader(`{"text":"new"}`),
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:            "submit nil body",
@@ -1664,6 +1939,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudUpdate() {
 			Body:            nil,
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:           "submit empty body (aka. no fields change)",
@@ -1681,6 +1959,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudUpdate() {
 				"OnRecordAfterUpdateRequest":  1,
 				"OnRecordBeforeUpdateRequest": 1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:           "trigger field validation",
@@ -1691,6 +1972,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudUpdate() {
 			ExpectedContent: []string{
 				`data":{`,
 				`"title":{"code":"validation_min_text_constraint"`,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
 			},
 		},
 		{
@@ -1710,6 +1994,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudUpdate() {
 				"OnModelBeforeUpdate":         1,
 				"OnModelAfterUpdate":          1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:            "guest trying to submit in restricted collection",
@@ -1718,6 +2005,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudUpdate() {
 			Body:            strings.NewReader(`{"title":"new"}`),
 			ExpectedStatus:  404,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "auth record submit in restricted collection (rule failure check)",
@@ -1726,10 +2016,13 @@ func (suite *RecordCrudTestSuite) TestRecordCrudUpdate() {
 			Body:   strings.NewReader(`{"title":"new"}`),
 			RequestHeaders: map[string]string{
 				// users, test@example.com
-				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.UwD8JvkbQtXpymT09d7J6fdA0aP9g4FJ1GPh_ggEkzc",
+				"Authorization": suite.UserAuthToken,
 			},
 			ExpectedStatus:  404,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "auth record submit in restricted collection (rule pass check) + expand relations",
@@ -1746,7 +2039,7 @@ func (suite *RecordCrudTestSuite) TestRecordCrudUpdate() {
 			}`),
 			RequestHeaders: map[string]string{
 				// users, test@example.com
-				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.UwD8JvkbQtXpymT09d7J6fdA0aP9g4FJ1GPh_ggEkzc",
+				"Authorization": suite.UserAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -1773,6 +2066,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudUpdate() {
 				"OnModelBeforeUpdate":         1,
 				"OnModelAfterUpdate":          1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "admin submit in restricted collection (rule skip check) + expand relations",
@@ -1788,7 +2084,7 @@ func (suite *RecordCrudTestSuite) TestRecordCrudUpdate() {
 				"rel_many_cascade":"lcl9d87w22ml6jy"
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -1814,6 +2110,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudUpdate() {
 				"OnModelBeforeUpdate":         1,
 				"OnModelAfterUpdate":          1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "submit via multipart form data",
@@ -1822,7 +2121,7 @@ func (suite *RecordCrudTestSuite) TestRecordCrudUpdate() {
 			Body:   formData,
 			RequestHeaders: map[string]string{
 				"Content-Type":  mp.FormDataContentType(),
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -1835,6 +2134,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudUpdate() {
 				"OnRecordAfterUpdateRequest":  1,
 				"OnModelBeforeUpdate":         1,
 				"OnModelAfterUpdate":          1,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
 			},
 		},
 		{
@@ -1855,6 +2157,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudUpdate() {
 				"OnModelBeforeUpdate":         1,
 				"OnModelAfterUpdate":          1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "try to change the id of an existing record",
@@ -1864,12 +2169,15 @@ func (suite *RecordCrudTestSuite) TestRecordCrudUpdate() {
 				"id": "mk5fmymtx4wspra"
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 400,
 			ExpectedContent: []string{
 				`"data":{`,
 				`"id":{"code":"validation_in_invalid"`,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
 			},
 		},
 		{
@@ -1889,6 +2197,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudUpdate() {
 				"OnRecordBeforeUpdateRequest": 1,
 				"OnModelBeforeUpdate":         1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 
 		// check whether if @request.data modifer fields are properly resolved
@@ -1904,6 +2215,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudUpdate() {
 			ExpectedStatus: 404,
 			ExpectedContent: []string{
 				`"data":{}`,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
 			},
 		},
 		{
@@ -1926,6 +2240,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudUpdate() {
 				"OnRecordAfterUpdateRequest":  1,
 				"OnRecordBeforeUpdateRequest": 1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 
 		// auth records
@@ -1942,7 +2259,7 @@ func (suite *RecordCrudTestSuite) TestRecordCrudUpdate() {
 				"verified":false
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 400,
 			ExpectedContent: []string{
@@ -1958,6 +2275,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudUpdate() {
 				// schema fields are not checked if the base fields has errors
 				`"rel":{"code":`,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "auth record with valid base fields but invalid schema data",
@@ -1969,12 +2289,15 @@ func (suite *RecordCrudTestSuite) TestRecordCrudUpdate() {
 				"rel":"invalid"
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 400,
 			ExpectedContent: []string{
 				`"data":{`,
 				`"rel":{"code":`,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
 			},
 		},
 		{
@@ -1996,6 +2319,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudUpdate() {
 			NotExpectedContent: []string{
 				`"emailVisibility":{"code":`,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "try to change account managing fields by auth record (owner)",
@@ -2003,7 +2329,7 @@ func (suite *RecordCrudTestSuite) TestRecordCrudUpdate() {
 			Url:    "/api/collections/users/records/2107977397063122944",
 			RequestHeaders: map[string]string{
 				// users, test@example.com
-				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.UwD8JvkbQtXpymT09d7J6fdA0aP9g4FJ1GPh_ggEkzc",
+				"Authorization": suite.UserAuthToken,
 			},
 			Body: strings.NewReader(`{
 				"password":"12345678",
@@ -2020,6 +2346,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudUpdate() {
 			NotExpectedContent: []string{
 				`"emailVisibility":{"code":`,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "try to change account managing fields by auth record with managing rights",
@@ -2035,7 +2364,7 @@ func (suite *RecordCrudTestSuite) TestRecordCrudUpdate() {
 			}`),
 			RequestHeaders: map[string]string{
 				// users, test@example.com
-				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.UwD8JvkbQtXpymT09d7J6fdA0aP9g4FJ1GPh_ggEkzc",
+				"Authorization": suite.UserAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -2062,6 +2391,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudUpdate() {
 					t.Fatal("Password update failed.")
 				}
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 		{
 			Name:   "update auth record with valid data by admin",
@@ -2077,7 +2409,7 @@ func (suite *RecordCrudTestSuite) TestRecordCrudUpdate() {
 				"verified":false
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -2104,6 +2436,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudUpdate() {
 				if !record.ValidatePassword("12345678") {
 					t.Fatal("Password update failed.")
 				}
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
 			},
 		},
 		{
@@ -2134,6 +2469,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudUpdate() {
 				"OnModelBeforeUpdate":         1,
 				"OnRecordAfterUpdateRequest":  1,
 				"OnRecordBeforeUpdateRequest": 1,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
 			},
 		},
 		{
@@ -2167,6 +2505,9 @@ func (suite *RecordCrudTestSuite) TestRecordCrudUpdate() {
 					t.Fatal("Password update failed.")
 				}
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return suite.App
+			},
 		},
 	}
 
@@ -2177,13 +2518,15 @@ func (suite *RecordCrudTestSuite) TestRecordCrudUpdate() {
 
 type RecordCrudTestSuite struct {
 	suite.Suite
-	App *tests.TestApp
-	Var int
+	App            *tests.TestApp
+	AdminAuthToken string
+	UserAuthToken  string
 }
 
 func (suite *RecordCrudTestSuite) SetupSuite() {
 	app, _ := tests.NewTestApp()
-	suite.Var = 5
+	suite.AdminAuthToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzAyMzYxMTQsImlkIjoiMjEwNzk3NzEyNzUyODc1OTI5NiIsInR5cGUiOiJhZG1pbiJ9.ikCEJR-iPIrZwpbsWjtslMdq75suCAEYfaRK7Oz-NZ0"
+	suite.UserAuthToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2xsZWN0aW9uSWQiOiIyMTA3OTc3Mzk3MDYzMTIyOTQ0IiwiZXhwIjoxNzMwOTEyMTQzLCJpZCI6Il9wYl91c2Vyc19hdXRoXyIsInR5cGUiOiJhdXRoUmVjb3JkIiwidmVyaWZpZWQiOnRydWV9.Us_731ziRkeeZvYvXiXsc6CKEwdKp4rSvsGbG5L1OUQ"
 	suite.App = app
 }
 

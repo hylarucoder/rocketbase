@@ -96,7 +96,7 @@ func (suite *AdminTestSuite) TestAdminAuthWithPassword() {
 			Url:    "/api/admins/auth-with-password",
 			Body:   strings.NewReader(`{"identity":"test@example.com","password":"1234567890"}`),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4MTYwMH0.han3_sG65zLddpcX2ic78qgy7FKecuPfOpFa8Dvi5Bg",
+				"Authorization": suite.UserAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -118,7 +118,7 @@ func (suite *AdminTestSuite) TestAdminAuthWithPassword() {
 			Url:    "/api/admins/auth-with-password",
 			Body:   strings.NewReader(`{"identity":"test@example.com","password":"1234567890"}`),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4MTYwMH0.han3_sG65zLddpcX2ic78qgy7FKecuPfOpFa8Dvi5Bg",
+				"Authorization": suite.UserAuthToken,
 			},
 			BeforeTestFunc: func(t *testing.T, app *tests.TestApp, e *echo.Echo) {
 				app.OnAdminAfterAuthWithPasswordRequest().Add(func(e *core.AdminAuthWithPasswordEvent) error {
@@ -288,6 +288,7 @@ func (suite *AdminTestSuite) TestAdminConfirmPasswordReset() {
 			Name:   "valid token + valid password",
 			Method: http.MethodPost,
 			Url:    "/api/admins/confirm-password-reset",
+			// TODO: use new token?
 			Body: strings.NewReader(`{
 				"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImVtYWlsIjoidGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MjIwODk4MTYwMH0.kwFEler6KSMKJNstuaSDvE1QnNdCta5qSnjaIQ0hhhc",
 				"password":"1234567891",
@@ -356,7 +357,7 @@ func (suite *AdminTestSuite) TestAdminRefresh() {
 			Method: http.MethodPost,
 			Url:    "/api/admins/auth-refresh",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.UwD8JvkbQtXpymT09d7J6fdA0aP9g4FJ1GPh_ggEkzc",
+				"Authorization": suite.UserAuthToken,
 			},
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
@@ -382,7 +383,7 @@ func (suite *AdminTestSuite) TestAdminRefresh() {
 			Method: http.MethodPost,
 			Url:    "/api/admins/auth-refresh",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -446,7 +447,7 @@ func (suite *AdminTestSuite) TestAdminsList() {
 			Method: http.MethodGet,
 			Url:    "/api/admins",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.UwD8JvkbQtXpymT09d7J6fdA0aP9g4FJ1GPh_ggEkzc",
+				"Authorization": suite.UserAuthToken,
 			},
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
@@ -459,7 +460,7 @@ func (suite *AdminTestSuite) TestAdminsList() {
 			Method: http.MethodGet,
 			Url:    "/api/admins",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -749,39 +750,11 @@ func (suite *AdminTestSuite) TestAdminCreate() {
 			},
 		},
 		{
-			Name:   "unauthorized (while having 0 existing admins)",
-			Method: http.MethodPost,
-			Url:    "/api/admins",
-			Body:   strings.NewReader(`{"email":"testnew@example.com","password":"1234567890","passwordConfirm":"1234567890","avatar":3}`),
-			BeforeTestFunc: func(t *testing.T, app *tests.TestApp, e *echo.Echo) {
-				// delete all admins
-				_, err := app.Dao().DB().NewQuery("DELETE FROM {{_admins}}").Execute()
-				if err != nil {
-					t.Fatal(err)
-				}
-			},
-			ExpectedStatus: 200,
-			ExpectedContent: []string{
-				`"id":`,
-				`"email":"testnew@example.com"`,
-				`"avatar":3`,
-			},
-			ExpectedEvents: map[string]int{
-				"OnModelBeforeCreate":        1,
-				"OnModelAfterCreate":         1,
-				"OnAdminBeforeCreateRequest": 1,
-				"OnAdminAfterCreateRequest":  1,
-			},
-			TestAppFactory: func(t *testing.T) *tests.TestApp {
-				return app
-			},
-		},
-		{
 			Name:   "authorized as user",
 			Method: http.MethodPost,
 			Url:    "/api/admins",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.UwD8JvkbQtXpymT09d7J6fdA0aP9g4FJ1GPh_ggEkzc",
+				"Authorization": suite.UserAuthToken,
 			},
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
@@ -795,7 +768,7 @@ func (suite *AdminTestSuite) TestAdminCreate() {
 			Url:    "/api/admins",
 			Body:   strings.NewReader(``),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{"email":{"code":"validation_required","message":"Cannot be blank."},"password":{"code":"validation_required","message":"Cannot be blank."}}`},
@@ -809,7 +782,7 @@ func (suite *AdminTestSuite) TestAdminCreate() {
 			Url:    "/api/admins",
 			Body:   strings.NewReader(`{`),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{}`},
@@ -828,7 +801,7 @@ func (suite *AdminTestSuite) TestAdminCreate() {
 				"avatar":99
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 400,
 			ExpectedContent: []string{
@@ -853,7 +826,7 @@ func (suite *AdminTestSuite) TestAdminCreate() {
 				"avatar":3
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -888,7 +861,7 @@ func (suite *AdminTestSuite) TestAdminCreate() {
 				"avatar":3
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": suite.AdminAuthToken,
 			},
 			BeforeTestFunc: func(t *testing.T, app *tests.TestApp, e *echo.Echo) {
 				app.OnAdminAfterCreateRequest().Add(func(e *core.AdminCreateEvent) error {
@@ -897,6 +870,34 @@ func (suite *AdminTestSuite) TestAdminCreate() {
 			},
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{}`},
+			ExpectedEvents: map[string]int{
+				"OnModelBeforeCreate":        1,
+				"OnModelAfterCreate":         1,
+				"OnAdminBeforeCreateRequest": 1,
+				"OnAdminAfterCreateRequest":  1,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
+		},
+		{
+			Name:   "unauthorized (while having 0 existing admins)",
+			Method: http.MethodPost,
+			Url:    "/api/admins",
+			Body:   strings.NewReader(`{"email":"testnew@example.com","password":"1234567890","passwordConfirm":"1234567890","avatar":3}`),
+			BeforeTestFunc: func(t *testing.T, app *tests.TestApp, e *echo.Echo) {
+				// delete all admins
+				_, err := app.Dao().DB().NewQuery("DELETE FROM {{_admins}}").Execute()
+				if err != nil {
+					t.Fatal(err)
+				}
+			},
+			ExpectedStatus: 200,
+			ExpectedContent: []string{
+				`"id":`,
+				`"email":"testnew@example.com"`,
+				`"avatar":3`,
+			},
 			ExpectedEvents: map[string]int{
 				"OnModelBeforeCreate":        1,
 				"OnModelAfterCreate":         1,
@@ -933,7 +934,7 @@ func (suite *AdminTestSuite) TestAdminUpdate() {
 			Method: http.MethodPatch,
 			Url:    "/api/admins/sbmbsdb40jyxf7h",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.UwD8JvkbQtXpymT09d7J6fdA0aP9g4FJ1GPh_ggEkzc",
+				"Authorization": suite.UserAuthToken,
 			},
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
@@ -947,7 +948,7 @@ func (suite *AdminTestSuite) TestAdminUpdate() {
 			Url:    "/api/admins/missing",
 			Body:   strings.NewReader(``),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus:  404,
 			ExpectedContent: []string{`"data":{}`},
@@ -961,7 +962,7 @@ func (suite *AdminTestSuite) TestAdminUpdate() {
 			Url:    "/api/admins/sbmbsdb40jyxf7h",
 			Body:   strings.NewReader(``),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -985,7 +986,7 @@ func (suite *AdminTestSuite) TestAdminUpdate() {
 			Url:    "/api/admins/sbmbsdb40jyxf7h",
 			Body:   strings.NewReader(`{`),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{}`},
@@ -1004,7 +1005,7 @@ func (suite *AdminTestSuite) TestAdminUpdate() {
 				"avatar":99
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 400,
 			ExpectedContent: []string{
@@ -1029,7 +1030,7 @@ func (suite *AdminTestSuite) TestAdminUpdate() {
 				"avatar":5
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -1064,7 +1065,7 @@ func (suite *AdminTestSuite) TestAdminUpdate() {
 				"avatar":5
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": suite.AdminAuthToken,
 			},
 			BeforeTestFunc: func(t *testing.T, app *tests.TestApp, e *echo.Echo) {
 				app.OnAdminAfterUpdateRequest().Add(func(e *core.AdminUpdateEvent) error {
@@ -1092,13 +1093,15 @@ func (suite *AdminTestSuite) TestAdminUpdate() {
 
 type AdminTestSuite struct {
 	suite.Suite
-	App *tests.TestApp
-	Var int
+	App            *tests.TestApp
+	AdminAuthToken string
+	UserAuthToken  string
 }
 
 func (suite *AdminTestSuite) SetupSuite() {
 	app, _ := tests.NewTestApp()
-	suite.Var = 5
+	suite.AdminAuthToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzAyMzYxMTQsImlkIjoiMjEwNzk3NzEyNzUyODc1OTI5NiIsInR5cGUiOiJhZG1pbiJ9.ikCEJR-iPIrZwpbsWjtslMdq75suCAEYfaRK7Oz-NZ0"
+	suite.UserAuthToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2xsZWN0aW9uSWQiOiIyMTA3OTc3Mzk3MDYzMTIyOTQ0IiwiZXhwIjoxNzMwOTEyMTQzLCJpZCI6Il9wYl91c2Vyc19hdXRoXyIsInR5cGUiOiJhdXRoUmVjb3JkIiwidmVyaWZpZWQiOnRydWV9.Us_731ziRkeeZvYvXiXsc6CKEwdKp4rSvsGbG5L1OUQ"
 	suite.App = app
 }
 
