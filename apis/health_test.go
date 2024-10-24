@@ -26,7 +26,7 @@ func (suite *HealthTestSuite) TestHealthAPI() {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t, nil)
+		scenario.Test(t)
 	}
 }
 

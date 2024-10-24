@@ -496,7 +496,7 @@ func (suite *RecordCrudTestSuite) TestRecordCrudList() {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t, nil)
+		scenario.Test(t)
 	}
 }
 
@@ -777,7 +777,7 @@ func (suite *RecordCrudTestSuite) TestRecordCrudView() {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t, nil)
+		scenario.Test(t)
 	}
 }
 
@@ -1023,7 +1023,7 @@ func (suite *RecordCrudTestSuite) TestRecordCrudDelete() {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t, nil)
+		scenario.Test(t)
 	}
 }
 
@@ -1601,7 +1601,7 @@ func (suite *RecordCrudTestSuite) TestRecordCrudCreate() {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t, nil)
+		scenario.Test(t)
 	}
 }
 
@@ -2171,7 +2171,7 @@ func (suite *RecordCrudTestSuite) TestRecordCrudUpdate() {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t, nil)
+		scenario.Test(t)
 	}
 }
 

@@ -76,7 +76,7 @@ func (suite *LogsTestSuite) TestLogsList() {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t, nil)
+		scenario.Test(t)
 	}
 }
 
@@ -136,7 +136,7 @@ func (suite *LogsTestSuite) TestLogView() {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t, nil)
+		scenario.Test(t)
 	}
 }
 
@@ -198,7 +198,7 @@ func (suite *LogsTestSuite) TestLogsStats() {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t, nil)
+		scenario.Test(t)
 	}
 }
 

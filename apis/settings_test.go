@@ -95,7 +95,7 @@ func TestSettingsList(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t, nil)
+		scenario.Test(t)
 	}
 }
 
@@ -278,7 +278,7 @@ func TestSettingsSet(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t, nil)
+		scenario.Test(t)
 	}
 }
 
@@ -346,7 +346,7 @@ func TestSettingsTestS3(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t, nil)
+		scenario.Test(t)
 	}
 }
 
@@ -512,7 +512,7 @@ func TestSettingsTestEmail(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t, nil)
+		scenario.Test(t)
 	}
 }
 
@@ -627,7 +627,7 @@ func TestGenerateAppleClientSecret(t *testing.T) {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t, nil)
+		scenario.Test(t)
 	}
 }
 

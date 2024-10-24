@@ -51,7 +51,7 @@ func (suite *BaseTestSuite) Test404() {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t, nil)
+		scenario.Test(t)
 	}
 }
 
@@ -142,7 +142,7 @@ func (suite *BaseTestSuite) TestCustomRoutesAndErrorsHandling() {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t, nil)
+		scenario.Test(t)
 	}
 }
 
@@ -217,7 +217,7 @@ func (suite *BaseTestSuite) TestRemoveTrailingSlashMiddleware() {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t, nil)
+		scenario.Test(t)
 	}
 }
 
@@ -320,7 +320,7 @@ func (suite *BaseTestSuite) TestEagerRequestInfoCache() {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t, nil)
+		scenario.Test(t)
 	}
 }
 
@@ -407,7 +407,7 @@ func (suite *BaseTestSuite) TestErrorHandler() {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t, nil)
+		scenario.Test(t)
 	}
 }
 

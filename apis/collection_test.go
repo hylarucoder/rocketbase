@@ -127,7 +127,7 @@ func (suite *CollectionTestSuite) TestCollectionsList() {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t, nil)
+		scenario.Test(t)
 	}
 }
 
@@ -199,7 +199,7 @@ func (suite *CollectionTestSuite) TestCollectionView() {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t, nil)
+		scenario.Test(t)
 	}
 }
 
@@ -349,7 +349,7 @@ func (suite *CollectionTestSuite) TestCollectionDelete() {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t, nil)
+		scenario.Test(t)
 	}
 }
 
@@ -728,7 +728,7 @@ func (suite *CollectionTestSuite) TestCollectionCreate() {
 	t := suite.T()
 
 	for _, scenario := range scenarios {
-		scenario.Test(t, nil)
+		scenario.Test(t)
 	}
 }
 
@@ -1099,7 +1099,7 @@ func (suite *CollectionTestSuite) TestCollectionUpdate() {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t, nil)
+		scenario.Test(t)
 	}
 }
 
@@ -1438,7 +1438,7 @@ func (suite *CollectionTestSuite) TestCollectionsImport() {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t, nil)
+		scenario.Test(t)
 	}
 }
 

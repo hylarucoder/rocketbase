@@ -69,7 +69,7 @@ func (suite *RecordAuthTestSuite) TestRecordAuthMethodsList() {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t, nil)
+		scenario.Test(t)
 	}
 }
 
@@ -356,7 +356,7 @@ func (suite *RecordAuthTestSuite) TestRecordAuthWithPassword() {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t, nil)
+		scenario.Test(t)
 	}
 }
 
@@ -485,7 +485,7 @@ func (suite *RecordAuthTestSuite) TestRecordAuthRefresh() {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t, nil)
+		scenario.Test(t)
 	}
 }
 
@@ -572,7 +572,7 @@ func (suite *RecordAuthTestSuite) TestRecordAuthRequestPasswordReset() {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t, nil)
+		scenario.Test(t)
 	}
 }
 
@@ -687,7 +687,7 @@ func (suite *RecordAuthTestSuite) TestRecordAuthConfirmPasswordReset() {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t, nil)
+		scenario.Test(t)
 	}
 }
 
@@ -782,7 +782,7 @@ func (suite *RecordAuthTestSuite) TestRecordAuthRequestVerification() {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t, nil)
+		scenario.Test(t)
 	}
 }
 
@@ -912,7 +912,7 @@ func (suite *RecordAuthTestSuite) TestRecordAuthConfirmVerification() {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t, nil)
+		scenario.Test(t)
 	}
 }
 
@@ -1016,7 +1016,7 @@ func (suite *RecordAuthTestSuite) TestRecordAuthRequestEmailChange() {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t, nil)
+		scenario.Test(t)
 	}
 }
 
@@ -1138,7 +1138,7 @@ func (suite *RecordAuthTestSuite) TestRecordAuthConfirmEmailChange() {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t, nil)
+		scenario.Test(t)
 	}
 }
 
@@ -1240,7 +1240,7 @@ func (suite *RecordAuthTestSuite) TestRecordAuthListExternalsAuths() {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t, nil)
+		scenario.Test(t)
 	}
 }
 
@@ -1371,7 +1371,7 @@ func (suite *RecordAuthTestSuite) TestRecordAuthUnlinkExternalsAuth() {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t, nil)
+		scenario.Test(t)
 	}
 }
 
@@ -1490,7 +1490,7 @@ func (suite *RecordAuthTestSuite) TestRecordAuthOAuth2Redirect() {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t, nil)
+		scenario.Test(t)
 	}
 }
 

@@ -95,12 +95,13 @@ func (suite *RealtimeTestSuite) TestRealtimeConnect() {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t, nil)
+		scenario.Test(t)
 	}
 }
 
 func (suite *RealtimeTestSuite) TestRealtimeSubscribe() {
 	client := subscriptions.NewDefaultClient()
+	t := suite.T()
 
 	resetClient := func() {
 		client.Unsubscribe()
@@ -242,7 +243,7 @@ func (suite *RealtimeTestSuite) TestRealtimeSubscribe() {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t, nil)
+		scenario.Test(t)
 	}
 }
 
@@ -324,7 +325,7 @@ func (suite *RealtimeTestSuite) TestRealtimeAdminDeleteEvent() {
 	app.OnModelAfterDelete().Trigger(e)
 
 	if len(app.SubscriptionsBroker().Clients()) != 0 {
-		t.Fatalf("Expected no subscription clients, found %d", len(testApp.SubscriptionsBroker().Clients()))
+		t.Fatalf("Expected no subscription clients, found %d", len(app.SubscriptionsBroker().Clients()))
 	}
 }
 

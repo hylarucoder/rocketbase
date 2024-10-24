@@ -90,7 +90,7 @@ func (suite *FileTestSuite) TestFileToken() {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t, nil)
+		scenario.Test(t)
 	}
 }
 
@@ -388,10 +388,10 @@ func (suite *FileTestSuite) TestFileDownload() {
 		head.Method = http.MethodHead
 		head.Name = ("(HEAD) " + scenario.Name)
 		head.ExpectedContent = nil
-		head.Test(t, nil)
+		head.Test(t)
 
 		// regular request test
-		scenario.Test(t, nil)
+		scenario.Test(t)
 	}
 }
 

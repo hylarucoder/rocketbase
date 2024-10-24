@@ -102,7 +102,7 @@ func (suite *MiddlewaresTestSuite) TestRequireGuestOnly() {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t, nil)
+		scenario.Test(t)
 	}
 }
 
@@ -242,7 +242,7 @@ func (suite *MiddlewaresTestSuite) TestRequireRecordAuth() {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t, nil)
+		scenario.Test(t)
 	}
 }
 
@@ -360,7 +360,7 @@ func (suite *MiddlewaresTestSuite) TestRequireSameContextRecordAuth() {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t, nil)
+		scenario.Test(t)
 	}
 }
 
@@ -456,7 +456,7 @@ func (suite *MiddlewaresTestSuite) TestRequireAdminAuth() {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t, nil)
+		scenario.Test(t)
 	}
 }
 
@@ -577,7 +577,7 @@ func (suite *MiddlewaresTestSuite) TestRequireAdminAuthOnlyIfAny() {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t, nil)
+		scenario.Test(t)
 	}
 }
 
@@ -739,7 +739,7 @@ func (suite *MiddlewaresTestSuite) TestRequireAdminOrRecordAuth() {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t, nil)
+		scenario.Test(t)
 	}
 }
 
@@ -879,7 +879,7 @@ func (suite *MiddlewaresTestSuite) TestRequireAdminOrOwnerAuth() {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t, nil)
+		scenario.Test(t)
 	}
 }
 
@@ -1010,7 +1010,7 @@ func (suite *MiddlewaresTestSuite) TestLoadCollectionContext() {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t, nil)
+		scenario.Test(t)
 	}
 }
 

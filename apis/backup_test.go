@@ -82,7 +82,7 @@ func (suite *BackupTestSuite) TestBackupsList() {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t, nil)
+		scenario.Test(t)
 	}
 }
 
@@ -198,7 +198,7 @@ func (suite *BackupTestSuite) TestBackupsCreate() {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t, nil)
+		scenario.Test(t)
 	}
 }
 
@@ -332,7 +332,7 @@ func (suite *BackupTestSuite) TestBackupsUpload() {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t, nil)
+		scenario.Test(t)
 	}
 }
 
@@ -489,7 +489,7 @@ func (suite *BackupTestSuite) TestBackupsDownload() {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t, nil)
+		scenario.Test(t)
 	}
 }
 
@@ -651,7 +651,7 @@ func (suite *BackupTestSuite) TestBackupsDelete() {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t, nil)
+		scenario.Test(t)
 	}
 }
 
@@ -721,7 +721,7 @@ func (suite *BackupTestSuite) TestBackupsRestore() {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t, nil)
+		scenario.Test(t)
 	}
 }
 

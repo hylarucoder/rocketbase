@@ -18,7 +18,7 @@ import (
 )
 
 func (suite *AdminTestSuite) TestAdminAuthWithPassword() {
-	t := suite.T()
+	// app := suite.App
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -117,12 +117,11 @@ func (suite *AdminTestSuite) TestAdminAuthWithPassword() {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t)
+		scenario.Test(suite.T())
 	}
 }
 
 func (suite *AdminTestSuite) TestAdminRequestPasswordReset() {
-	t := suite.T()
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -188,12 +187,11 @@ func (suite *AdminTestSuite) TestAdminRequestPasswordReset() {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t)
+		scenario.Test(suite.T())
 	}
 }
 
 func (suite *AdminTestSuite) TestAdminConfirmPasswordReset() {
-	t := suite.T()
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -279,12 +277,11 @@ func (suite *AdminTestSuite) TestAdminConfirmPasswordReset() {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t)
+		scenario.Test(suite.T())
 	}
 }
 
 func (suite *AdminTestSuite) TestAdminRefresh() {
-	t := suite.T()
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -354,12 +351,11 @@ func (suite *AdminTestSuite) TestAdminRefresh() {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t)
+		scenario.Test(suite.T())
 	}
 }
 
 func (suite *AdminTestSuite) TestAdminsList() {
-	t := suite.T()
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -459,12 +455,11 @@ func (suite *AdminTestSuite) TestAdminsList() {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t)
+		scenario.Test(suite.T())
 	}
 }
 
 func (suite *AdminTestSuite) TestAdminView() {
-	t := suite.T()
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -516,12 +511,11 @@ func (suite *AdminTestSuite) TestAdminView() {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t)
+		scenario.Test(suite.T())
 	}
 }
 
 func (suite *AdminTestSuite) TestAdminDelete() {
-	t := suite.T()
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -613,12 +607,11 @@ func (suite *AdminTestSuite) TestAdminDelete() {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t)
+		scenario.Test(suite.T())
 	}
 }
 
 func (suite *AdminTestSuite) TestAdminCreate() {
-	t := suite.T()
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -769,12 +762,11 @@ func (suite *AdminTestSuite) TestAdminCreate() {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t)
+		scenario.Test(suite.T())
 	}
 }
 
 func (suite *AdminTestSuite) TestAdminUpdate() {
-	t := suite.T()
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -921,7 +913,7 @@ func (suite *AdminTestSuite) TestAdminUpdate() {
 	}
 
 	for _, scenario := range scenarios {
-		scenario.Test(t)
+		scenario.Test(suite.T())
 	}
 }
 
