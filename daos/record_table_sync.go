@@ -212,21 +212,28 @@ func (dao *Dao) normalizeSingleVsMultipleFieldChanges(newCollection, oldCollecti
 			if !isOldMultiple && isNewMultiple {
 				// single -> multiple (convert to array)
 				copyQuery = txDao.DB().NewQuery(fmt.Sprintf(
-					`UPDATE {{%s}} set [[%s]] = (
-							CASE
-								WHEN COALESCE([[%s]], '') = ''
-								THEN '[]'
-								ELSE (
-									CASE
-										WHEN json_valid([[%s]]) AND json_type([[%s]]) == 'array'
-										THEN [[%s]]
-										ELSE json_array([[%s]])
-									END
-								)
-							END
-						)`,
+					`UPDATE {{%s}} SET [[%s]] = (
+        CASE
+            WHEN CAST([[%s]] AS text) = ''
+            THEN '[]'::json
+            ELSE (
+                CASE
+                    WHEN json_typeof([[%s]]::json) = 'array'
+                    THEN [[%s]]::json
+                    ELSE json_build_array(
+                        CASE
+                            WHEN json_typeof([[%s]]::json) = 'string'
+                            THEN [[%s]]::json
+                            ELSE to_json([[%s]])
+                        END
+                    )
+                END
+            )
+        END
+    )`,
 					newCollection.Name,
 					tempName,
+					originalName,
 					originalName,
 					originalName,
 					originalName,
@@ -239,22 +246,24 @@ func (dao *Dao) normalizeSingleVsMultipleFieldChanges(newCollection, oldCollecti
 				// note: for file fields the actual file objects are not
 				// deleted allowing additional custom handling via migration
 				copyQuery = txDao.DB().NewQuery(fmt.Sprintf(
-					`UPDATE {{%s}} set [[%s]] = (
-						CASE
-							WHEN COALESCE([[%s]], '[]') = '[]'
-							THEN ''
-							ELSE (
-								CASE
-									WHEN json_valid([[%s]]) AND json_type([[%s]]) == 'array'
-									THEN COALESCE(json_extract([[%s]], '$[#-1]'), '')
-									ELSE [[%s]]
-								END
-							)
-						END
-					)`,
+					`UPDATE {{%s}} SET [[%s]] = (
+        CASE
+            WHEN COALESCE([[%s]]::text, '[]') = '[]'
+            THEN ''
+            ELSE (
+                CASE
+                    WHEN json_typeof([[%s]]::json) = 'array'
+                    THEN COALESCE(
+                        TRIM(BOTH '"' FROM (([[%s]]::json) ->> -1)::text),
+                        ''
+                    )
+                    ELSE TRIM(BOTH '"' FROM ([[%s]]::json)::text)
+                END
+            )
+        END
+    )`,
 					newCollection.Name,
 					tempName,
-					originalName,
 					originalName,
 					originalName,
 					originalName,
