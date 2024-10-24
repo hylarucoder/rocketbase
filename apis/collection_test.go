@@ -20,8 +20,6 @@ import (
 func (suite *CollectionTestSuite) TestCollectionsList() {
 	t := suite.T()
 	app := suite.App
-	adminAuthToken := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzAyMzYxMTQsImlkIjoiMjEwNzk3NzEyNzUyODc1OTI5NiIsInR5cGUiOiJhZG1pbiJ9.ikCEJR-iPIrZwpbsWjtslMdq75suCAEYfaRK7Oz-NZ0"
-	userAuthToken := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2xsZWN0aW9uSWQiOiIyMTA3OTc3Mzk3MDYzMTIyOTQ0IiwiZXhwIjoxNzMwOTEyMTQzLCJpZCI6Il9wYl91c2Vyc19hdXRoXyIsInR5cGUiOiJhdXRoUmVjb3JkIiwidmVyaWZpZWQiOnRydWV9.Us_731ziRkeeZvYvXiXsc6CKEwdKp4rSvsGbG5L1OUQ"
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -39,7 +37,7 @@ func (suite *CollectionTestSuite) TestCollectionsList() {
 			Method: http.MethodGet,
 			Url:    "/api/collections",
 			RequestHeaders: map[string]string{
-				"Authorization": userAuthToken,
+				"Authorization": suite.UserAuthToken,
 			},
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
@@ -52,7 +50,7 @@ func (suite *CollectionTestSuite) TestCollectionsList() {
 			Method: http.MethodGet,
 			Url:    "/api/collections",
 			RequestHeaders: map[string]string{
-				"Authorization": adminAuthToken,
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -86,7 +84,7 @@ func (suite *CollectionTestSuite) TestCollectionsList() {
 			Method: http.MethodGet,
 			Url:    "/api/collections?page=2&perPage=2&sort=-created",
 			RequestHeaders: map[string]string{
-				"Authorization": adminAuthToken,
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -109,7 +107,7 @@ func (suite *CollectionTestSuite) TestCollectionsList() {
 			Method: http.MethodGet,
 			Url:    "/api/collections?filter=invalidfield~'demo2'",
 			RequestHeaders: map[string]string{
-				"Authorization": adminAuthToken,
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{}`},
@@ -122,7 +120,7 @@ func (suite *CollectionTestSuite) TestCollectionsList() {
 			Method: http.MethodGet,
 			Url:    "/api/collections?filter=name~'demo'",
 			RequestHeaders: map[string]string{
-				"Authorization": adminAuthToken,
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -153,8 +151,6 @@ func (suite *CollectionTestSuite) TestCollectionsList() {
 func (suite *CollectionTestSuite) TestCollectionView() {
 	t := suite.T()
 	app := suite.App
-	adminAuthToken := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzAyMzYxMTQsImlkIjoiMjEwNzk3NzEyNzUyODc1OTI5NiIsInR5cGUiOiJhZG1pbiJ9.ikCEJR-iPIrZwpbsWjtslMdq75suCAEYfaRK7Oz-NZ0"
-	userAuthToken := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2xsZWN0aW9uSWQiOiIyMTA3OTc3Mzk3MDYzMTIyOTQ0IiwiZXhwIjoxNzMwOTEyMTQzLCJpZCI6Il9wYl91c2Vyc19hdXRoXyIsInR5cGUiOiJhdXRoUmVjb3JkIiwidmVyaWZpZWQiOnRydWV9.Us_731ziRkeeZvYvXiXsc6CKEwdKp4rSvsGbG5L1OUQ"
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -172,7 +168,7 @@ func (suite *CollectionTestSuite) TestCollectionView() {
 			Method: http.MethodGet,
 			Url:    "/api/collections/demo1",
 			RequestHeaders: map[string]string{
-				"Authorization": userAuthToken,
+				"Authorization": suite.UserAuthToken,
 			},
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
@@ -185,7 +181,7 @@ func (suite *CollectionTestSuite) TestCollectionView() {
 			Method: http.MethodGet,
 			Url:    "/api/collections/missing",
 			RequestHeaders: map[string]string{
-				"Authorization": adminAuthToken,
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus:  404,
 			ExpectedContent: []string{`"data":{}`},
@@ -198,7 +194,7 @@ func (suite *CollectionTestSuite) TestCollectionView() {
 			Method: http.MethodGet,
 			Url:    "/api/collections/demo1",
 			RequestHeaders: map[string]string{
-				"Authorization": adminAuthToken,
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -217,7 +213,7 @@ func (suite *CollectionTestSuite) TestCollectionView() {
 			Method: http.MethodGet,
 			Url:    "/api/collections/2108348993330216960",
 			RequestHeaders: map[string]string{
-				"Authorization": adminAuthToken,
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -240,8 +236,6 @@ func (suite *CollectionTestSuite) TestCollectionView() {
 
 func (suite *CollectionTestSuite) TestCollectionDelete() {
 	t := suite.T()
-	adminAuthToken := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzAyMzYxMTQsImlkIjoiMjEwNzk3NzEyNzUyODc1OTI5NiIsInR5cGUiOiJhZG1pbiJ9.ikCEJR-iPIrZwpbsWjtslMdq75suCAEYfaRK7Oz-NZ0"
-	userAuthToken := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2xsZWN0aW9uSWQiOiIyMTA3OTc3Mzk3MDYzMTIyOTQ0IiwiZXhwIjoxNzMwOTEyMTQzLCJpZCI6Il9wYl91c2Vyc19hdXRoXyIsInR5cGUiOiJhdXRoUmVjb3JkIiwidmVyaWZpZWQiOnRydWV9.Us_731ziRkeeZvYvXiXsc6CKEwdKp4rSvsGbG5L1OUQ"
 
 	ensureDeletedFiles := func(app *tests.TestApp, collectionId string) {
 		storageDir := filepath.Join(app.DataDir(), "storage", collectionId)
@@ -269,7 +263,7 @@ func (suite *CollectionTestSuite) TestCollectionDelete() {
 			Method: http.MethodDelete,
 			Url:    "/api/collections/demo1",
 			RequestHeaders: map[string]string{
-				"Authorization": userAuthToken,
+				"Authorization": suite.UserAuthToken,
 			},
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
@@ -282,7 +276,7 @@ func (suite *CollectionTestSuite) TestCollectionDelete() {
 			Method: http.MethodDelete,
 			Url:    "/api/collections/missing",
 			RequestHeaders: map[string]string{
-				"Authorization": adminAuthToken,
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus:  404,
 			ExpectedContent: []string{`"data":{}`},
@@ -295,7 +289,7 @@ func (suite *CollectionTestSuite) TestCollectionDelete() {
 			Method: http.MethodDelete,
 			Url:    "/api/collections/demo5",
 			RequestHeaders: map[string]string{
-				"Authorization": adminAuthToken,
+				"Authorization": suite.AdminAuthToken,
 			},
 			Delay:          100 * time.Millisecond,
 			ExpectedStatus: 204,
@@ -317,7 +311,7 @@ func (suite *CollectionTestSuite) TestCollectionDelete() {
 			Method: http.MethodDelete,
 			Url:    "/api/collections/2108349190391201792",
 			RequestHeaders: map[string]string{
-				"Authorization": adminAuthToken,
+				"Authorization": suite.AdminAuthToken,
 			},
 			Delay:          100 * time.Millisecond,
 			ExpectedStatus: 204,
@@ -340,7 +334,7 @@ func (suite *CollectionTestSuite) TestCollectionDelete() {
 			Method: http.MethodDelete,
 			Url:    "/api/collections/users",
 			RequestHeaders: map[string]string{
-				"Authorization": adminAuthToken,
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{}`},
@@ -356,7 +350,7 @@ func (suite *CollectionTestSuite) TestCollectionDelete() {
 			Method: http.MethodDelete,
 			Url:    "/api/collections/demo3",
 			RequestHeaders: map[string]string{
-				"Authorization": adminAuthToken,
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{}`},
@@ -372,7 +366,7 @@ func (suite *CollectionTestSuite) TestCollectionDelete() {
 			Method: http.MethodDelete,
 			Url:    "/api/collections/view2",
 			RequestHeaders: map[string]string{
-				"Authorization": adminAuthToken,
+				"Authorization": suite.AdminAuthToken,
 			},
 			BeforeTestFunc: func(t *testing.T, app *tests.TestApp, e *echo.Echo) {
 				app.OnCollectionAfterDeleteRequest().Add(func(e *core.CollectionDeleteEvent) error {
@@ -396,7 +390,7 @@ func (suite *CollectionTestSuite) TestCollectionDelete() {
 			Method: http.MethodDelete,
 			Url:    "/api/collections/view1",
 			RequestHeaders: map[string]string{
-				"Authorization": adminAuthToken,
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 204,
 			ExpectedEvents: map[string]int{
@@ -417,8 +411,6 @@ func (suite *CollectionTestSuite) TestCollectionDelete() {
 }
 
 func (suite *CollectionTestSuite) TestCollectionCreate() {
-	adminAuthToken := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzAyMzYxMTQsImlkIjoiMjEwNzk3NzEyNzUyODc1OTI5NiIsInR5cGUiOiJhZG1pbiJ9.ikCEJR-iPIrZwpbsWjtslMdq75suCAEYfaRK7Oz-NZ0"
-	userAuthToken := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2xsZWN0aW9uSWQiOiIyMTA3OTc3Mzk3MDYzMTIyOTQ0IiwiZXhwIjoxNzMwOTEyMTQzLCJpZCI6Il9wYl91c2Vyc19hdXRoXyIsInR5cGUiOiJhdXRoUmVjb3JkIiwidmVyaWZpZWQiOnRydWV9.Us_731ziRkeeZvYvXiXsc6CKEwdKp4rSvsGbG5L1OUQ"
 	app := suite.App
 
 	scenarios := []tests.ApiScenario{
@@ -437,7 +429,7 @@ func (suite *CollectionTestSuite) TestCollectionCreate() {
 			Method: http.MethodPost,
 			Url:    "/api/collections",
 			RequestHeaders: map[string]string{
-				"Authorization": userAuthToken,
+				"Authorization": suite.UserAuthToken,
 			},
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
@@ -451,7 +443,7 @@ func (suite *CollectionTestSuite) TestCollectionCreate() {
 			Url:    "/api/collections",
 			Body:   strings.NewReader(``),
 			RequestHeaders: map[string]string{
-				"Authorization": adminAuthToken,
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 400,
 			ExpectedContent: []string{
@@ -469,7 +461,7 @@ func (suite *CollectionTestSuite) TestCollectionCreate() {
 			Url:    "/api/collections",
 			Body:   strings.NewReader(`{"name":"demo1","type":"base","schema":[{"type":"text","name":""}]}`),
 			RequestHeaders: map[string]string{
-				"Authorization": adminAuthToken,
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 400,
 			ExpectedContent: []string{
@@ -487,7 +479,7 @@ func (suite *CollectionTestSuite) TestCollectionCreate() {
 			Url:    "/api/collections",
 			Body:   strings.NewReader(`{"name":"new","type":"base","schema":[{"type":"text","id":"12345789","name":"test"}]}`),
 			RequestHeaders: map[string]string{
-				"Authorization": adminAuthToken,
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -514,7 +506,7 @@ func (suite *CollectionTestSuite) TestCollectionCreate() {
 			Url:    "/api/collections",
 			Body:   strings.NewReader(`{"name":"new_auth","type":"auth","schema":[{"type":"text","id":"12345789","name":"test"}]}`),
 			RequestHeaders: map[string]string{
-				"Authorization": adminAuthToken,
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -557,7 +549,7 @@ func (suite *CollectionTestSuite) TestCollectionCreate() {
 				]
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": adminAuthToken,
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 400,
 			ExpectedContent: []string{
@@ -598,7 +590,7 @@ func (suite *CollectionTestSuite) TestCollectionCreate() {
 				]
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": adminAuthToken,
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -633,7 +625,7 @@ func (suite *CollectionTestSuite) TestCollectionCreate() {
 				]
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": adminAuthToken,
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 400,
 			ExpectedContent: []string{
@@ -660,7 +652,7 @@ func (suite *CollectionTestSuite) TestCollectionCreate() {
 				"options":{"allowUsernameAuth": true}
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": adminAuthToken,
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 400,
 			ExpectedContent: []string{
@@ -677,7 +669,7 @@ func (suite *CollectionTestSuite) TestCollectionCreate() {
 			Url:    "/api/collections",
 			Body:   strings.NewReader(`{"name":"new_on_collection_after_creation","type":"base","schema":[{"type":"text","id":"12345789","name":"test"}]}`),
 			RequestHeaders: map[string]string{
-				"Authorization": adminAuthToken,
+				"Authorization": suite.AdminAuthToken,
 			},
 			BeforeTestFunc: func(t *testing.T, app *tests.TestApp, e *echo.Echo) {
 				app.OnCollectionAfterCreateRequest().Add(func(e *core.CollectionCreateEvent) error {
@@ -710,7 +702,7 @@ func (suite *CollectionTestSuite) TestCollectionCreate() {
 				"options":{"query": "invalid"}
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": adminAuthToken,
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 400,
 			ExpectedContent: []string{
@@ -734,7 +726,7 @@ func (suite *CollectionTestSuite) TestCollectionCreate() {
 				}
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": adminAuthToken,
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 400,
 			ExpectedContent: []string{
@@ -769,7 +761,7 @@ func (suite *CollectionTestSuite) TestCollectionCreate() {
 				]
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": adminAuthToken,
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 400,
 			ExpectedContent: []string{
@@ -800,7 +792,7 @@ func (suite *CollectionTestSuite) TestCollectionCreate() {
 				]
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": adminAuthToken,
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -844,8 +836,6 @@ func (suite *CollectionTestSuite) TestCollectionCreate() {
 func (suite *CollectionTestSuite) TestCollectionUpdate() {
 	t := suite.T()
 	app := suite.App
-	adminAuthToken := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzAyMzYxMTQsImlkIjoiMjEwNzk3NzEyNzUyODc1OTI5NiIsInR5cGUiOiJhZG1pbiJ9.ikCEJR-iPIrZwpbsWjtslMdq75suCAEYfaRK7Oz-NZ0"
-	userAuthToken := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2xsZWN0aW9uSWQiOiIyMTA3OTc3Mzk3MDYzMTIyOTQ0IiwiZXhwIjoxNzMwOTEyMTQzLCJpZCI6Il9wYl91c2Vyc19hdXRoXyIsInR5cGUiOiJhdXRoUmVjb3JkIiwidmVyaWZpZWQiOnRydWV9.Us_731ziRkeeZvYvXiXsc6CKEwdKp4rSvsGbG5L1OUQ"
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -863,7 +853,7 @@ func (suite *CollectionTestSuite) TestCollectionUpdate() {
 			Method: http.MethodPatch,
 			Url:    "/api/collections/demo1",
 			RequestHeaders: map[string]string{
-				"Authorization": userAuthToken,
+				"Authorization": suite.UserAuthToken,
 			},
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
@@ -877,7 +867,7 @@ func (suite *CollectionTestSuite) TestCollectionUpdate() {
 			Url:    "/api/collections/missing",
 			Body:   strings.NewReader(`{}`),
 			RequestHeaders: map[string]string{
-				"Authorization": adminAuthToken,
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus:  404,
 			ExpectedContent: []string{`"data":{}`},
@@ -891,7 +881,7 @@ func (suite *CollectionTestSuite) TestCollectionUpdate() {
 			Url:    "/api/collections/demo1",
 			Body:   strings.NewReader(`{}`),
 			RequestHeaders: map[string]string{
-				"Authorization": adminAuthToken,
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -914,7 +904,7 @@ func (suite *CollectionTestSuite) TestCollectionUpdate() {
 			Url:    "/api/collections/demo1",
 			Body:   strings.NewReader(`{}`),
 			RequestHeaders: map[string]string{
-				"Authorization": adminAuthToken,
+				"Authorization": suite.AdminAuthToken,
 			},
 			BeforeTestFunc: func(t *testing.T, app *tests.TestApp, e *echo.Echo) {
 				app.OnCollectionAfterUpdateRequest().Add(func(e *core.CollectionUpdateEvent) error {
@@ -942,7 +932,7 @@ func (suite *CollectionTestSuite) TestCollectionUpdate() {
 				"type":"auth"
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": adminAuthToken,
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 400,
 			ExpectedContent: []string{
@@ -960,7 +950,7 @@ func (suite *CollectionTestSuite) TestCollectionUpdate() {
 			Url:    "/api/collections/demo1",
 			Body:   strings.NewReader(`{"name":"new"}`),
 			RequestHeaders: map[string]string{
-				"Authorization": adminAuthToken,
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -1003,7 +993,7 @@ func (suite *CollectionTestSuite) TestCollectionUpdate() {
 				]
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": adminAuthToken,
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 400,
 			ExpectedContent: []string{
@@ -1042,7 +1032,7 @@ func (suite *CollectionTestSuite) TestCollectionUpdate() {
 				]
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": adminAuthToken,
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -1088,7 +1078,7 @@ func (suite *CollectionTestSuite) TestCollectionUpdate() {
 				]
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": adminAuthToken,
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 400,
 			ExpectedContent: []string{
@@ -1112,7 +1102,7 @@ func (suite *CollectionTestSuite) TestCollectionUpdate() {
 				"options":{"minPasswordLength": 4}
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": adminAuthToken,
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 400,
 			ExpectedContent: []string{
@@ -1135,7 +1125,7 @@ func (suite *CollectionTestSuite) TestCollectionUpdate() {
 				"options":{"query": "invalid"}
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": adminAuthToken,
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 400,
 			ExpectedContent: []string{
@@ -1158,7 +1148,7 @@ func (suite *CollectionTestSuite) TestCollectionUpdate() {
 				}
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": adminAuthToken,
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 400,
 			ExpectedContent: []string{
@@ -1197,7 +1187,7 @@ func (suite *CollectionTestSuite) TestCollectionUpdate() {
 				]
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": adminAuthToken,
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 400,
 			ExpectedContent: []string{
@@ -1219,7 +1209,7 @@ func (suite *CollectionTestSuite) TestCollectionUpdate() {
 				]
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": adminAuthToken,
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -1262,8 +1252,6 @@ func (suite *CollectionTestSuite) TestCollectionsImport() {
 	t := suite.T()
 	app := suite.App
 
-	adminAuthToken := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzAyMzYxMTQsImlkIjoiMjEwNzk3NzEyNzUyODc1OTI5NiIsInR5cGUiOiJhZG1pbiJ9.ikCEJR-iPIrZwpbsWjtslMdq75suCAEYfaRK7Oz-NZ0"
-	userAuthToken := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2xsZWN0aW9uSWQiOiIyMTA3OTc3Mzk3MDYzMTIyOTQ0IiwiZXhwIjoxNzMwOTEyMTQzLCJpZCI6Il9wYl91c2Vyc19hdXRoXyIsInR5cGUiOiJhdXRoUmVjb3JkIiwidmVyaWZpZWQiOnRydWV9.Us_731ziRkeeZvYvXiXsc6CKEwdKp4rSvsGbG5L1OUQ"
 	totalCollections := 11
 
 	scenarios := []tests.ApiScenario{
@@ -1282,7 +1270,7 @@ func (suite *CollectionTestSuite) TestCollectionsImport() {
 			Method: http.MethodPut,
 			Url:    "/api/collections/import",
 			RequestHeaders: map[string]string{
-				"Authorization": userAuthToken,
+				"Authorization": suite.UserAuthToken,
 			},
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
@@ -1296,7 +1284,7 @@ func (suite *CollectionTestSuite) TestCollectionsImport() {
 			Url:    "/api/collections/import",
 			Body:   strings.NewReader(`{"collections":[]}`),
 			RequestHeaders: map[string]string{
-				"Authorization": adminAuthToken,
+				"Authorization": suite.UserAuthToken,
 			},
 			ExpectedStatus: 400,
 			ExpectedContent: []string{
@@ -1323,7 +1311,7 @@ func (suite *CollectionTestSuite) TestCollectionsImport() {
 			Url:    "/api/collections/import",
 			Body:   strings.NewReader(`{"deleteMissing": true, "collections":[{"name": "test123"}]}`),
 			RequestHeaders: map[string]string{
-				"Authorization": adminAuthToken,
+				"Authorization": suite.UserAuthToken,
 			},
 			ExpectedStatus: 400,
 			ExpectedContent: []string{
@@ -1368,7 +1356,7 @@ func (suite *CollectionTestSuite) TestCollectionsImport() {
 				]
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": adminAuthToken,
+				"Authorization": suite.UserAuthToken,
 			},
 			ExpectedStatus: 400,
 			ExpectedContent: []string{
@@ -1429,7 +1417,7 @@ func (suite *CollectionTestSuite) TestCollectionsImport() {
 				]
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": adminAuthToken,
+				"Authorization": suite.UserAuthToken,
 			},
 			ExpectedStatus: 204,
 			ExpectedEvents: map[string]int{
@@ -1533,7 +1521,7 @@ func (suite *CollectionTestSuite) TestCollectionsImport() {
 				]
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": adminAuthToken,
+				"Authorization": suite.UserAuthToken,
 			},
 			ExpectedStatus: 204,
 			ExpectedEvents: map[string]int{
@@ -1596,7 +1584,7 @@ func (suite *CollectionTestSuite) TestCollectionsImport() {
 				]
 			}`),
 			RequestHeaders: map[string]string{
-				"Authorization": adminAuthToken,
+				"Authorization": suite.UserAuthToken,
 			},
 			BeforeTestFunc: func(t *testing.T, app *tests.TestApp, e *echo.Echo) {
 				app.OnCollectionsAfterImportRequest().Add(func(e *core.CollectionsImportEvent) error {
@@ -1624,13 +1612,15 @@ func (suite *CollectionTestSuite) TestCollectionsImport() {
 
 type CollectionTestSuite struct {
 	suite.Suite
-	App *tests.TestApp
-	Var int
+	App            *tests.TestApp
+	AdminAuthToken string
+	UserAuthToken  string
 }
 
 func (suite *CollectionTestSuite) SetupSuite() {
 	app, _ := tests.NewTestApp()
-	suite.Var = 5
+	suite.AdminAuthToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzAyMzYxMTQsImlkIjoiMjEwNzk3NzEyNzUyODc1OTI5NiIsInR5cGUiOiJhZG1pbiJ9.ikCEJR-iPIrZwpbsWjtslMdq75suCAEYfaRK7Oz-NZ0"
+	suite.UserAuthToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2xsZWN0aW9uSWQiOiIyMTA3OTc3Mzk3MDYzMTIyOTQ0IiwiZXhwIjoxNzMwOTEyMTQzLCJpZCI6Il9wYl91c2Vyc19hdXRoXyIsInR5cGUiOiJhdXRoUmVjb3JkIiwidmVyaWZpZWQiOnRydWV9.Us_731ziRkeeZvYvXiXsc6CKEwdKp4rSvsGbG5L1OUQ"
 	suite.App = app
 }
 
