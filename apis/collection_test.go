@@ -19,6 +19,7 @@ import (
 
 func (suite *CollectionTestSuite) TestCollectionsList() {
 	t := suite.T()
+	app := suite.App
 	adminAuthToken := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzAyMzYxMTQsImlkIjoiMjEwNzk3NzEyNzUyODc1OTI5NiIsInR5cGUiOiJhZG1pbiJ9.ikCEJR-iPIrZwpbsWjtslMdq75suCAEYfaRK7Oz-NZ0"
 	userAuthToken := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2xsZWN0aW9uSWQiOiIyMTA3OTc3Mzk3MDYzMTIyOTQ0IiwiZXhwIjoxNzMwOTEyMTQzLCJpZCI6Il9wYl91c2Vyc19hdXRoXyIsInR5cGUiOiJhdXRoUmVjb3JkIiwidmVyaWZpZWQiOnRydWV9.Us_731ziRkeeZvYvXiXsc6CKEwdKp4rSvsGbG5L1OUQ"
 
@@ -29,6 +30,9 @@ func (suite *CollectionTestSuite) TestCollectionsList() {
 			Url:             "/api/collections",
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:   "authorized as user",
@@ -39,6 +43,9 @@ func (suite *CollectionTestSuite) TestCollectionsList() {
 			},
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:   "authorized as admin",
@@ -70,6 +77,9 @@ func (suite *CollectionTestSuite) TestCollectionsList() {
 			ExpectedEvents: map[string]int{
 				"OnCollectionsListRequest": 1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:   "authorized as admin + paging and sorting",
@@ -90,6 +100,9 @@ func (suite *CollectionTestSuite) TestCollectionsList() {
 			ExpectedEvents: map[string]int{
 				"OnCollectionsListRequest": 1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:   "authorized as admin + invalid filter",
@@ -100,6 +113,9 @@ func (suite *CollectionTestSuite) TestCollectionsList() {
 			},
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:   "authorized as admin + valid filter",
@@ -123,6 +139,9 @@ func (suite *CollectionTestSuite) TestCollectionsList() {
 			ExpectedEvents: map[string]int{
 				"OnCollectionsListRequest": 1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 	}
 
@@ -133,6 +152,7 @@ func (suite *CollectionTestSuite) TestCollectionsList() {
 
 func (suite *CollectionTestSuite) TestCollectionView() {
 	t := suite.T()
+	app := suite.App
 	adminAuthToken := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzAyMzYxMTQsImlkIjoiMjEwNzk3NzEyNzUyODc1OTI5NiIsInR5cGUiOiJhZG1pbiJ9.ikCEJR-iPIrZwpbsWjtslMdq75suCAEYfaRK7Oz-NZ0"
 	userAuthToken := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2xsZWN0aW9uSWQiOiIyMTA3OTc3Mzk3MDYzMTIyOTQ0IiwiZXhwIjoxNzMwOTEyMTQzLCJpZCI6Il9wYl91c2Vyc19hdXRoXyIsInR5cGUiOiJhdXRoUmVjb3JkIiwidmVyaWZpZWQiOnRydWV9.Us_731ziRkeeZvYvXiXsc6CKEwdKp4rSvsGbG5L1OUQ"
 
@@ -143,6 +163,9 @@ func (suite *CollectionTestSuite) TestCollectionView() {
 			Url:             "/api/collections/demo1",
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:   "authorized as user",
@@ -153,6 +176,9 @@ func (suite *CollectionTestSuite) TestCollectionView() {
 			},
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:   "authorized as admin + nonexisting collection identifier",
@@ -163,6 +189,9 @@ func (suite *CollectionTestSuite) TestCollectionView() {
 			},
 			ExpectedStatus:  404,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:   "authorized as admin + using the collection name",
@@ -179,6 +208,9 @@ func (suite *CollectionTestSuite) TestCollectionView() {
 			ExpectedEvents: map[string]int{
 				"OnCollectionViewRequest": 1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:   "authorized as admin + using the collection id",
@@ -194,6 +226,9 @@ func (suite *CollectionTestSuite) TestCollectionView() {
 			},
 			ExpectedEvents: map[string]int{
 				"OnCollectionViewRequest": 1,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
 			},
 		},
 	}
@@ -216,6 +251,7 @@ func (suite *CollectionTestSuite) TestCollectionDelete() {
 			t.Errorf("Expected empty/deleted dir, found %d", len(entries))
 		}
 	}
+	app := suite.App
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -224,6 +260,9 @@ func (suite *CollectionTestSuite) TestCollectionDelete() {
 			Url:             "/api/collections/demo1",
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:   "authorized as user",
@@ -234,6 +273,9 @@ func (suite *CollectionTestSuite) TestCollectionDelete() {
 			},
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:   "authorized as admin + nonexisting collection identifier",
@@ -244,6 +286,9 @@ func (suite *CollectionTestSuite) TestCollectionDelete() {
 			},
 			ExpectedStatus:  404,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:   "authorized as admin + using the collection name",
@@ -262,6 +307,9 @@ func (suite *CollectionTestSuite) TestCollectionDelete() {
 			},
 			AfterTestFunc: func(t *testing.T, app *tests.TestApp, res *http.Response) {
 				ensureDeletedFiles(app, "2108354773609611264")
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
 			},
 		},
 		{
@@ -282,6 +330,9 @@ func (suite *CollectionTestSuite) TestCollectionDelete() {
 			AfterTestFunc: func(t *testing.T, app *tests.TestApp, res *http.Response) {
 				ensureDeletedFiles(app, "2108349190391201792")
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			// TODO: what's system collection, users? admins? why no login
@@ -296,6 +347,9 @@ func (suite *CollectionTestSuite) TestCollectionDelete() {
 			ExpectedEvents: map[string]int{
 				"OnCollectionBeforeDeleteRequest": 1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:   "authorized as admin + trying to delete a referenced collection",
@@ -308,6 +362,9 @@ func (suite *CollectionTestSuite) TestCollectionDelete() {
 			ExpectedContent: []string{`"data":{}`},
 			ExpectedEvents: map[string]int{
 				"OnCollectionBeforeDeleteRequest": 1,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
 			},
 		},
 		{
@@ -330,6 +387,9 @@ func (suite *CollectionTestSuite) TestCollectionDelete() {
 				"OnCollectionBeforeDeleteRequest": 1,
 				"OnCollectionAfterDeleteRequest":  1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:   "authorized as admin + deleting a view",
@@ -345,6 +405,9 @@ func (suite *CollectionTestSuite) TestCollectionDelete() {
 				"OnCollectionBeforeDeleteRequest": 1,
 				"OnCollectionAfterDeleteRequest":  1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 	}
 
@@ -356,6 +419,7 @@ func (suite *CollectionTestSuite) TestCollectionDelete() {
 func (suite *CollectionTestSuite) TestCollectionCreate() {
 	adminAuthToken := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzAyMzYxMTQsImlkIjoiMjEwNzk3NzEyNzUyODc1OTI5NiIsInR5cGUiOiJhZG1pbiJ9.ikCEJR-iPIrZwpbsWjtslMdq75suCAEYfaRK7Oz-NZ0"
 	userAuthToken := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2xsZWN0aW9uSWQiOiIyMTA3OTc3Mzk3MDYzMTIyOTQ0IiwiZXhwIjoxNzMwOTEyMTQzLCJpZCI6Il9wYl91c2Vyc19hdXRoXyIsInR5cGUiOiJhdXRoUmVjb3JkIiwidmVyaWZpZWQiOnRydWV9.Us_731ziRkeeZvYvXiXsc6CKEwdKp4rSvsGbG5L1OUQ"
+	app := suite.App
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -364,6 +428,9 @@ func (suite *CollectionTestSuite) TestCollectionCreate() {
 			Url:             "/api/collections",
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:   "authorized as user",
@@ -374,6 +441,9 @@ func (suite *CollectionTestSuite) TestCollectionCreate() {
 			},
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:   "authorized as admin + empty data",
@@ -389,6 +459,9 @@ func (suite *CollectionTestSuite) TestCollectionCreate() {
 				`"name":{"code":"validation_required"`,
 				`"schema":{"code":"validation_required"`,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:   "authorized as admin + invalid data (eg. existing name)",
@@ -403,6 +476,9 @@ func (suite *CollectionTestSuite) TestCollectionCreate() {
 				`"data":{`,
 				`"name":{"code":"validation_collection_name_exists"`,
 				`"schema":{"0":{"name":{"code":"validation_required"`,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
 			},
 		},
 		{
@@ -428,6 +504,9 @@ func (suite *CollectionTestSuite) TestCollectionCreate() {
 				"OnCollectionBeforeCreateRequest": 1,
 				"OnCollectionAfterCreateRequest":  1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:   "creating auth collection without specified options",
@@ -451,6 +530,9 @@ func (suite *CollectionTestSuite) TestCollectionCreate() {
 				"OnModelAfterCreate":              1,
 				"OnCollectionBeforeCreateRequest": 1,
 				"OnCollectionAfterCreateRequest":  1,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
 			},
 		},
 		{
@@ -490,6 +572,9 @@ func (suite *CollectionTestSuite) TestCollectionCreate() {
 				`"7":{"name":{"code":"validation_reserved_auth_field_name"`,
 				`"8":{"name":{"code":"validation_reserved_auth_field_name"`,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:   "creating base collection with reserved auth fields",
@@ -527,6 +612,9 @@ func (suite *CollectionTestSuite) TestCollectionCreate() {
 				"OnCollectionBeforeCreateRequest": 1,
 				"OnCollectionAfterCreateRequest":  1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:   "trying to create base collection with reserved base fields",
@@ -557,6 +645,9 @@ func (suite *CollectionTestSuite) TestCollectionCreate() {
 				`"4":{"name":{"code":"validation_not_in_invalid`,
 				`"5":{"name":{"code":"validation_not_in_invalid`,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:   "trying to create auth collection with invalid options",
@@ -575,6 +666,9 @@ func (suite *CollectionTestSuite) TestCollectionCreate() {
 			ExpectedContent: []string{
 				`"data":{`,
 				`"options":{"minPasswordLength":{"code":"validation_required"`,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
 			},
 		},
 		{
@@ -598,6 +692,9 @@ func (suite *CollectionTestSuite) TestCollectionCreate() {
 				"OnCollectionBeforeCreateRequest": 1,
 				"OnCollectionAfterCreateRequest":  1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 
 		// view
@@ -619,6 +716,9 @@ func (suite *CollectionTestSuite) TestCollectionCreate() {
 			ExpectedContent: []string{
 				`"data":{`,
 				`"options":{"query":{"code":"validation_invalid_view_query`,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
 			},
 		},
 		{
@@ -645,6 +745,9 @@ func (suite *CollectionTestSuite) TestCollectionCreate() {
 				"OnModelAfterCreate":              0,
 				"OnCollectionBeforeCreateRequest": 1,
 				"OnCollectionAfterCreateRequest":  0,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
 			},
 		},
 
@@ -676,6 +779,9 @@ func (suite *CollectionTestSuite) TestCollectionCreate() {
 			ExpectedEvents: map[string]int{
 				"OnCollectionBeforeCreateRequest": 1,
 				"OnModelBeforeCreate":             1,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
 			},
 		},
 		{
@@ -723,6 +829,9 @@ func (suite *CollectionTestSuite) TestCollectionCreate() {
 					}
 				}
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 	}
 	t := suite.T()
@@ -734,6 +843,7 @@ func (suite *CollectionTestSuite) TestCollectionCreate() {
 
 func (suite *CollectionTestSuite) TestCollectionUpdate() {
 	t := suite.T()
+	app := suite.App
 	adminAuthToken := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzAyMzYxMTQsImlkIjoiMjEwNzk3NzEyNzUyODc1OTI5NiIsInR5cGUiOiJhZG1pbiJ9.ikCEJR-iPIrZwpbsWjtslMdq75suCAEYfaRK7Oz-NZ0"
 	userAuthToken := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2xsZWN0aW9uSWQiOiIyMTA3OTc3Mzk3MDYzMTIyOTQ0IiwiZXhwIjoxNzMwOTEyMTQzLCJpZCI6Il9wYl91c2Vyc19hdXRoXyIsInR5cGUiOiJhdXRoUmVjb3JkIiwidmVyaWZpZWQiOnRydWV9.Us_731ziRkeeZvYvXiXsc6CKEwdKp4rSvsGbG5L1OUQ"
 
@@ -744,6 +854,9 @@ func (suite *CollectionTestSuite) TestCollectionUpdate() {
 			Url:             "/api/collections/demo1",
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:   "authorized as user",
@@ -754,6 +867,9 @@ func (suite *CollectionTestSuite) TestCollectionUpdate() {
 			},
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:   "authorized as admin + missing collection",
@@ -765,6 +881,9 @@ func (suite *CollectionTestSuite) TestCollectionUpdate() {
 			},
 			ExpectedStatus:  404,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:   "authorized as admin + empty body",
@@ -784,6 +903,9 @@ func (suite *CollectionTestSuite) TestCollectionUpdate() {
 				"OnCollectionBeforeUpdateRequest": 1,
 				"OnModelAfterUpdate":              1,
 				"OnModelBeforeUpdate":             1,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
 			},
 		},
 		{
@@ -807,6 +929,9 @@ func (suite *CollectionTestSuite) TestCollectionUpdate() {
 				"OnModelAfterUpdate":              1,
 				"OnModelBeforeUpdate":             1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:   "authorized as admin + invalid data (eg. existing name)",
@@ -824,6 +949,9 @@ func (suite *CollectionTestSuite) TestCollectionUpdate() {
 				`"data":{`,
 				`"name":{"code":"validation_collection_name_exists"`,
 				`"type":{"code":"validation_collection_type_change"`,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
 			},
 		},
 		{
@@ -850,6 +978,9 @@ func (suite *CollectionTestSuite) TestCollectionUpdate() {
 				if !app.Dao().HasTable("new") {
 					t.Fatal("Couldn't find record table 'new'.")
 				}
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
 			},
 		},
 		{
@@ -886,6 +1017,9 @@ func (suite *CollectionTestSuite) TestCollectionUpdate() {
 				`"6":{"name":{"code":"validation_reserved_auth_field_name"`,
 				`"7":{"name":{"code":"validation_reserved_auth_field_name"`,
 				`"8":{"name":{"code":"validation_reserved_auth_field_name"`,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
 			},
 		},
 		{
@@ -933,6 +1067,9 @@ func (suite *CollectionTestSuite) TestCollectionUpdate() {
 				"OnCollectionBeforeUpdateRequest": 1,
 				"OnCollectionAfterUpdateRequest":  1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:   "trying to update base collection with reserved base fields",
@@ -963,6 +1100,9 @@ func (suite *CollectionTestSuite) TestCollectionUpdate() {
 				`"4":{"name":{"code":"validation_not_in_invalid`,
 				`"5":{"name":{"code":"validation_not_in_invalid`,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:   "trying to update auth collection with invalid options",
@@ -978,6 +1118,9 @@ func (suite *CollectionTestSuite) TestCollectionUpdate() {
 			ExpectedContent: []string{
 				`"data":{`,
 				`"options":{"minPasswordLength":{"code":"validation_min_greater_equal_than_required"`,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
 			},
 		},
 
@@ -998,6 +1141,9 @@ func (suite *CollectionTestSuite) TestCollectionUpdate() {
 			ExpectedContent: []string{
 				`"data":{`,
 				`"options":{"query":{"code":"validation_invalid_view_query`,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
 			},
 		},
 		{
@@ -1033,6 +1179,9 @@ func (suite *CollectionTestSuite) TestCollectionUpdate() {
 				"OnCollectionBeforeUpdateRequest": 1,
 				"OnCollectionAfterUpdateRequest":  1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 
 		// indexes
@@ -1054,6 +1203,9 @@ func (suite *CollectionTestSuite) TestCollectionUpdate() {
 			ExpectedContent: []string{
 				`"data":{`,
 				`"indexes":{"0":{"code":"`,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
 			},
 		},
 		{
@@ -1095,6 +1247,9 @@ func (suite *CollectionTestSuite) TestCollectionUpdate() {
 					}
 				}
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 	}
 
@@ -1105,6 +1260,7 @@ func (suite *CollectionTestSuite) TestCollectionUpdate() {
 
 func (suite *CollectionTestSuite) TestCollectionsImport() {
 	t := suite.T()
+	app := suite.App
 
 	adminAuthToken := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzAyMzYxMTQsImlkIjoiMjEwNzk3NzEyNzUyODc1OTI5NiIsInR5cGUiOiJhZG1pbiJ9.ikCEJR-iPIrZwpbsWjtslMdq75suCAEYfaRK7Oz-NZ0"
 	userAuthToken := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2xsZWN0aW9uSWQiOiIyMTA3OTc3Mzk3MDYzMTIyOTQ0IiwiZXhwIjoxNzMwOTEyMTQzLCJpZCI6Il9wYl91c2Vyc19hdXRoXyIsInR5cGUiOiJhdXRoUmVjb3JkIiwidmVyaWZpZWQiOnRydWV9.Us_731ziRkeeZvYvXiXsc6CKEwdKp4rSvsGbG5L1OUQ"
@@ -1117,6 +1273,9 @@ func (suite *CollectionTestSuite) TestCollectionsImport() {
 			Url:             "/api/collections/import",
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:   "authorized as user",
@@ -1127,6 +1286,9 @@ func (suite *CollectionTestSuite) TestCollectionsImport() {
 			},
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:   "authorized as admin + empty collections",
@@ -1150,6 +1312,9 @@ func (suite *CollectionTestSuite) TestCollectionsImport() {
 				if len(collections) != expected {
 					t.Fatalf("Expected %d collections, got %d", expected, len(collections))
 				}
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
 			},
 		},
 		{
@@ -1178,6 +1343,9 @@ func (suite *CollectionTestSuite) TestCollectionsImport() {
 				if len(collections) != expected {
 					t.Fatalf("Expected %d collections, got %d", expected, len(collections))
 				}
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
 			},
 		},
 		{
@@ -1220,6 +1388,9 @@ func (suite *CollectionTestSuite) TestCollectionsImport() {
 				if len(collections) != expected {
 					t.Fatalf("Expected %d collections, got %d", expected, len(collections))
 				}
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
 			},
 		},
 		{
@@ -1282,6 +1453,9 @@ func (suite *CollectionTestSuite) TestCollectionsImport() {
 				if err != nil || indexes["idx_test"] == "" {
 					t.Fatalf("Missing index %s (%v)", "idx_test", err)
 				}
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
 			},
 		},
 		{
@@ -1382,6 +1556,9 @@ func (suite *CollectionTestSuite) TestCollectionsImport() {
 					t.Fatalf("Expected %d collections, got %d", expected, len(collections))
 				}
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:   "authorized as admin + successful collections save",
@@ -1433,6 +1610,9 @@ func (suite *CollectionTestSuite) TestCollectionsImport() {
 				"OnCollectionsAfterImportRequest":  1,
 				"OnModelBeforeCreate":              3,
 				"OnModelAfterCreate":               3,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
 			},
 		},
 	}

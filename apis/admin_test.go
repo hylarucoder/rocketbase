@@ -18,7 +18,7 @@ import (
 )
 
 func (suite *AdminTestSuite) TestAdminAuthWithPassword() {
-	// app := suite.App
+	app := suite.App
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -28,6 +28,9 @@ func (suite *AdminTestSuite) TestAdminAuthWithPassword() {
 			Body:            strings.NewReader(``),
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{"identity":{"code":"validation_required","message":"Cannot be blank."},"password":{"code":"validation_required","message":"Cannot be blank."}}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:            "invalid data",
@@ -36,6 +39,9 @@ func (suite *AdminTestSuite) TestAdminAuthWithPassword() {
 			Body:            strings.NewReader(`{`),
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:            "wrong email",
@@ -47,6 +53,9 @@ func (suite *AdminTestSuite) TestAdminAuthWithPassword() {
 			ExpectedEvents: map[string]int{
 				"OnAdminBeforeAuthWithPasswordRequest": 1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:            "wrong password",
@@ -57,6 +66,9 @@ func (suite *AdminTestSuite) TestAdminAuthWithPassword() {
 			ExpectedContent: []string{`"data":{}`},
 			ExpectedEvents: map[string]int{
 				"OnAdminBeforeAuthWithPasswordRequest": 1,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
 			},
 		},
 		{
@@ -73,6 +85,9 @@ func (suite *AdminTestSuite) TestAdminAuthWithPassword() {
 				"OnAdminBeforeAuthWithPasswordRequest": 1,
 				"OnAdminAfterAuthWithPasswordRequest":  1,
 				"OnAdminAuthRequest":                   1,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
 			},
 		},
 		{
@@ -92,6 +107,9 @@ func (suite *AdminTestSuite) TestAdminAuthWithPassword() {
 				"OnAdminBeforeAuthWithPasswordRequest": 1,
 				"OnAdminAfterAuthWithPasswordRequest":  1,
 				"OnAdminAuthRequest":                   1,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
 			},
 		},
 		{
@@ -113,6 +131,9 @@ func (suite *AdminTestSuite) TestAdminAuthWithPassword() {
 				"OnAdminBeforeAuthWithPasswordRequest": 1,
 				"OnAdminAfterAuthWithPasswordRequest":  1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 	}
 
@@ -122,6 +143,7 @@ func (suite *AdminTestSuite) TestAdminAuthWithPassword() {
 }
 
 func (suite *AdminTestSuite) TestAdminRequestPasswordReset() {
+	app := suite.App
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -131,6 +153,9 @@ func (suite *AdminTestSuite) TestAdminRequestPasswordReset() {
 			Body:            strings.NewReader(``),
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{"email":{"code":"validation_required","message":"Cannot be blank."}}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:            "invalid data",
@@ -139,6 +164,9 @@ func (suite *AdminTestSuite) TestAdminRequestPasswordReset() {
 			Body:            strings.NewReader(`{"email`),
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:           "missing admin",
@@ -147,6 +175,9 @@ func (suite *AdminTestSuite) TestAdminRequestPasswordReset() {
 			Body:           strings.NewReader(`{"email":"missing@example.com"}`),
 			Delay:          100 * time.Millisecond,
 			ExpectedStatus: 204,
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:           "existing admin",
@@ -162,6 +193,9 @@ func (suite *AdminTestSuite) TestAdminRequestPasswordReset() {
 				"OnMailerAfterAdminResetPasswordSend":      1,
 				"OnAdminBeforeRequestPasswordResetRequest": 1,
 				"OnAdminAfterRequestPasswordResetRequest":  1,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
 			},
 		},
 		{
@@ -183,6 +217,9 @@ func (suite *AdminTestSuite) TestAdminRequestPasswordReset() {
 					t.Fatal(err)
 				}
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 	}
 
@@ -192,6 +229,7 @@ func (suite *AdminTestSuite) TestAdminRequestPasswordReset() {
 }
 
 func (suite *AdminTestSuite) TestAdminConfirmPasswordReset() {
+	app := suite.App
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -201,6 +239,9 @@ func (suite *AdminTestSuite) TestAdminConfirmPasswordReset() {
 			Body:            strings.NewReader(``),
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{"password":{"code":"validation_required","message":"Cannot be blank."},"passwordConfirm":{"code":"validation_required","message":"Cannot be blank."},"token":{"code":"validation_required","message":"Cannot be blank."}}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:            "invalid data",
@@ -209,6 +250,9 @@ func (suite *AdminTestSuite) TestAdminConfirmPasswordReset() {
 			Body:            strings.NewReader(`{"password`),
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:   "expired token",
@@ -221,6 +265,9 @@ func (suite *AdminTestSuite) TestAdminConfirmPasswordReset() {
 			}`),
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{"token":{"code":"validation_invalid_token","message":"Invalid or expired token."}}}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:   "valid token + invalid password",
@@ -233,6 +280,9 @@ func (suite *AdminTestSuite) TestAdminConfirmPasswordReset() {
 			}`),
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{"password":{"code":"validation_length_out_of_range"`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:   "valid token + valid password",
@@ -249,6 +299,9 @@ func (suite *AdminTestSuite) TestAdminConfirmPasswordReset() {
 				"OnModelAfterUpdate":                       1,
 				"OnAdminBeforeConfirmPasswordResetRequest": 1,
 				"OnAdminAfterConfirmPasswordResetRequest":  1,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
 			},
 		},
 		{
@@ -273,6 +326,9 @@ func (suite *AdminTestSuite) TestAdminConfirmPasswordReset() {
 				"OnAdminBeforeConfirmPasswordResetRequest": 1,
 				"OnAdminAfterConfirmPasswordResetRequest":  1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 	}
 
@@ -282,6 +338,7 @@ func (suite *AdminTestSuite) TestAdminConfirmPasswordReset() {
 }
 
 func (suite *AdminTestSuite) TestAdminRefresh() {
+	app := suite.App
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -290,6 +347,9 @@ func (suite *AdminTestSuite) TestAdminRefresh() {
 			Url:             "/api/admins/auth-refresh",
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:   "authorized as user",
@@ -300,6 +360,9 @@ func (suite *AdminTestSuite) TestAdminRefresh() {
 			},
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:   "authorized as admin (expired token)",
@@ -310,6 +373,9 @@ func (suite *AdminTestSuite) TestAdminRefresh() {
 			},
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:   "authorized as admin (valid token)",
@@ -327,6 +393,9 @@ func (suite *AdminTestSuite) TestAdminRefresh() {
 				"OnAdminAuthRequest":              1,
 				"OnAdminBeforeAuthRefreshRequest": 1,
 				"OnAdminAfterAuthRefreshRequest":  1,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
 			},
 		},
 		{
@@ -347,6 +416,9 @@ func (suite *AdminTestSuite) TestAdminRefresh() {
 				"OnAdminBeforeAuthRefreshRequest": 1,
 				"OnAdminAfterAuthRefreshRequest":  1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 	}
 
@@ -356,6 +428,7 @@ func (suite *AdminTestSuite) TestAdminRefresh() {
 }
 
 func (suite *AdminTestSuite) TestAdminsList() {
+	app := suite.App
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -364,6 +437,9 @@ func (suite *AdminTestSuite) TestAdminsList() {
 			Url:             "/api/admins",
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:   "authorized as user",
@@ -374,6 +450,9 @@ func (suite *AdminTestSuite) TestAdminsList() {
 			},
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:   "authorized as admin",
@@ -394,6 +473,9 @@ func (suite *AdminTestSuite) TestAdminsList() {
 			},
 			ExpectedEvents: map[string]int{
 				"OnAdminsListRequest": 1,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
 			},
 		},
 		{
@@ -418,6 +500,9 @@ func (suite *AdminTestSuite) TestAdminsList() {
 			ExpectedEvents: map[string]int{
 				"OnAdminsListRequest": 1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:   "authorized as admin + invalid filter",
@@ -428,6 +513,9 @@ func (suite *AdminTestSuite) TestAdminsList() {
 			},
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:   "authorized as admin + valid filter",
@@ -451,6 +539,9 @@ func (suite *AdminTestSuite) TestAdminsList() {
 			ExpectedEvents: map[string]int{
 				"OnAdminsListRequest": 1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 	}
 
@@ -460,6 +551,7 @@ func (suite *AdminTestSuite) TestAdminsList() {
 }
 
 func (suite *AdminTestSuite) TestAdminView() {
+	app := suite.App
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -468,6 +560,9 @@ func (suite *AdminTestSuite) TestAdminView() {
 			Url:             "/api/admins/sbmbsdb40jyxf7h",
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:   "authorized as user",
@@ -478,6 +573,9 @@ func (suite *AdminTestSuite) TestAdminView() {
 			},
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:   "authorized as admin + nonexisting admin id",
@@ -488,6 +586,9 @@ func (suite *AdminTestSuite) TestAdminView() {
 			},
 			ExpectedStatus:  404,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:   "authorized as admin + existing admin id",
@@ -507,6 +608,9 @@ func (suite *AdminTestSuite) TestAdminView() {
 			ExpectedEvents: map[string]int{
 				"OnAdminViewRequest": 1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 	}
 
@@ -516,6 +620,7 @@ func (suite *AdminTestSuite) TestAdminView() {
 }
 
 func (suite *AdminTestSuite) TestAdminDelete() {
+	app := suite.App
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -524,6 +629,9 @@ func (suite *AdminTestSuite) TestAdminDelete() {
 			Url:             "/api/admins/sbmbsdb40jyxf7h",
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:   "authorized as user",
@@ -534,6 +642,9 @@ func (suite *AdminTestSuite) TestAdminDelete() {
 			},
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:   "authorized as admin + missing admin id",
@@ -544,6 +655,9 @@ func (suite *AdminTestSuite) TestAdminDelete() {
 			},
 			ExpectedStatus:  404,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:   "authorized as admin + existing admin id",
@@ -558,6 +672,9 @@ func (suite *AdminTestSuite) TestAdminDelete() {
 				"OnModelAfterDelete":         1,
 				"OnAdminBeforeDeleteRequest": 1,
 				"OnAdminAfterDeleteRequest":  1,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
 			},
 		},
 		{
@@ -582,6 +699,9 @@ func (suite *AdminTestSuite) TestAdminDelete() {
 			ExpectedEvents: map[string]int{
 				"OnAdminBeforeDeleteRequest": 1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:   "OnAdminAfterDeleteRequest error response",
@@ -603,6 +723,9 @@ func (suite *AdminTestSuite) TestAdminDelete() {
 				"OnAdminBeforeDeleteRequest": 1,
 				"OnAdminAfterDeleteRequest":  1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 	}
 
@@ -612,6 +735,7 @@ func (suite *AdminTestSuite) TestAdminDelete() {
 }
 
 func (suite *AdminTestSuite) TestAdminCreate() {
+	app := suite.App
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -620,6 +744,9 @@ func (suite *AdminTestSuite) TestAdminCreate() {
 			Url:             "/api/admins",
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:   "unauthorized (while having 0 existing admins)",
@@ -645,6 +772,9 @@ func (suite *AdminTestSuite) TestAdminCreate() {
 				"OnAdminBeforeCreateRequest": 1,
 				"OnAdminAfterCreateRequest":  1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:   "authorized as user",
@@ -655,6 +785,9 @@ func (suite *AdminTestSuite) TestAdminCreate() {
 			},
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:   "authorized as admin + empty data",
@@ -666,6 +799,9 @@ func (suite *AdminTestSuite) TestAdminCreate() {
 			},
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{"email":{"code":"validation_required","message":"Cannot be blank."},"password":{"code":"validation_required","message":"Cannot be blank."}}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:   "authorized as admin + invalid data format",
@@ -677,6 +813,9 @@ func (suite *AdminTestSuite) TestAdminCreate() {
 			},
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:   "authorized as admin + invalid data",
@@ -698,6 +837,9 @@ func (suite *AdminTestSuite) TestAdminCreate() {
 				`"email":{"code":"validation_admin_email_exists"`,
 				`"password":{"code":"validation_length_out_of_range"`,
 				`"passwordConfirm":{"code":"validation_values_mismatch"`,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
 			},
 		},
 		{
@@ -731,6 +873,9 @@ func (suite *AdminTestSuite) TestAdminCreate() {
 				"OnAdminBeforeCreateRequest": 1,
 				"OnAdminAfterCreateRequest":  1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:   "OnAdminAfterCreateRequest error response",
@@ -758,6 +903,9 @@ func (suite *AdminTestSuite) TestAdminCreate() {
 				"OnAdminBeforeCreateRequest": 1,
 				"OnAdminAfterCreateRequest":  1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 	}
 
@@ -767,6 +915,7 @@ func (suite *AdminTestSuite) TestAdminCreate() {
 }
 
 func (suite *AdminTestSuite) TestAdminUpdate() {
+	app := suite.App
 
 	scenarios := []tests.ApiScenario{
 		{
@@ -775,6 +924,9 @@ func (suite *AdminTestSuite) TestAdminUpdate() {
 			Url:             "/api/admins/sbmbsdb40jyxf7h",
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:   "authorized as user",
@@ -785,6 +937,9 @@ func (suite *AdminTestSuite) TestAdminUpdate() {
 			},
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:   "authorized as admin + missing admin",
@@ -796,6 +951,9 @@ func (suite *AdminTestSuite) TestAdminUpdate() {
 			},
 			ExpectedStatus:  404,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:   "authorized as admin + empty data",
@@ -817,6 +975,9 @@ func (suite *AdminTestSuite) TestAdminUpdate() {
 				"OnAdminBeforeUpdateRequest": 1,
 				"OnAdminAfterUpdateRequest":  1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:   "authorized as admin + invalid formatted data",
@@ -828,6 +989,9 @@ func (suite *AdminTestSuite) TestAdminUpdate() {
 			},
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{}`},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:   "authorized as admin + invalid data",
@@ -849,6 +1013,9 @@ func (suite *AdminTestSuite) TestAdminUpdate() {
 				`"email":{"code":"validation_admin_email_exists"`,
 				`"password":{"code":"validation_length_out_of_range"`,
 				`"passwordConfirm":{"code":"validation_values_mismatch"`,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
 			},
 		},
 		{
@@ -882,6 +1049,9 @@ func (suite *AdminTestSuite) TestAdminUpdate() {
 				"OnAdminBeforeUpdateRequest": 1,
 				"OnAdminAfterUpdateRequest":  1,
 			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
+			},
 		},
 		{
 			Name:   "OnAdminAfterUpdateRequest error response",
@@ -908,6 +1078,9 @@ func (suite *AdminTestSuite) TestAdminUpdate() {
 				"OnModelAfterUpdate":         1,
 				"OnAdminBeforeUpdateRequest": 1,
 				"OnAdminAfterUpdateRequest":  1,
+			},
+			TestAppFactory: func(t *testing.T) *tests.TestApp {
+				return app
 			},
 		},
 	}

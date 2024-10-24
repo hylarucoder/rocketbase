@@ -72,8 +72,8 @@ func (scenario *ApiScenario) test(t *testing.T) {
 		if testAppErr != nil {
 			t.Fatalf("Failed to initialize the test app instance: %v", testAppErr)
 		}
+		defer testApp.Cleanup()
 	}
-	defer testApp.Cleanup()
 
 	e, err := apis.InitApi(testApp)
 	if err != nil {
