@@ -336,7 +336,7 @@ func (suite *RecordAuthTestSuite) TestRecordAuthWithPassword() {
 			Method: http.MethodPost,
 			Url:    "/api/collections/users/auth-with-password",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.UwD8JvkbQtXpymT09d7J6fdA0aP9g4FJ1GPh_ggEkzc",
+				"Authorization": suite.AdminAuthToken,
 			},
 			Body: strings.NewReader(`{
 				"identity":"test@example.com",
@@ -363,7 +363,7 @@ func (suite *RecordAuthTestSuite) TestRecordAuthWithPassword() {
 			Method: http.MethodPost,
 			Url:    "/api/collections/users/auth-with-password",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": suite.AdminAuthToken,
 			},
 			Body: strings.NewReader(`{
 				"identity":"test@example.com",
@@ -436,7 +436,7 @@ func (suite *RecordAuthTestSuite) TestRecordAuthRefresh() {
 			Method: http.MethodPost,
 			Url:    "/api/collections/users/auth-refresh",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
@@ -449,7 +449,7 @@ func (suite *RecordAuthTestSuite) TestRecordAuthRefresh() {
 			Method: http.MethodPost,
 			Url:    "/api/collections/demo1/auth-refresh",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.UwD8JvkbQtXpymT09d7J6fdA0aP9g4FJ1GPh_ggEkzc",
+				"Authorization": suite.UserAuthToken,
 			},
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{}`},
@@ -462,7 +462,7 @@ func (suite *RecordAuthTestSuite) TestRecordAuthRefresh() {
 			Method: http.MethodPost,
 			Url:    "/api/collections/clients/auth-refresh?expand=rel,missing",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.UwD8JvkbQtXpymT09d7J6fdA0aP9g4FJ1GPh_ggEkzc",
+				"Authorization": suite.UserAuthToken,
 			},
 			ExpectedStatus:  403,
 			ExpectedContent: []string{`"data":{}`},
@@ -475,7 +475,7 @@ func (suite *RecordAuthTestSuite) TestRecordAuthRefresh() {
 			Method: http.MethodPost,
 			Url:    "/api/collections/users/auth-refresh?expand=rel,missing",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.UwD8JvkbQtXpymT09d7J6fdA0aP9g4FJ1GPh_ggEkzc",
+				"Authorization": suite.UserAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -505,7 +505,7 @@ func (suite *RecordAuthTestSuite) TestRecordAuthRefresh() {
 			Method: http.MethodPost,
 			Url:    "/api/collections/clients/auth-refresh",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6Im8xeTBkZDBzcGQ3ODZtZCIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoidjg1MXE0cjc5MHJoa25sIiwiZXhwIjoyMjA4OTg1MjYxfQ.-JYlrz5DcGzvb0nYx-xqnSFMu9dupyKY7Vg_FUm0OaM",
+				"Authorization": suite.UserAuthToken,
 			},
 			ExpectedStatus:  403,
 			ExpectedContent: []string{`"data":{}`},
@@ -522,7 +522,7 @@ func (suite *RecordAuthTestSuite) TestRecordAuthRefresh() {
 			Method: http.MethodPost,
 			Url:    "/api/collections/clients/auth-refresh",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6ImdrMzkwcWVnczR5NDd3biIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoidjg1MXE0cjc5MHJoa25sIiwiZXhwIjoyMjA4OTg1MjYxfQ.q34IWXrRWsjLvbbVNRfAs_J4SoTHloNBfdGEiLmy-D8",
+				"Authorization": suite.UserAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -546,7 +546,7 @@ func (suite *RecordAuthTestSuite) TestRecordAuthRefresh() {
 			Method: http.MethodPost,
 			Url:    "/api/collections/users/auth-refresh?expand=rel,missing",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.UwD8JvkbQtXpymT09d7J6fdA0aP9g4FJ1GPh_ggEkzc",
+				"Authorization": suite.UserAuthToken,
 			},
 			BeforeTestFunc: func(t *testing.T, app *tests.TestApp, e *echo.Echo) {
 				app.OnRecordAfterAuthRefreshRequest().Add(func(e *core.RecordAuthRefreshEvent) error {
@@ -1101,7 +1101,7 @@ func (suite *RecordAuthTestSuite) TestRecordAuthRequestEmailChange() {
 			Url:    "/api/collections/users/request-email-change",
 			Body:   strings.NewReader(`{"newEmail":"change@example.com"}`),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
@@ -1115,7 +1115,7 @@ func (suite *RecordAuthTestSuite) TestRecordAuthRequestEmailChange() {
 			Url:    "/api/collections/clients/request-email-change",
 			Body:   strings.NewReader(`{"newEmail":"change@example.com"}`),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.UwD8JvkbQtXpymT09d7J6fdA0aP9g4FJ1GPh_ggEkzc",
+				"Authorization": suite.UserAuthToken,
 			},
 			ExpectedStatus:  403,
 			ExpectedContent: []string{`"data":{}`},
@@ -1129,7 +1129,7 @@ func (suite *RecordAuthTestSuite) TestRecordAuthRequestEmailChange() {
 			Url:    "/api/collections/users/request-email-change",
 			Body:   strings.NewReader(`{"newEmail`),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.UwD8JvkbQtXpymT09d7J6fdA0aP9g4FJ1GPh_ggEkzc",
+				"Authorization": suite.UserAuthToken,
 			},
 			ExpectedStatus:  400,
 			ExpectedContent: []string{`"data":{}`},
@@ -1143,7 +1143,7 @@ func (suite *RecordAuthTestSuite) TestRecordAuthRequestEmailChange() {
 			Url:    "/api/collections/users/request-email-change",
 			Body:   strings.NewReader(`{}`),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.UwD8JvkbQtXpymT09d7J6fdA0aP9g4FJ1GPh_ggEkzc",
+				"Authorization": suite.UserAuthToken,
 			},
 			ExpectedStatus: 400,
 			ExpectedContent: []string{
@@ -1160,7 +1160,7 @@ func (suite *RecordAuthTestSuite) TestRecordAuthRequestEmailChange() {
 			Url:    "/api/collections/users/request-email-change",
 			Body:   strings.NewReader(`{"newEmail":"test2@example.com"}`),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.UwD8JvkbQtXpymT09d7J6fdA0aP9g4FJ1GPh_ggEkzc",
+				"Authorization": suite.UserAuthToken,
 			},
 			ExpectedStatus: 400,
 			ExpectedContent: []string{
@@ -1177,7 +1177,7 @@ func (suite *RecordAuthTestSuite) TestRecordAuthRequestEmailChange() {
 			Url:    "/api/collections/users/request-email-change",
 			Body:   strings.NewReader(`{"newEmail":"change@example.com"}`),
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.UwD8JvkbQtXpymT09d7J6fdA0aP9g4FJ1GPh_ggEkzc",
+				"Authorization": suite.UserAuthToken,
 			},
 			ExpectedStatus: 204,
 			ExpectedEvents: map[string]int{
@@ -1362,7 +1362,7 @@ func (suite *RecordAuthTestSuite) TestRecordAuthListExternalsAuths() {
 			Method: http.MethodGet,
 			Url:    "/api/collections/users/records/missing/external-auths",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus:  404,
 			ExpectedContent: []string{`"data":{}`},
@@ -1375,7 +1375,7 @@ func (suite *RecordAuthTestSuite) TestRecordAuthListExternalsAuths() {
 			Method: http.MethodGet,
 			Url:    "/api/collections/users/records/oap640cot4yru2s/external-auths",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus:  200,
 			ExpectedContent: []string{`[]`},
@@ -1389,7 +1389,7 @@ func (suite *RecordAuthTestSuite) TestRecordAuthListExternalsAuths() {
 			Method: http.MethodGet,
 			Url:    "/api/collections/users/records/2107977397063122944/external-auths",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -1408,7 +1408,7 @@ func (suite *RecordAuthTestSuite) TestRecordAuthListExternalsAuths() {
 			Method: http.MethodGet,
 			Url:    "/api/collections/users/records/2107977397063122944/external-auths",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6Im9hcDY0MGNvdDR5cnUycyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.uatnTBFqMnF0p4FkmwEpA9R-uGFu0Putwyk6NJCKBno",
+				"Authorization": suite.UserAuthToken,
 			},
 			ExpectedStatus:  403,
 			ExpectedContent: []string{`"data":{}`},
@@ -1421,7 +1421,7 @@ func (suite *RecordAuthTestSuite) TestRecordAuthListExternalsAuths() {
 			Method: http.MethodGet,
 			Url:    "/api/collections/clients/records/o1y0dd0spd786md/external-auths",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6Im9hcDY0MGNvdDR5cnUycyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.uatnTBFqMnF0p4FkmwEpA9R-uGFu0Putwyk6NJCKBno",
+				"Authorization": suite.UserAuthToken,
 			},
 			ExpectedStatus:  403,
 			ExpectedContent: []string{`"data":{}`},
@@ -1434,7 +1434,7 @@ func (suite *RecordAuthTestSuite) TestRecordAuthListExternalsAuths() {
 			Method: http.MethodGet,
 			Url:    "/api/collections/users/records/oap640cot4yru2s/external-auths",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6Im9hcDY0MGNvdDR5cnUycyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.uatnTBFqMnF0p4FkmwEpA9R-uGFu0Putwyk6NJCKBno",
+				"Authorization": suite.UserAuthToken,
 			},
 			ExpectedStatus:  200,
 			ExpectedContent: []string{`[]`},
@@ -1448,7 +1448,7 @@ func (suite *RecordAuthTestSuite) TestRecordAuthListExternalsAuths() {
 			Method: http.MethodGet,
 			Url:    "/api/collections/users/records/2107977397063122944/external-auths",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.UwD8JvkbQtXpymT09d7J6fdA0aP9g4FJ1GPh_ggEkzc",
+				"Authorization": suite.UserAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
@@ -1488,7 +1488,7 @@ func (suite *RecordAuthTestSuite) TestRecordAuthUnlinkExternalsAuth() {
 			Method: http.MethodDelete,
 			Url:    "/api/collections/users/records/missing/external-auths/google",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus:  404,
 			ExpectedContent: []string{`"data":{}`},
@@ -1501,7 +1501,7 @@ func (suite *RecordAuthTestSuite) TestRecordAuthUnlinkExternalsAuth() {
 			Method: http.MethodDelete,
 			Url:    "/api/collections/users/records/2107977397063122944/external-auths/facebook",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus:  404,
 			ExpectedContent: []string{`"data":{}`},
@@ -1514,7 +1514,7 @@ func (suite *RecordAuthTestSuite) TestRecordAuthUnlinkExternalsAuth() {
 			Method: http.MethodDelete,
 			Url:    "/api/collections/users/records/2107977397063122944/external-auths/google",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus:  204,
 			ExpectedContent: []string{},
@@ -1543,7 +1543,7 @@ func (suite *RecordAuthTestSuite) TestRecordAuthUnlinkExternalsAuth() {
 			Method: http.MethodDelete,
 			Url:    "/api/collections/users/records/2107977397063122944/external-auths/google",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6Im9hcDY0MGNvdDR5cnUycyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.uatnTBFqMnF0p4FkmwEpA9R-uGFu0Putwyk6NJCKBno",
+				"Authorization": suite.UserAuthToken,
 			},
 			ExpectedStatus:  403,
 			ExpectedContent: []string{`"data":{}`},
@@ -1556,7 +1556,7 @@ func (suite *RecordAuthTestSuite) TestRecordAuthUnlinkExternalsAuth() {
 			Method: http.MethodDelete,
 			Url:    "/api/collections/clients/records/o1y0dd0spd786md/external-auths/google",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.UwD8JvkbQtXpymT09d7J6fdA0aP9g4FJ1GPh_ggEkzc",
+				"Authorization": suite.UserAuthToken,
 			},
 			ExpectedStatus:  403,
 			ExpectedContent: []string{`"data":{}`},
@@ -1569,7 +1569,7 @@ func (suite *RecordAuthTestSuite) TestRecordAuthUnlinkExternalsAuth() {
 			Method: http.MethodDelete,
 			Url:    "/api/collections/users/records/2107977397063122944/external-auths/google",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjRxMXhsY2xtZmxva3UzMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiX3BiX3VzZXJzX2F1dGhfIiwiZXhwIjoyMjA4OTg1MjYxfQ.UwD8JvkbQtXpymT09d7J6fdA0aP9g4FJ1GPh_ggEkzc",
+				"Authorization": suite.UserAuthToken,
 			},
 			ExpectedStatus:  204,
 			ExpectedContent: []string{},
@@ -1598,7 +1598,7 @@ func (suite *RecordAuthTestSuite) TestRecordAuthUnlinkExternalsAuth() {
 			Method: http.MethodDelete,
 			Url:    "/api/collections/users/records/2107977397063122944/external-auths/google",
 			RequestHeaders: map[string]string{
-				"Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InN5d2JoZWNuaDQ2cmhtMCIsInR5cGUiOiJhZG1pbiIsImV4cCI6MjIwODk4NTI2MX0.M1m--VOqGyv0d23eeUc0r9xE8ZzHaYVmVFw1VZW6gT8",
+				"Authorization": suite.UserAuthToken,
 			},
 			BeforeTestFunc: func(t *testing.T, app *tests.TestApp, e *echo.Echo) {
 				app.OnRecordAfterUnlinkExternalAuthRequest().Add(func(e *core.RecordUnlinkExternalAuthEvent) error {
