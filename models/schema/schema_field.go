@@ -93,9 +93,6 @@ const (
 	FieldTypeJson     string = "json"
 	FieldTypeFile     string = "file"
 	FieldTypeRelation string = "relation"
-
-	// Deprecated: Will be removed in v0.9+
-	FieldTypeUser string = "user"
 )
 
 // FieldTypes returns slice with all supported field types.
@@ -266,12 +263,8 @@ func (f *SchemaField) InitOptions() error {
 	case FieldTypeRelation:
 		options = &RelationOptions{}
 
-	// Deprecated: Will be removed in v0.9+
-	case FieldTypeUser:
-		options = &UserOptions{}
-
 	default:
-		return errors.New("Missing or unknown field field type.")
+		return errors.New("missing or unknown field field type")
 	}
 
 	if err := json.Unmarshal(serialized, options); err != nil {
