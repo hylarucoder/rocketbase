@@ -469,7 +469,7 @@ func (suite *AdminTestSuite) TestAdminsList() {
 				`"totalItems":3`,
 				`"items":[{`,
 				`"id":"2107977127528759297"`,
-				`"id":"2107977127528759297"`,
+				`"id":"2107977127528759298"`,
 				`"id":"9q2trqumvlyr3bd"`,
 			},
 			ExpectedEvents: map[string]int{
@@ -492,7 +492,7 @@ func (suite *AdminTestSuite) TestAdminsList() {
 				`"perPage":1`,
 				`"totalItems":3`,
 				`"items":[{`,
-				`"id":"2107977127528759297"`,
+				`"id":"2107977127528759298"`,
 			},
 			NotExpectedContent: []string{
 				`"tokenKey"`,
@@ -558,7 +558,7 @@ func (suite *AdminTestSuite) TestAdminView() {
 		{
 			Name:            "unauthorized",
 			Method:          http.MethodGet,
-			Url:             "/api/admins/2107977127528759297",
+			Url:             "/api/admins/2107977127528759298",
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
 			TestAppFactory: func(t *testing.T) *tests.TestApp {
@@ -568,7 +568,7 @@ func (suite *AdminTestSuite) TestAdminView() {
 		{
 			Name:   "authorized as user",
 			Method: http.MethodGet,
-			Url:    "/api/admins/2107977127528759297",
+			Url:    "/api/admins/2107977127528759298",
 			RequestHeaders: map[string]string{
 				"Authorization": suite.UserAuthToken,
 			},
@@ -594,13 +594,13 @@ func (suite *AdminTestSuite) TestAdminView() {
 		{
 			Name:   "authorized as admin + existing admin id",
 			Method: http.MethodGet,
-			Url:    "/api/admins/2107977127528759297",
+			Url:    "/api/admins/2107977127528759298",
 			RequestHeaders: map[string]string{
 				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
-				`"id":"2107977127528759297"`,
+				`"id":"2107977127528759298"`,
 			},
 			NotExpectedContent: []string{
 				`"tokenKey"`,
@@ -627,7 +627,7 @@ func (suite *AdminTestSuite) TestAdminDelete() {
 		{
 			Name:            "unauthorized",
 			Method:          http.MethodDelete,
-			Url:             "/api/admins/2107977127528759297",
+			Url:             "/api/admins/2107977127528759298",
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
 			TestAppFactory: func(t *testing.T) *tests.TestApp {
@@ -637,7 +637,7 @@ func (suite *AdminTestSuite) TestAdminDelete() {
 		{
 			Name:   "authorized as user",
 			Method: http.MethodDelete,
-			Url:    "/api/admins/2107977127528759297",
+			Url:    "/api/admins/2107977127528759298",
 			RequestHeaders: map[string]string{
 				"Authorization": suite.UserAuthToken,
 			},
@@ -663,7 +663,7 @@ func (suite *AdminTestSuite) TestAdminDelete() {
 		{
 			Name:   "authorized as admin + existing admin id",
 			Method: http.MethodDelete,
-			Url:    "/api/admins/2107977127528759297",
+			Url:    "/api/admins/2107977127528759298",
 			RequestHeaders: map[string]string{
 				"Authorization": suite.AdminAuthToken,
 			},
@@ -707,7 +707,7 @@ func (suite *AdminTestSuite) TestAdminDelete() {
 		{
 			Name:   "OnAdminAfterDeleteRequest error response",
 			Method: http.MethodDelete,
-			Url:    "/api/admins/2107977127528759297",
+			Url:    "/api/admins/2107977127528759298",
 			RequestHeaders: map[string]string{
 				"Authorization": suite.AdminAuthToken,
 			},
@@ -922,7 +922,7 @@ func (suite *AdminTestSuite) TestAdminUpdate() {
 		{
 			Name:            "unauthorized",
 			Method:          http.MethodPatch,
-			Url:             "/api/admins/2107977127528759297",
+			Url:             "/api/admins/2107977127528759298",
 			ExpectedStatus:  401,
 			ExpectedContent: []string{`"data":{}`},
 			TestAppFactory: func(t *testing.T) *tests.TestApp {
@@ -932,7 +932,7 @@ func (suite *AdminTestSuite) TestAdminUpdate() {
 		{
 			Name:   "authorized as user",
 			Method: http.MethodPatch,
-			Url:    "/api/admins/2107977127528759297",
+			Url:    "/api/admins/2107977127528759298",
 			RequestHeaders: map[string]string{
 				"Authorization": suite.UserAuthToken,
 			},
@@ -959,14 +959,14 @@ func (suite *AdminTestSuite) TestAdminUpdate() {
 		{
 			Name:   "authorized as admin + empty data",
 			Method: http.MethodPatch,
-			Url:    "/api/admins/2107977127528759297",
+			Url:    "/api/admins/2107977127528759298",
 			Body:   strings.NewReader(``),
 			RequestHeaders: map[string]string{
 				"Authorization": suite.AdminAuthToken,
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
-				`"id":"2107977127528759297"`,
+				`"id":"2107977127528759298"`,
 				`"email":"test2@example.com"`,
 				`"avatar":2`,
 			},
@@ -983,7 +983,7 @@ func (suite *AdminTestSuite) TestAdminUpdate() {
 		{
 			Name:   "authorized as admin + invalid formatted data",
 			Method: http.MethodPatch,
-			Url:    "/api/admins/2107977127528759297",
+			Url:    "/api/admins/2107977127528759298",
 			Body:   strings.NewReader(`{`),
 			RequestHeaders: map[string]string{
 				"Authorization": suite.AdminAuthToken,
@@ -997,7 +997,7 @@ func (suite *AdminTestSuite) TestAdminUpdate() {
 		{
 			Name:   "authorized as admin + invalid data",
 			Method: http.MethodPatch,
-			Url:    "/api/admins/2107977127528759297",
+			Url:    "/api/admins/2107977127528759298",
 			Body: strings.NewReader(`{
 				"email":"test@example.com",
 				"password":"1234",
@@ -1022,7 +1022,7 @@ func (suite *AdminTestSuite) TestAdminUpdate() {
 		{
 			Name:   "authorized as admin + valid data",
 			Method: http.MethodPatch,
-			Url:    "/api/admins/2107977127528759297",
+			Url:    "/api/admins/2107977127528759298",
 			Body: strings.NewReader(`{
 				"email":"testnew@example.com",
 				"password":"1234567891",
@@ -1034,7 +1034,7 @@ func (suite *AdminTestSuite) TestAdminUpdate() {
 			},
 			ExpectedStatus: 200,
 			ExpectedContent: []string{
-				`"id":"2107977127528759297"`,
+				`"id":"2107977127528759298"`,
 				`"email":"testnew@example.com"`,
 				`"avatar":5`,
 			},
@@ -1057,7 +1057,7 @@ func (suite *AdminTestSuite) TestAdminUpdate() {
 		{
 			Name:   "OnAdminAfterUpdateRequest error response",
 			Method: http.MethodPatch,
-			Url:    "/api/admins/2107977127528759297",
+			Url:    "/api/admins/2107977127528759298",
 			Body: strings.NewReader(`{
 				"email":"testnew@example.com",
 				"password":"1234567891",
