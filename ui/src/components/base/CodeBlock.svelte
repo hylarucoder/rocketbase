@@ -1,14 +1,9 @@
 <script>
-    import Prism from "prismjs";
-    import "prismjs/plugins/normalize-whitespace/prism-normalize-whitespace.js";
-    import "prismjs/components/prism-dart.js";
-    import "@/scss/prism_light.scss";
+    export let content = "";
+    export let language = "javascript"; // javascript, html, dart, go, sql
 
     let classes = "";
     export { classes as class }; // export reserved keyword
-
-    export let content = "";
-    export let language = "javascript"; // javascript, html
 
     let formattedContent = "";
 
@@ -46,9 +41,6 @@
     .code-wrapper {
         display: block;
         width: 100%;
-        max-height: 100%;
-        overflow: auto; /* fallback */
-        overflow: overlay;
     }
     .prism-light code {
         color: var(--txtPrimaryColor);

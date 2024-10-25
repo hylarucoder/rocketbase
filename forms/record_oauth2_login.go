@@ -129,6 +129,10 @@ func (form *RecordOAuth2Login) Submit(
 		return nil, nil, err
 	}
 
+	if form.Provider == auth.NameInstagram {
+		form.app.Logger().Warn("Instagram OAuth2 provider is deprecated and will stop working after December 4th. For more details please check https://github.com/hylarucoder/rocketbase/discussions/5652.")
+	}
+
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
@@ -222,15 +226,11 @@ func (form *RecordOAuth2Login) submit(data *RecordOAuth2LoginData) error {
 			// load custom data
 			createForm.LoadData(form.CreateData)
 
-			// load the OAuth2 profile data as fallback
-			if createForm.Email == "" {
-				createForm.Email = data.OAuth2User.Email
-			}
-			createForm.Verified = false
-			if createForm.Email == data.OAuth2User.Email {
-				// mark as verified as long as it matches the OAuth2 data (even if the email is empty)
-				createForm.Verified = true
-			}
+			// load the OAuth2 user data
+			createForm.Email = data.OAuth2User.Email
+			createForm.Verified = true // mark as verified as long as it matches the OAuth2 data (even if the email is empty)
+
+			// generate a random password if not explicitly set
 			if createForm.Password == "" {
 				createForm.Password = security.RandomString(30)
 				createForm.PasswordConfirm = createForm.Password
@@ -247,6 +247,19 @@ func (form *RecordOAuth2Login) submit(data *RecordOAuth2LoginData) error {
 				return err
 			}
 		} else {
+			isLoggedAuthRecord := form.loggedAuthRecord != nil &&
+				form.loggedAuthRecord.Id == data.Record.Id &&
+				form.loggedAuthRecord.Collection().Id == data.Record.Collection().Id
+
+			// set random password for users with unverified email
+			// (this is in case a malicious actor has registered via password using the user email)
+			if !isLoggedAuthRecord && data.Record.Email() != "" && !data.Record.Verified() {
+				data.Record.SetPassword(security.RandomString(30))
+				if err := txDao.SaveRecord(data.Record); err != nil {
+					return err
+				}
+			}
+
 			// update the existing auth record empty email if the data.OAuth2User has one
 			// (this is in case previously the auth record was created
 			// with an OAuth2 provider that didn't return an email address)

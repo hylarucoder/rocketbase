@@ -7,7 +7,7 @@ import (
 )
 
 // Resave all view collections to ensure that the proper id normalization is applied.
-// (see https://github.com/pocketbase/pocketbase/issues/3110)
+// (see https://github.com/hylarucoder/rocketbase/issues/3110)
 func init() {
 	AppMigrations.Register(func(db dbx.Builder) error {
 		dao := daos.New(db)

@@ -13,7 +13,13 @@ func (suite *HealthTestSuite) TestHealthAPI() {
 
 	scenarios := []tests.ApiScenario{
 		{
-			Name:           "health status returns 200",
+			Name:           "HEAD health status",
+			Method:         http.MethodHead,
+			Url:            "/api/health",
+			ExpectedStatus: 200,
+		},
+		{
+			Name:           "GET health status",
 			Method:         http.MethodGet,
 			Url:            "/api/health",
 			ExpectedStatus: 200,

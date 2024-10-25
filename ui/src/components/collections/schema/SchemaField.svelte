@@ -3,13 +3,13 @@
 </script>
 
 <script>
+    import tooltip from "@/actions/tooltip";
+    import Field from "@/components/base/Field.svelte";
+    import Toggler from "@/components/base/Toggler.svelte";
+    import { errors, setErrors } from "@/stores/errors";
+    import CommonHelper from "@/utils/CommonHelper";
     import { createEventDispatcher, onMount } from "svelte";
     import { slide } from "svelte/transition";
-    import CommonHelper from "@/utils/CommonHelper";
-    import tooltip from "@/actions/tooltip";
-    import { errors, setErrors } from "@/stores/errors";
-    import Toggler from "@/components/base/Toggler.svelte";
-    import Field from "@/components/base/Field.svelte";
 
     const componentId = "f_" + CommonHelper.randomString(8);
 
@@ -54,6 +54,7 @@
 
     function remove() {
         if (!field.id) {
+            collapse();
             dispatch("remove");
         } else {
             field.toDelete = true;
@@ -65,6 +66,13 @@
 
         // reset all errors since the error index key would have been changed
         setErrors({});
+    }
+
+    function duplicate() {
+        if (!field.toDelete) {
+            collapse();
+            dispatch("duplicate");
+        }
     }
 
     function normalizeFieldName(name) {
@@ -190,6 +198,7 @@
                 class:btn-hint={!showOptions && !hasErrors}
                 class:btn-danger={hasErrors}
                 on:click={toggle}
+                aria-expanded={showOptions}
             >
                 <i class="ri-settings-3-line" />
             </button>
@@ -211,7 +220,7 @@
                             class="ri-information-line link-hint"
                             use:tooltip={{
                                 text: `Requires the field value NOT to be ${CommonHelper.zeroDefaultStr(
-                                    field
+                                    field,
                                 )}.`,
                             }}
                         />
@@ -235,22 +244,35 @@
 
                 {#if !field.toDelete}
                     <div class="m-l-auto txt-right">
-                        <div class="flex-fill" />
                         <div class="inline-flex flex-gap-sm flex-nowrap">
-                            <button
-                                type="button"
+                            <div
+                                tabindex="0"
+                                role="button"
                                 aria-label="More"
                                 class="btn btn-circle btn-sm btn-transparent"
                             >
-                                <i class="ri-more-line" />
+                                <i class="ri-more-line" aria-hidden="true" />
                                 <Toggler
                                     class="dropdown dropdown-sm dropdown-upside dropdown-right dropdown-nowrap no-min-width"
                                 >
-                                    <button type="button" class="dropdown-item txt-right" on:click={remove}>
+                                    <button
+                                        type="button"
+                                        class="dropdown-item"
+                                        role="menuitem"
+                                        on:click|preventDefault={duplicate}
+                                    >
+                                        <span class="txt">Duplicate</span>
+                                    </button>
+                                    <button
+                                        type="button"
+                                        class="dropdown-item"
+                                        role="menuitem"
+                                        on:click|preventDefault={remove}
+                                    >
                                         <span class="txt">Remove</span>
                                     </button>
                                 </Toggler>
-                            </button>
+                            </div>
                         </div>
                     </div>
                 {/if}

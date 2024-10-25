@@ -261,7 +261,7 @@ func LoadCollectionContext(app core.App, optCollectionTypes ...string) echo.Midd
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			if param := c.PathParam("collection"); param != "" {
-				collection, err := app.Dao().FindCollectionByNameOrId(param)
+				collection, err := core.FindCachedCollectionByNameOrId(app, param)
 				if err != nil || collection == nil {
 					return NewNotFoundError("", err)
 				}
@@ -402,6 +402,8 @@ func realUserIp(r *http.Request, fallbackIp string) string {
 	return fallbackIp
 }
 
+// @todo consider removing as this may no longer be needed due to the custom rest.MultiBinder.
+//
 // eagerRequestInfoCache ensures that the request data is cached in the request
 // context to allow reading for example the json request body data more than once.
 func eagerRequestInfoCache(app core.App) echo.MiddlewareFunc {
