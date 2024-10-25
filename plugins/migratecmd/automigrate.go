@@ -71,7 +71,7 @@ func (p *plugin) afterCollectionChange() func(*core.ModelEvent) error {
 				"file": name,
 				// use microseconds for more granular applied time in case
 				// multiple collection changes happens at the ~exact time
-				"applied": time.Now(),
+				"applied": time.Now().UnixMicro(),
 			}).Execute()
 			if err != nil {
 				return err

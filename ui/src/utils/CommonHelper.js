@@ -1,8 +1,8 @@
 import { DateTime } from "luxon";
 
 const imageExtensions = [
-   ".jpg", ".jpeg", ".png", ".svg",
-   ".gif", ".jfif", ".webp", ".avif",
+    ".jpg", ".jpeg", ".png", ".svg",
+    ".gif", ".jfif", ".webp", ".avif",
 ];
 
 const videoExtensions = [
@@ -70,13 +70,42 @@ export default class CommonHelper {
     }
 
     /**
+     * Returns the zero/empty value of val (only primitive values are supported).
+     * @param  {Mixed} val
+     * @return {Mixed}
+     */
+    static zeroValue(val) {
+        switch (typeof val) {
+            case "string":
+                return "";
+            case "number":
+                return 0;
+            case "boolean":
+                return false;
+            case "object":
+                if (val === null) {
+                    return null;
+                }
+
+                if (Array.isArray(val)) {
+                    return [];
+                }
+
+                return {};
+            case "undefined":
+                return undefined;
+            default:
+                return null;
+        }
+    }
+
+    /**
      * Checks whether a value is empty. The following values are considered as empty:
      * - null
      * - undefined
      * - empty string
      * - empty array
      * - empty object
-     * - zero uuid, time and dates
      *
      * @param  {Mixed} value
      * @return {Boolean}
@@ -85,9 +114,6 @@ export default class CommonHelper {
         return (
             (value === "") ||
             (value === null) ||
-            (value === "00000000-0000-0000-0000-000000000000") || // zero uuid
-            (value === "0001-01-01 00:00:00.000Z") || // zero datetime
-            (value === "0001-01-01") || // zero date
             (typeof value === "undefined") ||
             (Array.isArray(value) && value.length === 0) ||
             (CommonHelper.isObject(value) && Object.keys(value).length === 0)
@@ -341,7 +367,7 @@ export default class CommonHelper {
      */
     static getNestedVal(data, path, defaultVal = null, delimiter = ".") {
         let result = data || {};
-        let parts  = (path || "").split(delimiter);
+        let parts = (path || "").split(delimiter);
 
         for (const part of parts) {
             if (
@@ -376,8 +402,8 @@ export default class CommonHelper {
             return
         }
 
-        let result   = data;
-        let parts    = path.split(delimiter);
+        let result = data;
+        let parts = path.split(delimiter);
         let lastPart = parts.pop();
 
         for (const part of parts) {
@@ -409,8 +435,8 @@ export default class CommonHelper {
      * @param  {String}       delimiter
      */
     static deleteByPath(data, path, delimiter = ".") {
-        let result   = data || {};
-        let parts    = (path || "").split(delimiter);
+        let result = data || {};
+        let parts = (path || "").split(delimiter);
         let lastPart = parts.pop();
 
         for (const part of parts) {
@@ -530,8 +556,8 @@ export default class CommonHelper {
     static trimQuotedValue(val) {
         if (
             typeof val == "string" &&
-            (val[0] == `"`  || val[0] == `'` || val[0] == "`") &&
-            val[0] == val[val.length-1]
+            (val[0] == `"` || val[0] == `'` || val[0] == "`") &&
+            val[0] == val[val.length - 1]
         ) {
             return val.slice(1, -1);
         }
@@ -666,7 +692,7 @@ export default class CommonHelper {
      * @return {String}
      */
     static escapeRegExp(str) {
-      return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+        return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
     }
 
     /**
@@ -868,7 +894,7 @@ export default class CommonHelper {
             console.warn("Failed to parse JWT payload data.", err);
         }
 
-        return  {};
+        return {};
     }
 
     /**
@@ -942,10 +968,10 @@ export default class CommonHelper {
         return new Promise((resolve) => {
             let reader = new FileReader();
 
-            reader.onload = function(e) {
+            reader.onload = function (e) {
                 let img = new Image();
 
-                img.onload = function() {
+                img.onload = function () {
                     let canvas = document.createElement("canvas");
                     let ctx = canvas.getContext("2d");
                     let imgWidth = img.width;
@@ -1417,6 +1443,7 @@ export default class CommonHelper {
             height: 270,
             max_height: 700,
             autoresize_bottom_margin: 30,
+            convert_unsafe_embeds: true, // GHSA-5359
             skin: "pocketbase",
             content_style: "body { font-size: 14px }",
             plugins: [
@@ -1432,6 +1459,33 @@ export default class CommonHelper {
                 "code",
                 "codesample",
                 "directionality",
+            ],
+            codesample_global_prismjs: true,
+            codesample_languages: [
+                { text: 'HTML/XML', value: 'markup' },
+                { text: 'CSS', value: 'css' },
+                { text: 'SQL', value: 'sql' },
+                { text: 'JavaScript', value: 'javascript' },
+                { text: 'Go', value: 'go' },
+                { text: 'Dart', value: 'dart' },
+                { text: 'Zig', value: 'zig' },
+                { text: 'Rust', value: 'rust' },
+                { text: 'Lua', value: 'lua' },
+                { text: 'PHP', value: 'php' },
+                { text: 'Ruby', value: 'ruby' },
+                { text: 'Python', value: 'python' },
+                { text: 'Java', value: 'java' },
+                { text: 'C', value: 'c' },
+                { text: 'C#', value: 'csharp' },
+                { text: 'C++', value: 'cpp' },
+                // other non-highlighted languages
+                { text: 'Markdown', value: 'markdown' },
+                { text: 'Swift', value: 'swift' },
+                { text: 'Kotlin', value: 'kotlin' },
+                { text: 'Elixir', value: 'elixir' },
+                { text: 'Scala', value: 'scala' },
+                { text: 'Julia', value: 'julia' },
+                { text: 'Haskell', value: 'haskell' },
             ],
             toolbar: "styles | alignleft aligncenter alignright | bold italic forecolor backcolor | bullist numlist | link image_picker table codesample direction | code fullscreen",
             paste_postprocess: (editor, args) => {
@@ -1615,11 +1669,11 @@ export default class CommonHelper {
             return missingValue;
         }
 
-        if (typeof val == "number")  {
+        if (typeof val == "number") {
             return "" + val;
         }
 
-        if (typeof val == "boolean")  {
+        if (typeof val == "boolean") {
             return val ? "True" : "False";
         }
 
@@ -1719,6 +1773,138 @@ export default class CommonHelper {
     }
 
     /**
+     * Generates recursively a list with all the autocomplete field keys
+     * for the collectionNameOrId collection.
+     *
+     * @param  {Array}  collections
+     * @param  {String} collectionNameOrId
+     * @param  {String} [prefix]
+     * @param  {Number} [level]
+     * @return {Array}
+     */
+    static getCollectionAutocompleteKeys(collections, collectionNameOrId, prefix = "", level = 0) {
+        let collection = collections.find((item) => item.name == collectionNameOrId || item.id == collectionNameOrId);
+        if (!collection || level >= 4) {
+            return [];
+        }
+        collection.schema = collection.schema || [];
+
+        let result = CommonHelper.getAllCollectionIdentifiers(collection, prefix);
+
+        for (const field of collection.schema) {
+            const key = prefix + field.name;
+
+            // add relation fields
+            if (field.type == "relation" && field.options?.collectionId) {
+                const subKeys = CommonHelper.getCollectionAutocompleteKeys(collections, field.options.collectionId, key + ".", level + 1);
+                if (subKeys.length) {
+                    result = result.concat(subKeys);
+                }
+            }
+
+            // add ":length" and ":each" field modifiers to arrayble fields
+            if (field.options?.maxSelect != 1 && ["select", "file", "relation"].includes(field.type)) {
+                result.push(key + ":each");
+                result.push(key + ":length");
+            }
+        }
+
+        // add back relations
+        for (const ref of collections) {
+            ref.schema = ref.schema || [];
+            for (const field of ref.schema) {
+                if (field.type == "relation" && field.options?.collectionId == collection.id) {
+                    const key = prefix + ref.name + "_via_" + field.name;
+                    const subKeys = CommonHelper.getCollectionAutocompleteKeys(collections, ref.id, key + ".", level + 2); // +2 to reduce the recursive results
+                    if (subKeys.length) {
+                        result = result.concat(subKeys);
+                    }
+                }
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Generates a list with all @collection.* autocomplete field keys.
+     *
+     * @param  {Array} collections
+     * @return {Array}
+     */
+    static getCollectionJoinAutocompleteKeys(collections) {
+        const result = [];
+
+        for (const collection of collections) {
+            const prefix = "@collection." + collection.name + ".";
+            const keys = CommonHelper.getCollectionAutocompleteKeys(collections, collection.name, prefix);
+            for (const key of keys) {
+                result.push(key);
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Generates a list with all @request.* autocomplete field keys.
+     *
+     * @param  {Array}  collections
+     * @param  {String} baseCollectionName (used for the `@request.data.*` fields)
+     * @return {Array}
+     */
+    static getRequestAutocompleteKeys(collections, baseCollectionName) {
+        const result = [];
+
+        result.push("@request.context");
+        result.push("@request.method");
+        result.push("@request.query.");
+        result.push("@request.data.");
+        result.push("@request.headers.");
+        result.push("@request.auth.id");
+        result.push("@request.auth.collectionId");
+        result.push("@request.auth.collectionName");
+        result.push("@request.auth.verified");
+        result.push("@request.auth.username");
+        result.push("@request.auth.email");
+        result.push("@request.auth.emailVisibility");
+        result.push("@request.auth.created");
+        result.push("@request.auth.updated");
+
+        // load auth collection fields
+        const authCollections = collections.filter((collection) => collection.type === "auth");
+        for (const collection of authCollections) {
+            const authKeys = CommonHelper.getCollectionAutocompleteKeys(collections, collection.id, "@request.auth.");
+            for (const k of authKeys) {
+                CommonHelper.pushUnique(result, k);
+            }
+        }
+
+        // load base collection fields into @request.data.*
+        if (baseCollectionName) {
+            const issetExcludeList = ["created", "updated"];
+            const keys = CommonHelper.getCollectionAutocompleteKeys(collections, baseCollectionName, "@request.data.");
+            for (const key of keys) {
+                result.push(key);
+
+                // add ":isset" modifier to non-base keys
+                const parts = key.split(".");
+                if (
+                    parts.length === 3 &&
+                    // doesn't contain another modifier
+                    parts[2].indexOf(":") === -1 &&
+                    // is not from the exclude list
+                    !issetExcludeList.includes(parts[2])
+                ) {
+                    result.push(key + ":isset");
+                }
+            }
+        }
+
+        return result;
+    }
+
+    /**
      * Parses the specified SQL index and returns an object with its components.
      *
      * For example:
@@ -1742,17 +1928,17 @@ export default class CommonHelper {
      */
     static parseIndex(idx) {
         const result = {
-            unique:     false,
-            optional:   false,
+            unique: false,
+            optional: false,
             schemaName: "",
-            indexName:  "",
-            tableName:  "",
-            columns:    [],
-            where:      "",
+            indexName: "",
+            tableName: "",
+            columns: [],
+            where: "",
         };
 
         const indexRegex = /create\s+(unique\s+)?\s*index\s*(if\s+not\s+exists\s+)?(\S*)\s+on\s+(\S*)\s*\(([\s\S]*)\)(?:\s*where\s+([\s\S]*))?/gmi;
-        const matches    = indexRegex.exec((idx || "").trim())
+        const matches = indexRegex.exec((idx || "").trim())
 
         if (matches?.length != 7) {
             return result;
@@ -1798,9 +1984,9 @@ export default class CommonHelper {
                 continue;
             }
             result.columns.push({
-                name:    colOrExpr,
+                name: colOrExpr,
                 collate: colMatches[2] || "",
-                sort:    colMatches[3]?.toUpperCase() || "",
+                sort: colMatches[3]?.toUpperCase() || "",
             });
         }
 
@@ -1844,26 +2030,26 @@ export default class CommonHelper {
         }
 
         result += nonEmptyCols.map((col) => {
-                let item = "";
+            let item = "";
 
-                if (col.name.includes("(") || col.name.includes(" ")) {
-                    // most likely an expression
-                    item += col.name;
-                } else {
-                    // regular identifier
-                    item += ("`" + col.name + "`");
-                }
+            if (col.name.includes("(") || col.name.includes(" ")) {
+                // most likely an expression
+                item += col.name;
+            } else {
+                // regular identifier
+                item += ("`" + col.name + "`");
+            }
 
-                if (col.collate) {
-                    item += (" COLLATE " + col.collate);
-                }
+            if (col.collate) {
+                item += (" COLLATE " + col.collate);
+            }
 
-                if (col.sort) {
-                    item += (" " + col.sort.toUpperCase());
-                }
+            if (col.sort) {
+                item += (" " + col.sort.toUpperCase());
+            }
 
-                return item;
-            })
+            return item;
+        })
             .join(",\n  ");
 
         if (nonEmptyCols.length > 1) {
@@ -1971,20 +2157,20 @@ export default class CommonHelper {
      */
     static initCollection(data) {
         return Object.assign({
-            id:         '',
-            created:    '',
-            updated:    '',
-            name:       '',
-            type:       'base',
-            system:     false,
-            listRule:   null,
-            viewRule:   null,
+            id: '',
+            created: '',
+            updated: '',
+            name: '',
+            type: 'base',
+            system: false,
+            listRule: null,
+            viewRule: null,
             createRule: null,
             updateRule: null,
             deleteRule: null,
-            schema:     [],
-            indexes:    [],
-            options:    {},
+            schema: [],
+            indexes: [],
+            options: {},
         }, data);
     }
 
@@ -1996,12 +2182,12 @@ export default class CommonHelper {
      */
     static initSchemaField(data) {
         return Object.assign({
-            id:       '',
-            name:     '',
-            type:     'text',
-            system:   false,
+            id: '',
+            name: '',
+            type: 'text',
+            system: false,
             required: false,
-            options:  {},
+            options: {},
         }, data);
     }
 

@@ -24,7 +24,7 @@ type AuthUser struct {
 
 // Provider defines a common interface for an OAuth2 client.
 type Provider interface {
-	// Scopes returns the context associated with the provider (if any).
+	// Context returns the context associated with the provider (if any).
 	Context() context.Context
 
 	// SetContext assigns the specified context to the current provider.
@@ -154,6 +154,10 @@ func NewProviderByName(name string) (Provider, error) {
 		return NewPatreonProvider(), nil
 	case NameMailcow:
 		return NewMailcowProvider(), nil
+	case NameBitbucket:
+		return NewBitbucketProvider(), nil
+	case NamePlanningcenter:
+		return NewPlanningcenterProvider(), nil
 	default:
 		return nil, errors.New("Missing provider " + name)
 	}

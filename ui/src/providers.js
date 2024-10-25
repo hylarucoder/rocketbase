@@ -60,6 +60,11 @@ export default [
         optionsComponentProps: { title: "Self-hosted endpoints (optional)" },
     },
     {
+        key:   "bitbucketAuth",
+        title: "Bitbucket",
+        logo:  "bitbucket.svg",
+    },
+    {
         key:   "giteeAuth",
         title: "Gitee",
         logo:  "gitee.svg",
@@ -122,6 +127,11 @@ export default [
         logo:  "mailcow.svg",
         optionsComponent: SelfHostedOptions,
         optionsComponentProps: { required: true },
+    },
+    {
+        key:   "planningcenterAuth",
+        title: "Planning Center",
+        logo:  "planningcenter.svg",
     },
     {
         key:   "oidcAuth",

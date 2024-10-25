@@ -97,8 +97,8 @@ func Register(app core.App, rootCmd *cobra.Command, config Config) error {
 
 type plugin struct {
 	app            core.App
-	currentVersion string
 	config         Config
+	currentVersion string
 }
 
 func (p *plugin) updateCmd() *cobra.Command {
@@ -106,7 +106,7 @@ func (p *plugin) updateCmd() *cobra.Command {
 
 	command := &cobra.Command{
 		Use:          "update",
-		Short:        "Automatically updates the current PocketBase executable with the latest available version",
+		Short:        "Automatically updates the current app executable with the latest available version",
 		SilenceUsage: true,
 		RunE: func(command *cobra.Command, args []string) error {
 			var needConfirm bool
@@ -160,7 +160,12 @@ func (p *plugin) update(withBackup bool) error {
 	}
 
 	if compareVersions(strings.TrimPrefix(p.currentVersion, "v"), strings.TrimPrefix(latest.Tag, "v")) <= 0 {
-		color.Green("You already have the latest PocketBase %s.", p.currentVersion)
+		color.Green("You already have the latest version %s.", p.currentVersion)
+		return nil
+	}
+
+	if compareVersions(strings.TrimPrefix(latest.Tag, "v"), "0.23.0") <= 0 {
+		color.Green("%s contains breaking changes and cannot be updated directly from v0.22.x. Please check the releases CHANGELOG for more details.", latest.Tag)
 		return nil
 	}
 
@@ -252,7 +257,7 @@ func (p *plugin) update(withBackup bool) error {
 		fmt.Print("\n")
 		color.Cyan("Here is a list with some of the %s changes:", latest.Tag)
 		// remove the update command note to avoid "stuttering"
-		releaseNotes := strings.TrimSpace(strings.Replace(latest.Body, "> _To update the prebuilt executable you can run `./pocketbase update`._", "", 1))
+		releaseNotes := strings.TrimSpace(strings.Replace(latest.Body, "> _To update the prebuilt executable you can run `./"+p.config.ArchiveExecutable+" update`._", "", 1))
 		color.Cyan(releaseNotes)
 		fmt.Print("\n")
 	}

@@ -64,7 +64,7 @@ func (api *realtimeApi) connect(c echo.Context) error {
 
 	c.Response().Header().Set("Content-Type", "text/event-stream")
 	c.Response().Header().Set("Cache-Control", "no-store")
-	// https://github.com/pocketbase/pocketbase/discussions/480#discussioncomment-3657640
+	// https://github.com/hylarucoder/rocketbase/discussions/480#discussioncomment-3657640
 	// https://nginx.org/en/docs/http/ngx_http_proxy_module.html#proxy_buffering
 	c.Response().Header().Set("X-Accel-Buffering", "no")
 
@@ -371,7 +371,7 @@ type recordData struct {
 func (api *realtimeApi) broadcastRecord(action string, record *models.Record, dryCache bool) error {
 	collection := record.Collection()
 	if collection == nil {
-		return errors.New("[broadcastRecord] Record collection not set.")
+		return errors.New("[broadcastRecord] Record collection not set")
 	}
 
 	clients := api.app.SubscriptionsBroker().Clients()

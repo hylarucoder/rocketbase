@@ -8,7 +8,7 @@ import (
 )
 
 // Transform the relation fields to views from non-view collections to json or text fields
-// (see https://github.com/pocketbase/pocketbase/issues/3000).
+// (see https://github.com/hylarucoder/rocketbase/issues/3000).
 func init() {
 	AppMigrations.Register(func(db dbx.Builder) error {
 		dao := daos.New(db)

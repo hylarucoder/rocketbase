@@ -6,6 +6,8 @@ import (
 	"github.com/hylarucoder/rocketbase/daos"
 	"github.com/hylarucoder/rocketbase/forms/validators"
 	"github.com/hylarucoder/rocketbase/models"
+	"github.com/hylarucoder/rocketbase/tools/security"
+	"github.com/spf13/cast"
 )
 
 // RecordPasswordResetConfirm is an auth record password reset confirmation form.
@@ -91,9 +93,21 @@ func (form *RecordPasswordResetConfirm) Submit(interceptors ...InterceptorFunc[*
 		return nil, err
 	}
 
+	if !authRecord.Verified() {
+		payload, err := security.ParseUnverifiedJWT(form.Token)
+		if err != nil {
+			return nil, err
+		}
+
+		// mark as verified if the email hasn't changed
+		if authRecord.Email() == cast.ToString(payload["email"]) {
+			authRecord.SetVerified(true)
+		}
+	}
+
 	interceptorsErr := runInterceptors(authRecord, func(m *models.Record) error {
 		authRecord = m
-		return form.dao.SaveRecord(m)
+		return form.dao.SaveRecord(authRecord)
 	}, interceptors...)
 
 	if interceptorsErr != nil {

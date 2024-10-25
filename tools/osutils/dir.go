@@ -16,7 +16,7 @@ import (
 // Note that this method doesn't delete the old src dir.
 //
 // It is an alternative to os.Rename() for the cases where we can't
-// rename/delete the src dir (see https://github.com/pocketbase/pocketbase/issues/2519).
+// rename/delete the src dir (see https://github.com/hylarucoder/rocketbase/issues/2519).
 func MoveDirContent(src string, dest string, rootExclude ...string) error {
 	entries, err := os.ReadDir(src)
 	if err != nil {
