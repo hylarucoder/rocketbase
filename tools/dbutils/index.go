@@ -150,9 +150,9 @@ func ParseIndex(createIndexExpr string) Index {
 	nameParts, _ := nameTk.ScanAll()
 	if len(nameParts) == 2 {
 		result.SchemaName = strings.Trim(nameParts[0], trimChars)
-		result.IndexName = strings.Trim(nameParts[1], trimChars)
+		result.IndexName = strings.ToLower(strings.Trim(nameParts[1], trimChars))
 	} else {
-		result.IndexName = strings.Trim(nameParts[0], trimChars)
+		result.IndexName = strings.ToLower(strings.Trim(nameParts[0], trimChars))
 	}
 
 	// TableName
